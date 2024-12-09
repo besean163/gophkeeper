@@ -1,8 +1,6 @@
 package services
 
 import (
-	"errors"
-
 	"github.com/besean163/gophkeeper/internal/models"
 )
 
@@ -20,6 +18,6 @@ func NewAuthService(repository UserRepository) AuthService {
 	}
 }
 
-func (s AuthService) GetUser(login string) (*models.User, error) {
-	return nil, errors.New("user not found")
+func (s AuthService) GetUser(login string) *models.User {
+	return nil
 }

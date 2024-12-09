@@ -8,22 +8,18 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/besean163/gophkeeper/internal/models"
+	"github.com/besean163/gophkeeper/internal/auth"
 	"github.com/besean163/gophkeeper/internal/repository"
 	"github.com/besean163/gophkeeper/internal/routing"
 	"github.com/besean163/gophkeeper/internal/services"
 	"golang.org/x/sync/errgroup"
 )
 
-type AuthService interface {
-	GetUser(login string) (*models.User, error)
-}
-
 type App struct {
 	ctx    context.Context
 	config *Config
 	server *http.Server
-	AuthService
+	auth.AuthService
 }
 
 func NewApp() (*App, error) {
