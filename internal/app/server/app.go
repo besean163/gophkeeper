@@ -9,6 +9,7 @@ import (
 	"syscall"
 
 	"github.com/besean163/gophkeeper/internal/auth"
+	"github.com/besean163/gophkeeper/internal/bucket"
 	"github.com/besean163/gophkeeper/internal/repository"
 	"github.com/besean163/gophkeeper/internal/routing"
 	"github.com/besean163/gophkeeper/internal/services"
@@ -20,6 +21,7 @@ type App struct {
 	config *Config
 	server *http.Server
 	auth.AuthService
+	bucket.BucketService
 }
 
 func NewApp() (*App, error) {
@@ -39,6 +41,11 @@ func NewApp() (*App, error) {
 		return nil, err
 	}
 
+	err = app.initBucketService()
+	if err != nil {
+		return nil, err
+	}
+
 	err = app.initServer()
 	if err != nil {
 		return nil, err
@@ -49,13 +56,20 @@ func NewApp() (*App, error) {
 
 func (app *App) initAuthService() error {
 	r := repository.NewUserRepository()
-	s := services.NewAuthService(r)
+	s := services.NewAuthService(app.config.Secret, r)
 	app.AuthService = s
 	return nil
 }
 
+func (app *App) initBucketService() error {
+	r := repository.NewBucketRepository()
+	s := services.NewBucketService(r)
+	app.BucketService = s
+	return nil
+}
+
 func (app *App) initServer() error {
-	handler := routing.NewHandler(app.config.Secret, app.AuthService)
+	handler := routing.NewHandler(app.config.Secret, app.AuthService, app.BucketService)
 	app.server = NewServer(app.config.Host, handler)
 	return nil
 }

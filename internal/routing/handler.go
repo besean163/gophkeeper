@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/besean163/gophkeeper/internal/auth"
+	"github.com/besean163/gophkeeper/internal/bucket"
 	"github.com/besean163/gophkeeper/internal/routing/middleware"
 	"github.com/besean163/gophkeeper/internal/routing/route"
 	"github.com/go-chi/chi/v5"
@@ -14,15 +15,15 @@ type Handler struct {
 	auth.AuthService
 }
 
-func NewHandler(secret string, authService auth.AuthService) Handler {
+func NewHandler(secret string, authService auth.AuthService, bucketService bucket.BucketService) Handler {
 	r := chi.NewRouter()
-	r.Use(middleware.AuthMiddleware(), middleware.LogMiddleware())
+	r.Use(middleware.LogMiddleware())
 	r.HandleFunc("/", route.StartRoute())
+	r.Post("/register", route.RegisterRoute(authService))
+	r.Post("/login", route.LoginRoute(authService))
 	r.Route("/api/", func(r chi.Router) {
-		r.Route("/user/", func(r chi.Router) {
-			r.Post("/login", route.LoginRoute(authService))
-			r.Post("/register", route.RegisterRoute(secret, authService))
-		})
+		r.Use(middleware.AuthMiddleware(secret))
+		r.Get("/accounts", route.GetAccountsRoute(bucketService))
 	})
 
 	return Handler{

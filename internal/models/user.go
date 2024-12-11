@@ -1,8 +1,10 @@
 package models
 
 type User struct {
-	ID    int
-	Login string
+	ID       int
+	Login    string
+	Password string
+	Token    string
 }
 
 type Test struct {

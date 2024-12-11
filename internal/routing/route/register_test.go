@@ -23,8 +23,7 @@ func TestRegisterRoute(t *testing.T) {
 		Login: "exist_user",
 	}).Times(1)
 
-	secret := "secret"
-	handler := RegisterRoute(secret, authService)
+	handler := RegisterRoute(authService)
 	tests := []struct {
 		name           string
 		method         string

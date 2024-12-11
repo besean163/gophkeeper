@@ -1,1 +1,1 @@
-/home/besean/go/bin/mockgen -source=internal/auth/authService.go -destination=internal/auth/mocks/mocks.go -package=mock AuthService
+/home/besean/go/bin/mockgen -source=internal/auth/auth_service.go -destination=internal/auth/mocks/mocks.go -package=mock AuthService
