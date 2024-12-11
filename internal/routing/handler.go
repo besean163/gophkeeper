@@ -14,14 +14,14 @@ type Handler struct {
 	auth.AuthService
 }
 
-func NewHandler(authService auth.AuthService) Handler {
+func NewHandler(secret string, authService auth.AuthService) Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.AuthMiddleware(), middleware.LogMiddleware())
 	r.HandleFunc("/", route.StartRoute())
 	r.Route("/api/", func(r chi.Router) {
 		r.Route("/user/", func(r chi.Router) {
 			r.Post("/login", route.LoginRoute(authService))
-			r.Post("/register", route.RegisterRoute(authService))
+			r.Post("/register", route.RegisterRoute(secret, authService))
 		})
 	})
 

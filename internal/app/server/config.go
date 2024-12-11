@@ -1,11 +1,13 @@
 package server
 
 type Config struct {
-	Host string
+	Host   string
+	Secret string
 }
 
 func ReadConfig() (*Config, error) {
 	return &Config{
-		Host: "localhost:8080",
+		Host:   "localhost:8080",
+		Secret: "secret",
 	}, nil
 }

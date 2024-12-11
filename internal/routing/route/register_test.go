@@ -2,6 +2,7 @@ package route
 
 import (
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -22,7 +23,8 @@ func TestRegisterRoute(t *testing.T) {
 		Login: "exist_user",
 	}).Times(1)
 
-	handler := RegisterRoute(authService)
+	secret := "secret"
+	handler := RegisterRoute(secret, authService)
 	tests := []struct {
 		name           string
 		method         string
@@ -78,8 +80,8 @@ func TestRegisterRoute(t *testing.T) {
 			assert.Equal(t, test.exceptCode, response.StatusCode)
 
 			outputBody, _ := io.ReadAll(response.Body)
+			log.Println(string(outputBody))
 			assert.Equal(t, test.outputBody, string(outputBody))
-			// fmt.Println(string(outputBody))
 		})
 	}
 

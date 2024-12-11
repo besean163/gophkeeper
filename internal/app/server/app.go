@@ -55,7 +55,7 @@ func (app *App) initAuthService() error {
 }
 
 func (app *App) initServer() error {
-	handler := routing.NewHandler(app.AuthService)
+	handler := routing.NewHandler(app.config.Secret, app.AuthService)
 	app.server = NewServer(app.config.Host, handler)
 	return nil
 }

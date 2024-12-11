@@ -6,8 +6,11 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/besean163/gophkeeper/internal/auth"
+	jwttoken "github.com/besean163/gophkeeper/internal/jwt_token"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 var (
@@ -16,7 +19,7 @@ var (
 	ErrorRegisterUserExist       = errors.New("user already exist")
 )
 
-func RegisterRoute(s auth.AuthService) http.HandlerFunc {
+func RegisterRoute(secret string, s auth.AuthService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		if jsonHeader := r.Header.Get("Content-type"); jsonHeader != "application/json" {
@@ -49,6 +52,33 @@ func RegisterRoute(s auth.AuthService) http.HandlerFunc {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(ErrorRegisterUserExist.Error()))
 		}
+
+		claims := jwt.MapClaims{
+			"user_id": 123,
+			"exp":     time.Now().Add(1 * time.Second).Unix(), // Время истечения
+		}
+		tokenString, err := jwttoken.GetJWTToken(secret, claims)
+		if err != nil {
+			log.Println("get token error:", err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		type Token struct {
+			Token string `json:"token"`
+		}
+		token := Token{
+			Token: tokenString,
+		}
+
+		result, err := json.Marshal(token)
+		if err != nil {
+			log.Println("json make error:", err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		w.Write(result)
 
 		/*
 			принимает логин пароль отдает структуру с токеном или ошибку:
