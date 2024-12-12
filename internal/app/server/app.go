@@ -8,10 +8,10 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/besean163/gophkeeper/internal/api"
 	"github.com/besean163/gophkeeper/internal/auth"
 	"github.com/besean163/gophkeeper/internal/bucket"
 	"github.com/besean163/gophkeeper/internal/repository"
-	"github.com/besean163/gophkeeper/internal/routing"
 	"github.com/besean163/gophkeeper/internal/services"
 	"golang.org/x/sync/errgroup"
 )
@@ -69,7 +69,7 @@ func (app *App) initBucketService() error {
 }
 
 func (app *App) initServer() error {
-	handler := routing.NewHandler(app.config.Secret, app.AuthService, app.BucketService)
+	handler := api.NewHandler(app.config.Secret, app.AuthService, app.BucketService)
 	app.server = NewServer(app.config.Host, handler)
 	return nil
 }

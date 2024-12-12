@@ -1,10 +1,12 @@
 package middleware
 
 import (
+	"errors"
 	"log"
 	"net/http"
 	"strings"
 
+	apierrors "github.com/besean163/gophkeeper/internal/api/errors"
 	jwttoken "github.com/besean163/gophkeeper/internal/jwt_token"
 )
 
@@ -20,14 +22,15 @@ func AuthMiddleware(secret string) func(h http.Handler) http.Handler {
 			if err != nil {
 				log.Println("get claim error")
 				log.Println(err.Error())
-				w.WriteHeader(http.StatusInternalServerError)
+				apierrors.SendError(w, http.StatusInternalServerError, err.Error())
 				return
 			}
 
 			userId, ok := claims["user_id"]
 			if !ok {
-				log.Println("user id not exist in claims")
-				w.WriteHeader(http.StatusInternalServerError)
+				err := errors.New("user id not exist in claims")
+				log.Println(err.Error())
+				apierrors.SendError(w, http.StatusInternalServerError, err.Error())
 				return
 			}
 

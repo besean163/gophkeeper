@@ -15,6 +15,22 @@ func NewBucketService(repository BucketRepository) BucketService {
 	}
 }
 
-func (s BucketService) GetAccounts(name string) []*models.Account {
+func (s BucketService) GetAccounts() []*models.Account {
+	accounts := make([]*models.Account, 0)
+	// accounts = append(accounts, &models.Account{
+	// 	Name: "test",
+	// })
+	return accounts
+}
+
+func (s BucketService) CreateAccount(account *models.Account) error {
+	return nil
+}
+
+func (s BucketService) UpdateAccount(account *models.Account) error {
+	return nil
+}
+
+func (s BucketService) DeleteAccount(id int) error {
 	return nil
 }

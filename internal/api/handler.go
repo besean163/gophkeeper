@@ -1,12 +1,12 @@
-package routing
+package api
 
 import (
 	"net/http"
 
+	"github.com/besean163/gophkeeper/internal/api/middleware"
+	"github.com/besean163/gophkeeper/internal/api/route"
 	"github.com/besean163/gophkeeper/internal/auth"
 	"github.com/besean163/gophkeeper/internal/bucket"
-	"github.com/besean163/gophkeeper/internal/routing/middleware"
-	"github.com/besean163/gophkeeper/internal/routing/route"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -19,11 +19,15 @@ func NewHandler(secret string, authService auth.AuthService, bucketService bucke
 	r := chi.NewRouter()
 	r.Use(middleware.LogMiddleware())
 	r.HandleFunc("/", route.StartRoute())
-	r.Post("/register", route.RegisterRoute(authService))
-	r.Post("/login", route.LoginRoute(authService))
+	r.With(middleware.CheckContentTypeJSONMiddleware()).Post("/register", route.RegisterRoute(authService))
+	r.With(middleware.CheckContentTypeJSONMiddleware()).Post("/login", route.LoginRoute(authService))
 	r.Route("/api/", func(r chi.Router) {
 		r.Use(middleware.AuthMiddleware(secret))
-		r.Get("/accounts", route.GetAccountsRoute(bucketService))
+		r.Get("/accounts", route.AccountsRoute(bucketService))
+		// r.Get("/account", nil)
+		r.Post("/account", route.AccountRoute(bucketService))
+		r.Put("/account", route.AccountRoute(bucketService))
+		r.Delete("/account", route.AccountRoute(bucketService))
 	})
 
 	return Handler{
