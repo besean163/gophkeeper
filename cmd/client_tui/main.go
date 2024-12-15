@@ -5,11 +5,15 @@ import (
 	"log"
 
 	app "github.com/besean163/gophkeeper/internal/client/tui"
+	"github.com/besean163/gophkeeper/internal/client/tui/models"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 func main() {
+	m := models.NewRootModel()
+	p := tea.NewProgram(m)
 	// Инициализация программы
-	p := app.NewProgram()
+	// p := app.NewProgram()
 
 	// Запуск программы
 	finalModel, err := p.Run()

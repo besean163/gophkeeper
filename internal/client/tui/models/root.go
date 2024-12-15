@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type RootModel struct {
@@ -41,5 +42,7 @@ func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m RootModel) View() string {
-	return ""
+	result := "\n"
+	result += lipgloss.NewStyle().Foreground(lipgloss.Color("241")).Render("ctrl+c: exit\n")
+	return result
 }

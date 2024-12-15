@@ -1,0 +1,25 @@
+fullscreen - дополнительный функционал
+altscreen-toggle - дополнительный функционал
+credit-card-form - для раздела кредитных карт
+glamour - для просмотра в разделе заметок
+help - дополнительный раздел
+list-default - для списка разделов
+list-fancy - для списка разделов
+list-simple - для списка разделов
+mouse - не придумал
+paginator - для списка в разделах
+prevent-quit - для завершения, дополнительно
+progress-animated - для синхронизации
+progress-static - для синхронизации
+result - для раздела sign
+set-window-title - не придумал для чего
+spinner - для синхронизации
+spinners - для синхронизации 
+split-editors - для раздела заметок возможно
+table-resize - возможно для вывода списка данных
+table - возможно для вывода списка данных
+tabs - как вариант можно так реализовать список разделов
+textarea - для раздела заметок
+textinput - для раздела логина и sign
+textinputs -  - для раздела логина и sign
+views - для раздела sign
