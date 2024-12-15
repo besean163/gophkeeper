@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/besean163/gophkeeper/internal/app/server"
+	"github.com/besean163/gophkeeper/internal/server/app"
 )
 
 func main() {
@@ -13,7 +13,7 @@ func main() {
 }
 
 func run() error {
-	app, err := server.NewApp()
+	app, err := app.NewApp()
 	if err != nil {
 		return err
 	}
