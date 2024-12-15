@@ -1,0 +1,1 @@
+migrate create -ext sql -dir /opt/gophkeeper/internal/client/database/migrations -seq create_users_table
