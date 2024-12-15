@@ -17,7 +17,7 @@ type Handler struct {
 func NewHandler(secret string, authService interfaces.AuthService, bucketService interfaces.BucketService) Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.LogMiddleware())
-	r.HandleFunc("/", route.StartRoute())
+	r.NotFound(route.NotFoundRoute())
 	r.With(middleware.CheckContentTypeJSONMiddleware()).Post("/register", route.RegisterRoute(authService))
 	r.With(middleware.CheckContentTypeJSONMiddleware()).Post("/login", route.LoginRoute(authService))
 	r.Route("/api/", func(r chi.Router) {

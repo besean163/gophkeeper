@@ -6,7 +6,3 @@ type User struct {
 	Password string
 	Token    string
 }
-
-type Test struct {
-	Key string `json:"key"`
-}
