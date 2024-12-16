@@ -1,14 +1,23 @@
 package models
 
 import (
-	"fmt"
-
+	"github.com/besean163/gophkeeper/internal/client/tui/logger"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
+type State int
+
+const (
+	rootSignState State = iota
+	rootLoginState
+	rootSectionsState
+	rootAccountsState
+)
+
 type RootModel struct {
-	SignModel
+	State
+	*SignModel
 	LoginModel
 	SectionsModel
 	AccountsModel
@@ -16,7 +25,8 @@ type RootModel struct {
 
 func NewRootModel() RootModel {
 	return RootModel{
-		SignModel:     SignModel{},
+		State:         rootSignState,
+		SignModel:     NewSignModel(),
 		LoginModel:    LoginModel{},
 		SectionsModel: SectionsModel{},
 		AccountsModel: AccountsModel{},
@@ -28,7 +38,7 @@ func (m RootModel) Init() tea.Cmd {
 }
 
 func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	fmt.Println("root", msg)
+	logger.Get().Println("root update")
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -37,11 +47,22 @@ func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	}
-	m.LoginModel.Update(msg)
+
+	switch m.State {
+	case rootSignState:
+		m.SignModel.Update(msg)
+	}
+
+	// m.LoginModel.Update(msg)
 	return m, nil
 }
 
 func (m RootModel) View() string {
+	logger.Get().Println("root view")
+	switch m.State {
+	case rootSignState:
+		return m.SignModel.View()
+	}
 	result := "\n"
 	result += lipgloss.NewStyle().Foreground(lipgloss.Color("241")).Render("ctrl+c: exit\n")
 	return result
