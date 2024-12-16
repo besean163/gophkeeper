@@ -23,6 +23,7 @@ type RootModel struct {
 	*LoginModel
 	SectionsModel
 	AccountsModel
+	Quit bool
 }
 
 func NewRootModel() RootModel {
@@ -45,6 +46,8 @@ func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		if msg.String() == "ctrl+c" {
+			// logger.Get().Println("quit")
+			m.Quit = true
 			return m, tea.Quit
 		}
 	case messages.SignSuccessMsg:
@@ -65,6 +68,9 @@ func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m RootModel) View() string {
+	if m.Quit {
+		return "Bye!"
+	}
 	// logger.Get().Println("root view")
 	result := strings.Builder{}
 	switch m.State {
