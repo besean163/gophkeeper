@@ -11,5 +11,5 @@ func Get() *log.Logger {
 		log.Println("can't set logger")
 		return nil
 	}
-	return log.New(f, "", 0)
+	return log.New(f, "", log.Ldate|log.Ltime)
 }

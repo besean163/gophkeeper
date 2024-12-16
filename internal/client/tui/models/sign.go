@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	"github.com/besean163/gophkeeper/internal/client/tui/logger"
+	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -14,13 +14,13 @@ const (
 )
 
 var (
-	keywordStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("211"))
-	subtleStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color("241"))
-	ticksStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("79"))
+	// keywordStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("211"))
+	subtleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("241"))
+	// ticksStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("79"))
 	checkboxStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("212"))
 	// progressEmpty = subtleStyle.Render(progressEmptyChar)
-	dotStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("236")).Render(".")
-	mainStyle = lipgloss.NewStyle().MarginLeft(2)
+	dotStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("236")).Render(".")
+	// mainStyle = lipgloss.NewStyle().MarginLeft(2)
 )
 
 type SignModel struct {
@@ -40,16 +40,27 @@ func (m *SignModel) Init() tea.Cmd {
 }
 
 func (m *SignModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	logger.Get().Println("sign update")
+	// logger.Get().Println("sign update")
 	if !m.Chosen {
-		return updateChoices(msg, m)
+		updateChoices(msg, m)
+	}
+
+	// logger.Get().Println(m.Chosen)
+	if m.Chosen {
+		return m, func() tea.Msg {
+			msg := messages.SignSuccessMsg{}
+			if m.Choice == signOptionSignUp {
+				msg.WithRegistration = true
+			}
+			return msg
+		}
 	}
 	return m, nil
 }
 
 func (m *SignModel) View() string {
-	logger.Get().Println("sign view")
-	logger.Get().Println("view", m.Choice)
+	// logger.Get().Println("sign view")
+	// logger.Get().Println("view", m.Choice)
 
 	c := m.Choice
 
@@ -75,7 +86,7 @@ func checkbox(label string, checked bool) string {
 	return fmt.Sprintf("[ ] %s", label)
 }
 
-func updateChoices(msg tea.Msg, m *SignModel) (tea.Model, tea.Cmd) {
+func updateChoices(msg tea.Msg, m *SignModel) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -93,6 +104,4 @@ func updateChoices(msg tea.Msg, m *SignModel) (tea.Model, tea.Cmd) {
 			m.Chosen = true
 		}
 	}
-
-	return m, nil
 }
