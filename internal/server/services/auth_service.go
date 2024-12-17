@@ -27,7 +27,8 @@ func NewAuthService(secret string, repository UserRepository) AuthService {
 }
 
 func (s AuthService) GetUser(login string) *models.User {
-	return &models.User{}
+	// return &models.User{}
+	return nil
 }
 
 func (s AuthService) SaveUser(user *models.User) error {

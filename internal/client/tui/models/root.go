@@ -3,6 +3,7 @@ package models
 import (
 	"strings"
 
+	"github.com/besean163/gophkeeper/internal/client/core"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -18,6 +19,7 @@ const (
 )
 
 type RootModel struct {
+	Core core.Core
 	State
 	*SignModel
 	*LoginModel

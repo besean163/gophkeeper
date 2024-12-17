@@ -1,12 +1,11 @@
 package models
 
 import (
-	"encoding/json"
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
+	"github.com/besean163/gophkeeper/internal/client/core"
 	"github.com/besean163/gophkeeper/internal/client/tui/logger"
 	"github.com/charmbracelet/bubbles/cursor"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -207,19 +206,18 @@ func (m *LoginModel) Submit() tea.Cmd {
 		m.errorMessage = "Пароли не совпадают."
 		m.showError = true
 	} else {
-		d := struct {
-			Login    string `json:"login"`
-			Password string `json:"password"`
-		}{
-			Login:    login,
-			Password: password,
-		}
-		body, _ := json.Marshal(d)
 
-		r, err := http.NewRequest(http.MethodPost, "localhost:8080/register", body)
-		m.errorMessage = "Пароли не совпадают."
-		m.showError = true
+		err := core.Instance.Register(login, password)
+		if err != nil {
+			logger.Get().Println(err.Error())
+			return m.error(err.Error())
+		}
 	}
-	logger.Get().Println(m.inputs[inputLogin].Value())
+	return func() tea.Msg { return struct{}{} }
+}
+
+func (m *LoginModel) error(errorMessage string) tea.Cmd {
+	m.errorMessage = errorMessage
+	m.showError = true
 	return func() tea.Msg { return struct{}{} }
 }
