@@ -3,7 +3,9 @@ package models
 import (
 	"fmt"
 	"strings"
+	"time"
 
+	"github.com/besean163/gophkeeper/internal/client/tui/logger"
 	"github.com/charmbracelet/bubbles/cursor"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -21,14 +23,18 @@ var (
 	blurredStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
 
 	noStyle       = lipgloss.NewStyle()
-	focusedButton = focusedStyle.Render("[ Submit ]")
-	blurredButton = fmt.Sprintf("[ %s ]", blurredStyle.Render("Submit"))
+	focusedButton = focusedStyle.Render("[ Вход ]")
+	blurredButton = fmt.Sprintf("[ %s ]", blurredStyle.Render("Вход"))
+
+	errorStyle = lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).Padding(0, 1).BorderForeground(lipgloss.Color("#FF5A40"))
 )
 
 type LoginModel struct {
 	registration bool
 	focusIndex   int
+	showError    bool
 	inputs       []textinput.Model
+	errorMessage string
 }
 
 func NewLoginModel(registration bool) *LoginModel {
@@ -61,6 +67,7 @@ func NewLoginModel(registration bool) *LoginModel {
 	return &LoginModel{
 		registration: registration,
 		inputs:       inputs,
+		showError:    true,
 	}
 }
 
@@ -69,49 +76,23 @@ func (m *LoginModel) Init() tea.Cmd {
 }
 
 func (m *LoginModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	cmds := make([]tea.Cmd, len(m.inputs))
 	// logger.Get().Println("login update")
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		// смена фокуса
 		case "tab", "shift+tab", "enter", "up", "down":
-
-			s := msg.String()
-			if s == "up" || s == "shift+tab" {
-				m.focusIndex--
-			} else {
-				m.focusIndex++
-			}
-
-			if m.focusIndex > len(m.inputs) {
-				m.focusIndex = 0
-			} else if m.focusIndex < 0 {
-				m.focusIndex = len(m.inputs)
-			}
-
-			cmds := make([]tea.Cmd, len(m.inputs))
-			for i := 0; i <= len(m.inputs)-1; i++ {
-				if i == m.focusIndex {
-					// Set focused state
-					cmds[i] = m.inputs[i].Focus()
-					m.inputs[i].PromptStyle = focusedStyle
-					m.inputs[i].TextStyle = focusedStyle
-					continue
-				}
-				// Remove focused state
-				m.inputs[i].Blur()
-				m.inputs[i].PromptStyle = noStyle
-				m.inputs[i].TextStyle = noStyle
-			}
-
-			return m, tea.Batch(cmds...)
+			cmds = append(cmds, m.moveFocus(msg))
 		}
 	}
 
-	// Handle character input and blinking
-	cmd := m.updateInputs(msg)
+	cmds = append(cmds, m.updateError())
 
-	return m, cmd
+	// Handle character input and blinking
+	cmds = append(cmds, m.updateInputs(msg))
+
+	return m, tea.Batch(cmds...)
 }
 
 func (m *LoginModel) View() string {
@@ -133,9 +114,56 @@ func (m *LoginModel) View() string {
 	if m.focusIndex == len(m.inputs) {
 		button = &focusedButton
 	}
+
+	if m.showError {
+		logger.Get().Println("here")
+		b.WriteRune('\n')
+		b.WriteString(errorStyle.Render(m.errorMessage))
+		b.WriteRune('\n')
+	}
 	fmt.Fprintf(&b, "\n\n%s\n\n", *button)
 
 	return b.String()
+}
+
+func (m *LoginModel) moveFocus(msg tea.KeyMsg) tea.Cmd {
+	s := msg.String()
+
+	if s == "enter" && m.focusIndex == len(m.inputs) {
+		logger.Get().Println("submit")
+		return m.Submit()
+	}
+	logger.Get().Println("here")
+
+	if s == "up" || s == "shift+tab" {
+		m.focusIndex--
+	} else {
+		m.focusIndex++
+	}
+
+	if m.focusIndex > len(m.inputs) {
+		// оставляем на кнопке submit
+		m.focusIndex = len(m.inputs)
+	} else if m.focusIndex < 0 {
+		m.focusIndex = len(m.inputs)
+	}
+
+	cmds := make([]tea.Cmd, len(m.inputs))
+	for i := 0; i <= len(m.inputs)-1; i++ {
+		if i == m.focusIndex {
+			// Ставим фокус на элемент
+			cmds[i] = m.inputs[i].Focus()
+			m.inputs[i].PromptStyle = focusedStyle
+			m.inputs[i].TextStyle = focusedStyle
+			continue
+		}
+		// Убираем фокус с элемента
+		m.inputs[i].Blur()
+		m.inputs[i].PromptStyle = noStyle
+		m.inputs[i].TextStyle = noStyle
+	}
+
+	return tea.Batch(cmds...)
 }
 
 func (m *LoginModel) updateInputs(msg tea.Msg) tea.Cmd {
@@ -147,4 +175,36 @@ func (m *LoginModel) updateInputs(msg tea.Msg) tea.Cmd {
 	}
 
 	return tea.Batch(cmds...)
+}
+
+func (m *LoginModel) updateError() tea.Cmd {
+	if !m.showError {
+		return nil
+
+	}
+	return func() tea.Msg {
+		time.Sleep(time.Second * 1)
+		m.showError = false
+		return struct{}{}
+	}
+}
+
+func (m *LoginModel) Submit() tea.Cmd {
+
+	login := m.inputs[inputLogin].Value()
+	password := m.inputs[inputPassword].Value()
+	repeatPassword := m.inputs[inputRepeatedPassword].Value()
+
+	if login == "" {
+		m.errorMessage = "Пустой логин."
+		m.showError = true
+	} else if password == "" {
+		m.errorMessage = "Пустой пароль."
+		m.showError = true
+	} else if password != repeatPassword {
+		m.errorMessage = "Пароли не совпадают."
+		m.showError = true
+	}
+	logger.Get().Println(m.inputs[inputLogin].Value())
+	return func() tea.Msg { return struct{}{} }
 }

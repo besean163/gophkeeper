@@ -28,8 +28,9 @@ type RootModel struct {
 
 func NewRootModel() RootModel {
 	return RootModel{
-		State:         rootSignState,
-		SignModel:     NewSignModel(),
+		State: rootLoginState,
+		// SignModel:     NewSignModel(),
+		LoginModel:    NewLoginModel(true),
 		SectionsModel: SectionsModel{},
 		AccountsModel: AccountsModel{},
 	}
