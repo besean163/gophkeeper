@@ -1,7 +1,9 @@
 package models
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"strings"
 	"time"
 
@@ -202,6 +204,19 @@ func (m *LoginModel) Submit() tea.Cmd {
 		m.errorMessage = "Пустой пароль."
 		m.showError = true
 	} else if password != repeatPassword {
+		m.errorMessage = "Пароли не совпадают."
+		m.showError = true
+	} else {
+		d := struct {
+			Login    string `json:"login"`
+			Password string `json:"password"`
+		}{
+			Login:    login,
+			Password: password,
+		}
+		body, _ := json.Marshal(d)
+
+		r, err := http.NewRequest(http.MethodPost, "localhost:8080/register", body)
 		m.errorMessage = "Пароли не совпадают."
 		m.showError = true
 	}
