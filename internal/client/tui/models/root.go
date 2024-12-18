@@ -57,6 +57,10 @@ func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.State = rootLoginState
 		m.LoginModel = NewLoginModel(msg.WithRegistration)
 		m.SignModel = nil
+	case messages.LoginSuccessMsg:
+		m.State = rootSignState
+		m.SignModel = NewSignModel()
+		m.LoginModel = nil
 	}
 
 	var cmd tea.Cmd

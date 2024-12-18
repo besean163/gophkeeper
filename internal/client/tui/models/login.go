@@ -3,10 +3,11 @@ package models
 import (
 	"fmt"
 	"strings"
-	"time"
 
-	"github.com/besean163/gophkeeper/internal/client/core"
 	"github.com/besean163/gophkeeper/internal/client/tui/logger"
+	"github.com/besean163/gophkeeper/internal/client/tui/messages"
+	"github.com/besean163/gophkeeper/internal/client/tui/models/components"
+	"github.com/besean163/gophkeeper/internal/client/tui/models/interfaces"
 	"github.com/charmbracelet/bubbles/cursor"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -18,6 +19,32 @@ const (
 	inputPassword
 	inputRepeatedPassword
 )
+
+const (
+	focusGroupInput = iota
+	focusGroupControl
+)
+
+type FocusCursor struct {
+	Group int
+	Index int
+}
+
+func (fc *FocusCursor) move(group, index int) {
+	fc.Group = group
+	fc.Index = index
+}
+
+type TypedTextInput struct {
+	Type int
+	textinput.Model
+}
+
+func (m TypedTextInput) Update(msg tea.Msg) (TypedTextInput, tea.Cmd) {
+	i, cmd := m.Model.Update(msg)
+	m.Model = i
+	return m, cmd
+}
 
 var (
 	focusedStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
@@ -31,44 +58,31 @@ var (
 )
 
 type LoginModel struct {
-	registration bool
-	focusIndex   int
-	showError    bool
-	inputs       []textinput.Model
-	errorMessage string
+	fc            *FocusCursor
+	inputs        []TypedTextInput
+	controlInputs []interfaces.ControlButton
+	registration  bool
+	errorMessage  *components.ErrorMessageModel
 }
 
 func NewLoginModel(registration bool) *LoginModel {
-	inputCount := 2
+
+	inputs := make([]TypedTextInput, 0)
+	inputs = append(inputs, NewLoginTextInput())
+	inputs = append(inputs, NewPasswordTextInput())
 	if registration {
-		inputCount = 3
+		inputs = append(inputs, NewRepeatPasswordTextInput())
 	}
 
-	inputs := make([]textinput.Model, inputCount)
-	var input textinput.Model
-	for i := range inputs {
-		input = textinput.New()
-		input.Cursor.SetMode(cursor.CursorBlink)
-		input.CharLimit = 32
-
-		switch i {
-		case inputLogin:
-			input.Placeholder = "login"
-			input.TextStyle = focusedStyle
-			input.PromptStyle = focusedStyle
-			input.Focus()
-		case inputPassword:
-			input.Placeholder = "password"
-		case inputRepeatedPassword:
-			input.Placeholder = "repeat password"
-		}
-		inputs[i] = input
-	}
+	controlInputs := make([]interfaces.ControlButton, 0)
+	controlInputs = append(controlInputs, components.NewEnterButtonModel("Вход").WithKey("enter"))
 
 	return &LoginModel{
-		registration: registration,
-		inputs:       inputs,
-		showError:    true,
+		fc:            &FocusCursor{Group: focusGroupInput, Index: 0},
+		registration:  registration,
+		inputs:        inputs,
+		controlInputs: controlInputs,
+		errorMessage:  &components.ErrorMessageModel{},
 	}
 }
 
@@ -77,6 +91,7 @@ func (m *LoginModel) Init() tea.Cmd {
 }
 
 func (m *LoginModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+
 	cmds := make([]tea.Cmd, len(m.inputs))
 	// logger.Get().Println("login update")
 	switch msg := msg.(type) {
@@ -84,11 +99,17 @@ func (m *LoginModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		// смена фокуса
 		case "tab", "shift+tab", "enter", "up", "down":
-			cmds = append(cmds, m.moveFocus(msg))
+			m.moveFocus(msg)
+			cmds = append(cmds, m.updateFocusInputs())
+		}
+	case components.EnterButtonPressMsg:
+		logger.Get().Println("press")
+		if m.isValid() {
+			return m, func() tea.Msg { return messages.LoginSuccessMsg{} }
 		}
 	}
 
-	cmds = append(cmds, m.updateError())
+	// cmds = append(cmds, m.updateError())
 
 	// Handle character input and blinking
 	cmds = append(cmds, m.updateInputs(msg))
@@ -97,71 +118,80 @@ func (m *LoginModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *LoginModel) View() string {
-	// logger.Get().Println("login view")
-
 	var b strings.Builder
 	b.WriteRune('\n')
 	b.WriteString("Введите ваши данные:\n")
 
-	// logger.Get().Println(len(m.inputs))
+	// отображаем текстовые инпуты
 	for i := range m.inputs {
 		b.WriteString(m.inputs[i].View())
-		if i < len(m.inputs)-1 {
-			b.WriteRune('\n')
-		}
-	}
-
-	button := &blurredButton
-	if m.focusIndex == len(m.inputs) {
-		button = &focusedButton
-	}
-
-	if m.showError {
-		logger.Get().Println("here")
-		b.WriteRune('\n')
-		b.WriteString(errorStyle.Render(m.errorMessage))
 		b.WriteRune('\n')
 	}
-	fmt.Fprintf(&b, "\n\n%s\n\n", *button)
+
+	b.WriteString(m.errorMessage.View())
+
+	b.WriteRune('\n')
+
+	// отображаем кнопки
+	for i := range m.controlInputs {
+		b.WriteString(m.controlInputs[i].View())
+		b.WriteRune('\n')
+	}
 
 	return b.String()
 }
 
-func (m *LoginModel) moveFocus(msg tea.KeyMsg) tea.Cmd {
+func (m *LoginModel) moveFocus(msg tea.KeyMsg) {
+
 	s := msg.String()
-
-	if s == "enter" && m.focusIndex == len(m.inputs) {
-		logger.Get().Println("submit")
-		return m.Submit()
-	}
-	logger.Get().Println("here")
-
 	if s == "up" || s == "shift+tab" {
-		m.focusIndex--
+		m.fc.Index--
 	} else {
-		m.focusIndex++
+		m.fc.Index++
 	}
 
-	if m.focusIndex > len(m.inputs) {
-		// оставляем на кнопке submit
-		m.focusIndex = len(m.inputs)
-	} else if m.focusIndex < 0 {
-		m.focusIndex = len(m.inputs)
+	if m.fc.Group == focusGroupInput {
+		if m.fc.Index < 0 {
+			m.fc.Index = 0
+		} else if m.fc.Index >= len(m.inputs) {
+			m.fc.Group = focusGroupControl
+			m.fc.Index = 0
+		}
+	} else if m.fc.Group == focusGroupControl {
+		if m.fc.Index < 0 {
+			m.fc.Group = focusGroupInput
+			m.fc.Index = len(m.inputs) - 1
+		} else if m.fc.Index >= len(m.controlInputs) {
+			m.fc.Index = len(m.controlInputs) - 1
+		}
 	}
+}
 
+func (m *LoginModel) updateFocusInputs() tea.Cmd {
 	cmds := make([]tea.Cmd, len(m.inputs))
 	for i := 0; i <= len(m.inputs)-1; i++ {
-		if i == m.focusIndex {
+		if m.fc.Group == focusGroupInput && i == m.fc.Index {
 			// Ставим фокус на элемент
 			cmds[i] = m.inputs[i].Focus()
 			m.inputs[i].PromptStyle = focusedStyle
 			m.inputs[i].TextStyle = focusedStyle
 			continue
+		} else {
+			// Убираем фокус с элемента
+			m.inputs[i].Blur()
+			m.inputs[i].PromptStyle = noStyle
+			m.inputs[i].TextStyle = noStyle
 		}
-		// Убираем фокус с элемента
-		m.inputs[i].Blur()
-		m.inputs[i].PromptStyle = noStyle
-		m.inputs[i].TextStyle = noStyle
+
+	}
+
+	for i := 0; i <= len(m.controlInputs)-1; i++ {
+		if m.fc.Group == focusGroupControl && i == m.fc.Index {
+			// Ставим фокус на элемент
+			m.controlInputs[i].Focus()
+			continue
+		}
+		m.controlInputs[i].Blur()
 	}
 
 	return tea.Batch(cmds...)
@@ -175,49 +205,82 @@ func (m *LoginModel) updateInputs(msg tea.Msg) tea.Cmd {
 		m.inputs[i], cmds[i] = m.inputs[i].Update(msg)
 	}
 
+	for i := range m.controlInputs {
+		_, cmds[i] = m.controlInputs[i].Update(msg)
+	}
+
 	return tea.Batch(cmds...)
 }
 
-func (m *LoginModel) updateError() tea.Cmd {
-	if !m.showError {
-		return nil
+func (m *LoginModel) isValid() bool {
+	login := ""
+	password := ""
+	repeatedPassword := ""
 
-	}
-	return func() tea.Msg {
-		time.Sleep(time.Second * 1)
-		m.showError = false
-		return struct{}{}
-	}
-}
-
-func (m *LoginModel) Submit() tea.Cmd {
-
-	login := m.inputs[inputLogin].Value()
-	password := m.inputs[inputPassword].Value()
-	repeatPassword := m.inputs[inputRepeatedPassword].Value()
-
-	if login == "" {
-		m.errorMessage = "Пустой логин."
-		m.showError = true
-	} else if password == "" {
-		m.errorMessage = "Пустой пароль."
-		m.showError = true
-	} else if password != repeatPassword {
-		m.errorMessage = "Пароли не совпадают."
-		m.showError = true
-	} else {
-
-		err := core.Instance.Register(login, password)
-		if err != nil {
-			logger.Get().Println(err.Error())
-			return m.error(err.Error())
+	for _, i := range m.inputs {
+		switch i.Type {
+		case inputLogin:
+			login = i.Value()
+		case inputPassword:
+			password = i.Value()
+		case inputRepeatedPassword:
+			repeatedPassword = i.Value()
 		}
 	}
-	return func() tea.Msg { return struct{}{} }
+
+	if login == "" {
+		m.errorMessage.Show = true
+		m.errorMessage.Message = "пустой логин"
+		return false
+	}
+
+	if password == "" {
+		m.errorMessage.Show = true
+		m.errorMessage.Message = "пустой пароль"
+		return false
+	}
+
+	if m.registration && password != repeatedPassword {
+		m.errorMessage.Show = true
+		m.errorMessage.Message = "пароли не совпадают"
+		return false
+	}
+
+	return true
 }
 
-func (m *LoginModel) error(errorMessage string) tea.Cmd {
-	m.errorMessage = errorMessage
-	m.showError = true
-	return func() tea.Msg { return struct{}{} }
+func NewLoginTextInput() TypedTextInput {
+	item := TypedTextInput{
+		Model: textinput.New(),
+		Type:  inputLogin,
+	}
+	item.Cursor.SetMode(cursor.CursorBlink)
+	item.CharLimit = 32
+	item.Placeholder = "login"
+	item.TextStyle = focusedStyle
+	item.PromptStyle = focusedStyle
+	item.Focus()
+	return item
+}
+
+func NewPasswordTextInput() TypedTextInput {
+	item := TypedTextInput{
+		Model: textinput.New(),
+		Type:  inputPassword,
+	}
+	item.Cursor.SetMode(cursor.CursorBlink)
+	item.CharLimit = 32
+	item.Placeholder = "password"
+	return item
+}
+
+func NewRepeatPasswordTextInput() TypedTextInput {
+	item := TypedTextInput{
+		Model: textinput.New(),
+		Type:  inputRepeatedPassword,
+	}
+	item.Cursor.SetMode(cursor.CursorBlink)
+	item.CharLimit = 32
+	item.Placeholder = "repeat password"
+	return item
 }

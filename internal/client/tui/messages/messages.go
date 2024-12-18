@@ -1,7 +1,7 @@
 package messages
 
-type (
-	SignSuccessMsg struct {
-		WithRegistration bool
-	}
-)
+type LoginSuccessMsg struct{}
+
+type SignSuccessMsg struct {
+	WithRegistration bool
+}
