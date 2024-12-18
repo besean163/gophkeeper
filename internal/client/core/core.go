@@ -68,3 +68,23 @@ func (core *Core) Register(login, password string) error {
 	core.User = user
 	return nil
 }
+
+func (core *Core) GetAccounts() []models.Account {
+	return []models.Account{
+		{
+			Name:     "account_1",
+			Login:    "login_1",
+			Password: "password_1",
+		},
+		{
+			Name:     "account_2",
+			Login:    "login_2",
+			Password: "password_2",
+		},
+		{
+			Name:     "account_3",
+			Login:    "login_3",
+			Password: "password_3",
+		},
+	}
+}

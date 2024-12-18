@@ -1,9 +1,9 @@
 package models
 
 import (
-	"fmt"
 	"strings"
 
+	"github.com/besean163/gophkeeper/internal/client/core"
 	"github.com/besean163/gophkeeper/internal/client/tui/logger"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/components"
@@ -48,13 +48,13 @@ func (m TypedTextInput) Update(msg tea.Msg) (TypedTextInput, tea.Cmd) {
 
 var (
 	focusedStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
-	blurredStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
+	// blurredStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
 
-	noStyle       = lipgloss.NewStyle()
-	focusedButton = focusedStyle.Render("[ Вход ]")
-	blurredButton = fmt.Sprintf("[ %s ]", blurredStyle.Render("Вход"))
+	noStyle = lipgloss.NewStyle()
+	// focusedButton = focusedStyle.Render("[ Вход ]")
+	// blurredButton = fmt.Sprintf("[ %s ]", blurredStyle.Render("Вход"))
 
-	errorStyle = lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).Padding(0, 1).BorderForeground(lipgloss.Color("#FF5A40"))
+	// errorStyle = lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).Padding(0, 1).BorderForeground(lipgloss.Color("#FF5A40"))
 )
 
 type LoginModel struct {
@@ -93,11 +93,9 @@ func (m *LoginModel) Init() tea.Cmd {
 func (m *LoginModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	cmds := make([]tea.Cmd, len(m.inputs))
-	// logger.Get().Println("login update")
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		// смена фокуса
 		case "tab", "shift+tab", "enter", "up", "down":
 			m.moveFocus(msg)
 			cmds = append(cmds, m.updateFocusInputs())
@@ -105,13 +103,10 @@ func (m *LoginModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case components.EnterButtonPressMsg:
 		logger.Get().Println("press")
 		if m.isValid() {
-			return m, func() tea.Msg { return messages.LoginSuccessMsg{} }
+			return m.login()
 		}
 	}
 
-	// cmds = append(cmds, m.updateError())
-
-	// Handle character input and blinking
 	cmds = append(cmds, m.updateInputs(msg))
 
 	return m, tea.Batch(cmds...)
@@ -152,17 +147,15 @@ func (m *LoginModel) moveFocus(msg tea.KeyMsg) {
 
 	if m.fc.Group == focusGroupInput {
 		if m.fc.Index < 0 {
-			m.fc.Index = 0
+			m.fc.move(focusGroupInput, 0)
 		} else if m.fc.Index >= len(m.inputs) {
-			m.fc.Group = focusGroupControl
-			m.fc.Index = 0
+			m.fc.move(focusGroupControl, 0)
 		}
 	} else if m.fc.Group == focusGroupControl {
 		if m.fc.Index < 0 {
-			m.fc.Group = focusGroupInput
-			m.fc.Index = len(m.inputs) - 1
+			m.fc.move(focusGroupInput, len(m.inputs)-1)
 		} else if m.fc.Index >= len(m.controlInputs) {
-			m.fc.Index = len(m.controlInputs) - 1
+			m.fc.move(focusGroupControl, len(m.controlInputs)-1)
 		}
 	}
 }
@@ -213,33 +206,36 @@ func (m *LoginModel) updateInputs(msg tea.Msg) tea.Cmd {
 }
 
 func (m *LoginModel) isValid() bool {
-	login := ""
-	password := ""
-	repeatedPassword := ""
+	// login := ""
+	// password := ""
+	// repeatedPassword := ""
 
-	for _, i := range m.inputs {
-		switch i.Type {
-		case inputLogin:
-			login = i.Value()
-		case inputPassword:
-			password = i.Value()
-		case inputRepeatedPassword:
-			repeatedPassword = i.Value()
-		}
-	}
+	// for _, i := range m.inputs {
+	// 	switch i.Type {
+	// 	case inputLogin:
+	// 		login = i.Value()
+	// 	case inputPassword:
+	// 		password = i.Value()
+	// 	case inputRepeatedPassword:
+	// 		repeatedPassword = i.Value()
+	// 	}
+	// }
 
+	login := m.getValueFromInput(inputLogin)
 	if login == "" {
 		m.errorMessage.Show = true
 		m.errorMessage.Message = "пустой логин"
 		return false
 	}
 
+	password := m.getValueFromInput(inputPassword)
 	if password == "" {
 		m.errorMessage.Show = true
 		m.errorMessage.Message = "пустой пароль"
 		return false
 	}
 
+	repeatedPassword := m.getValueFromInput(inputRepeatedPassword)
 	if m.registration && password != repeatedPassword {
 		m.errorMessage.Show = true
 		m.errorMessage.Message = "пароли не совпадают"
@@ -249,6 +245,16 @@ func (m *LoginModel) isValid() bool {
 	return true
 }
 
+func (m *LoginModel) getValueFromInput(t int) string {
+	for i, input := range m.inputs {
+		if input.Type == t {
+			return m.inputs[i].Value()
+		}
+	}
+
+	return ""
+}
+
 func NewLoginTextInput() TypedTextInput {
 	item := TypedTextInput{
 		Model: textinput.New(),
@@ -256,7 +262,7 @@ func NewLoginTextInput() TypedTextInput {
 	}
 	item.Cursor.SetMode(cursor.CursorBlink)
 	item.CharLimit = 32
-	item.Placeholder = "login"
+	item.Placeholder = "логин"
 	item.TextStyle = focusedStyle
 	item.PromptStyle = focusedStyle
 	item.Focus()
@@ -270,7 +276,7 @@ func NewPasswordTextInput() TypedTextInput {
 	}
 	item.Cursor.SetMode(cursor.CursorBlink)
 	item.CharLimit = 32
-	item.Placeholder = "password"
+	item.Placeholder = "пароль"
 	return item
 }
 
@@ -281,6 +287,19 @@ func NewRepeatPasswordTextInput() TypedTextInput {
 	}
 	item.Cursor.SetMode(cursor.CursorBlink)
 	item.CharLimit = 32
-	item.Placeholder = "repeat password"
+	item.Placeholder = "повторите пароль"
 	return item
+}
+
+func (m *LoginModel) login() (tea.Model, tea.Cmd) {
+	err := core.Instance.Login(m.getValueFromInput(inputLogin), m.getValueFromInput(inputPassword))
+	if err != nil {
+		logger.Get().Printf("login error: %s\n", err.Error())
+		m.errorMessage.Show = true
+		m.errorMessage.Message = "internal error"
+		return m, nil
+	}
+	logger.Get().Println(core.Instance.User)
+	return m, func() tea.Msg { return messages.LoginSuccessMsg{} }
+
 }

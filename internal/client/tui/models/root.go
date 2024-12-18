@@ -15,7 +15,7 @@ const (
 	rootSignState State = iota
 	rootLoginState
 	rootSectionsState
-	rootAccountsState
+	rootAccountListState
 )
 
 type RootModel struct {
@@ -23,18 +23,18 @@ type RootModel struct {
 	State
 	*SignModel
 	*LoginModel
-	SectionsModel
-	AccountsModel
+	*SectionsModel
+	*AccountListModel
 	Quit bool
 }
 
 func NewRootModel() RootModel {
 	return RootModel{
-		State: rootLoginState,
-		// SignModel:     NewSignModel(),
-		LoginModel:    NewLoginModel(true),
-		SectionsModel: SectionsModel{},
-		AccountsModel: AccountsModel{},
+		State: rootAccountListState,
+		// SignModel: NewSignModel(),
+		// LoginModel:    NewLoginModel(true),
+		// SectionsModel: NewSectionModel(),
+		AccountListModel: NewAccountListModel(),
 	}
 }
 
@@ -58,8 +58,8 @@ func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.LoginModel = NewLoginModel(msg.WithRegistration)
 		m.SignModel = nil
 	case messages.LoginSuccessMsg:
-		m.State = rootSignState
-		m.SignModel = NewSignModel()
+		m.State = rootSectionsState
+		m.SectionsModel = NewSectionModel()
 		m.LoginModel = nil
 	}
 
@@ -69,6 +69,10 @@ func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		_, cmd = m.SignModel.Update(msg)
 	case rootLoginState:
 		_, cmd = m.LoginModel.Update(msg)
+	case rootSectionsState:
+		_, cmd = m.SectionsModel.Update(msg)
+	case rootAccountListState:
+		_, cmd = m.AccountListModel.Update(msg)
 	}
 
 	return m, cmd
@@ -85,6 +89,10 @@ func (m RootModel) View() string {
 		result.WriteString(m.SignModel.View())
 	case rootLoginState:
 		result.WriteString(m.LoginModel.View())
+	case rootSectionsState:
+		result.WriteString(m.SectionsModel.View())
+	case rootAccountListState:
+		result.WriteString(m.AccountListModel.View())
 	}
 
 	result.WriteRune('\n')

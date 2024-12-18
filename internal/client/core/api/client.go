@@ -58,6 +58,5 @@ func (c Client) Register(input entities.RegisterInput) (entities.TokenOutput, er
 		logger.Get().Println(err.Error())
 		return token, errors.New("ошибка расшифровки ответа")
 	}
-
 	return t, nil
 }
