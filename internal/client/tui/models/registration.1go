@@ -11,7 +11,6 @@ import (
 	"github.com/charmbracelet/bubbles/cursor"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 )
 
 const (
@@ -47,17 +46,17 @@ func (m TypedTextInput) Update(msg tea.Msg) (TypedTextInput, tea.Cmd) {
 }
 
 var (
-	focusedStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
-	// blurredStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
+// focusedStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+// blurredStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
 
-	noStyle = lipgloss.NewStyle()
-	// focusedButton = focusedStyle.Render("[ Вход ]")
-	// blurredButton = fmt.Sprintf("[ %s ]", blurredStyle.Render("Вход"))
+// noStyle = lipgloss.NewStyle()
+// focusedButton = focusedStyle.Render("[ Вход ]")
+// blurredButton = fmt.Sprintf("[ %s ]", blurredStyle.Render("Вход"))
 
-	// errorStyle = lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).Padding(0, 1).BorderForeground(lipgloss.Color("#FF5A40"))
+// errorStyle = lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).Padding(0, 1).BorderForeground(lipgloss.Color("#FF5A40"))
 )
 
-type LoginModel struct {
+type RegistrationModel struct {
 	fc            *FocusCursor
 	inputs        []TypedTextInput
 	controlInputs []interfaces.ControlButton
@@ -65,7 +64,7 @@ type LoginModel struct {
 	errorMessage  *components.ErrorMessageModel
 }
 
-func NewLoginModel(registration bool) *LoginModel {
+func NewRegistrationModel(registration bool) *RegistrationModel {
 
 	inputs := make([]TypedTextInput, 0)
 	inputs = append(inputs, NewLoginTextInput())
@@ -77,7 +76,7 @@ func NewLoginModel(registration bool) *LoginModel {
 	controlInputs := make([]interfaces.ControlButton, 0)
 	controlInputs = append(controlInputs, components.NewEnterButtonModel("Вход").WithKey("enter"))
 
-	return &LoginModel{
+	return &RegistrationModel{
 		fc:            &FocusCursor{Group: focusGroupInput, Index: 0},
 		registration:  registration,
 		inputs:        inputs,
@@ -86,11 +85,11 @@ func NewLoginModel(registration bool) *LoginModel {
 	}
 }
 
-func (m *LoginModel) Init() tea.Cmd {
+func (m *RegistrationModel) Init() tea.Cmd {
 	return nil
 }
 
-func (m *LoginModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m *RegistrationModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	cmds := make([]tea.Cmd, len(m.inputs))
 	switch msg := msg.(type) {
@@ -112,7 +111,7 @@ func (m *LoginModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, tea.Batch(cmds...)
 }
 
-func (m *LoginModel) View() string {
+func (m *RegistrationModel) View() string {
 	var b strings.Builder
 	b.WriteRune('\n')
 	b.WriteString("Введите ваши данные:\n")
@@ -136,7 +135,7 @@ func (m *LoginModel) View() string {
 	return b.String()
 }
 
-func (m *LoginModel) moveFocus(msg tea.KeyMsg) {
+func (m *RegistrationModel) moveFocus(msg tea.KeyMsg) {
 
 	s := msg.String()
 	if s == "up" || s == "shift+tab" {
@@ -160,7 +159,7 @@ func (m *LoginModel) moveFocus(msg tea.KeyMsg) {
 	}
 }
 
-func (m *LoginModel) updateFocusInputs() tea.Cmd {
+func (m *RegistrationModel) updateFocusInputs() tea.Cmd {
 	cmds := make([]tea.Cmd, len(m.inputs))
 	for i := 0; i <= len(m.inputs)-1; i++ {
 		if m.fc.Group == focusGroupInput && i == m.fc.Index {
@@ -190,7 +189,7 @@ func (m *LoginModel) updateFocusInputs() tea.Cmd {
 	return tea.Batch(cmds...)
 }
 
-func (m *LoginModel) updateInputs(msg tea.Msg) tea.Cmd {
+func (m *RegistrationModel) updateInputs(msg tea.Msg) tea.Cmd {
 	// logger.Get().Println("updates")
 	cmds := make([]tea.Cmd, len(m.inputs))
 
@@ -205,7 +204,7 @@ func (m *LoginModel) updateInputs(msg tea.Msg) tea.Cmd {
 	return tea.Batch(cmds...)
 }
 
-func (m *LoginModel) isValid() bool {
+func (m *RegistrationModel) isValid() bool {
 	// login := ""
 	// password := ""
 	// repeatedPassword := ""
@@ -245,7 +244,7 @@ func (m *LoginModel) isValid() bool {
 	return true
 }
 
-func (m *LoginModel) getValueFromInput(t int) string {
+func (m *RegistrationModel) getValueFromInput(t int) string {
 	for i, input := range m.inputs {
 		if input.Type == t {
 			return m.inputs[i].Value()
@@ -291,7 +290,7 @@ func NewRepeatPasswordTextInput() TypedTextInput {
 	return item
 }
 
-func (m *LoginModel) login() (tea.Model, tea.Cmd) {
+func (m *RegistrationModel) login() (tea.Model, tea.Cmd) {
 	err := core.Instance.Login(m.getValueFromInput(inputLogin), m.getValueFromInput(inputPassword))
 	if err != nil {
 		logger.Get().Printf("login error: %s\n", err.Error())

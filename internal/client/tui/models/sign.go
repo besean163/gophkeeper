@@ -1,37 +1,48 @@
 package models
 
 import (
-	"fmt"
+	"strings"
 
-	"github.com/besean163/gophkeeper/internal/client/tui/messages"
+	"github.com/besean163/gophkeeper/internal/client/tui/logger"
+	"github.com/besean163/gophkeeper/internal/client/tui/models/components"
+	"github.com/besean163/gophkeeper/internal/client/tui/models/styles"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
 const (
-	signOptionSignIn = iota
-	signOptionSignUp
+	SignOptionLogin = iota
+	SignOptionRegistration
 )
 
-var (
-	// keywordStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("211"))
-	subtleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("241"))
-	// ticksStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("79"))
-	checkboxStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("212"))
-	// progressEmpty = subtleStyle.Render(progressEmptyChar)
-	dotStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("236")).Render(".")
-	// mainStyle = lipgloss.NewStyle().MarginLeft(2)
+type (
+	SignLoginMsg        struct{}
+	SignRegistrationMsg struct{}
 )
 
 type SignModel struct {
-	Choice int8
-	Chosen bool
+	OptionSelected int
+	OptionOrder    []int
+	Options        []*components.OptionModel
 }
 
 func NewSignModel() *SignModel {
+	options := []*components.OptionModel{
+		components.NewOption("Вход").
+			WithSelectedName("Вход \u279C").
+			WithSubmitMsg(SignLoginMsg{}).
+			WithStyle(lipgloss.NewStyle().PaddingLeft(4)).
+			WithSelectStyle(lipgloss.NewStyle().PaddingLeft(4).Foreground(styles.ColorAzure)).
+			Select(),
+		components.NewOption("Регистрация").
+			WithSelectedName("Регистрация \u279C").
+			WithSubmitMsg(SignRegistrationMsg{}).
+			WithStyle(lipgloss.NewStyle().PaddingLeft(4)).
+			WithSelectStyle(lipgloss.NewStyle().PaddingLeft(4).Foreground(styles.ColorGreen)),
+	}
 	return &SignModel{
-		Choice: signOptionSignIn,
-		Chosen: false,
+		OptionOrder: []int{SignOptionLogin, SignOptionRegistration},
+		Options:     options,
 	}
 }
 
@@ -40,68 +51,56 @@ func (m *SignModel) Init() tea.Cmd {
 }
 
 func (m *SignModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	// logger.Get().Println("sign update")
-	if !m.Chosen {
-		updateChoices(msg, m)
+	logger.Get().Println("update")
+	switch msg.(type) {
+	case SignLoginMsg:
+		logger.Get().Println("login")
+		return m, nil
+	case SignRegistrationMsg:
+		logger.Get().Println("registration")
+		return m, nil
 	}
 
-	// logger.Get().Println(m.Chosen)
-	if m.Chosen {
-		return m, func() tea.Msg {
-			msg := messages.SignSuccessMsg{}
-			if m.Choice == signOptionSignUp {
-				msg.WithRegistration = true
-			}
-			return msg
-		}
-	}
-	return m, nil
+	return m, m.updateOptions(msg)
 }
 
 func (m *SignModel) View() string {
-	// logger.Get().Println("sign view")
-	// logger.Get().Println("view", m.Choice)
+	var b strings.Builder
+	b.WriteString(lipgloss.NewStyle().PaddingLeft(2).Render("Gophkeeper v1.0"))
+	b.WriteByte('\n')
+	b.WriteByte('\n')
 
-	c := m.Choice
-
-	tpl := "Выберите способ входа:\n\n"
-	tpl += "%s\n\n"
-	tpl += subtleStyle.Render("up/down: select") + dotStyle +
-		subtleStyle.Render("enter: choose") + dotStyle +
-		subtleStyle.Render("q, esc: quit")
-
-	choices := fmt.Sprintf(
-		"%s\n%s\n",
-		checkbox("Вход", c == signOptionSignIn),
-		checkbox("Регистрация", c == signOptionSignUp),
-	)
-
-	return fmt.Sprintf(tpl, choices)
-}
-
-func checkbox(label string, checked bool) string {
-	if checked {
-		return checkboxStyle.Render("[x] " + label)
+	for _, option := range m.Options {
+		b.WriteString(option.View())
+		b.WriteByte('\n')
 	}
-	return fmt.Sprintf("[ ] %s", label)
+
+	return b.String()
 }
 
-func updateChoices(msg tea.Msg, m *SignModel) {
+func (m *SignModel) updateOptions(msg tea.Msg) tea.Cmd {
+	option := m.Options[m.OptionSelected]
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "down":
-			m.Choice++
-			if m.Choice > 1 {
-				m.Choice = 1
+			option.UnSelect()
+			m.OptionSelected++
+			if m.OptionSelected >= len(m.Options) {
+				m.OptionSelected = len(m.Options) - 1
 			}
+			m.Options[m.OptionSelected].Select()
+
 		case "up":
-			m.Choice--
-			if m.Choice < 0 {
-				m.Choice = 0
+			option.UnSelect()
+			m.OptionSelected--
+			if m.OptionSelected < 0 {
+				m.OptionSelected = 0
 			}
+			m.Options[m.OptionSelected].Select()
 		case "enter":
-			m.Chosen = true
+			return m.Options[m.OptionSelected].Submit()
 		}
 	}
+	return nil
 }

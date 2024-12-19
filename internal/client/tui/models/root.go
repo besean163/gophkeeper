@@ -22,7 +22,7 @@ type RootModel struct {
 	Core core.Core
 	State
 	*SignModel
-	*LoginModel
+	// *LoginModel
 	*SectionsModel
 	*AccountListModel
 	Quit bool
@@ -55,12 +55,12 @@ func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case messages.SignSuccessMsg:
 		m.State = rootLoginState
-		m.LoginModel = NewLoginModel(msg.WithRegistration)
+		// m.LoginModel = NewLoginModel(msg.WithRegistration)
 		m.SignModel = nil
 	case messages.LoginSuccessMsg:
 		m.State = rootSectionsState
 		m.SectionsModel = NewSectionModel()
-		m.LoginModel = nil
+		// m.LoginModel = nil
 	}
 
 	var cmd tea.Cmd
@@ -68,7 +68,7 @@ func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case rootSignState:
 		_, cmd = m.SignModel.Update(msg)
 	case rootLoginState:
-		_, cmd = m.LoginModel.Update(msg)
+		// _, cmd = m.LoginModel.Update(msg)
 	case rootSectionsState:
 		_, cmd = m.SectionsModel.Update(msg)
 	case rootAccountListState:
@@ -88,7 +88,7 @@ func (m RootModel) View() string {
 	case rootSignState:
 		result.WriteString(m.SignModel.View())
 	case rootLoginState:
-		result.WriteString(m.LoginModel.View())
+		// result.WriteString(m.LoginModel.View())
 	case rootSectionsState:
 		result.WriteString(m.SectionsModel.View())
 	case rootAccountListState:
