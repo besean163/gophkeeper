@@ -1,9 +1,0 @@
-
-1. Notion
-2. Yandex
-
-ctrl+f: поиск
-ctrl+a: добавить
-ctrl+e: изменить
-ctrl+d: удалить 
-ctrl+c: выход

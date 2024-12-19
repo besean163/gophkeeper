@@ -1,7 +1,10 @@
 package services
 
 import (
+	"fmt"
+
 	"github.com/besean163/gophkeeper/internal/client/core/models"
+	"github.com/besean163/gophkeeper/internal/client/tui/logger"
 )
 
 type Repository interface{}
@@ -55,5 +58,25 @@ func initUserToken(user *models.User) error {
 
 	// user.Token = token.Token
 	user.Token = "test token"
+	return nil
+}
+
+func getAccount(id int) (*models.Account, error) {
+	account := &models.Account{
+		ID:       id,
+		Name:     fmt.Sprintf("account_name_%d", id),
+		Login:    fmt.Sprintf("account_login_%d", id),
+		Password: fmt.Sprintf("account_password_%d", id),
+	}
+	return account, nil
+}
+
+func deleteAccount(id int) error {
+	logger.Get().Printf("account deleted: %d", id)
+	return nil
+}
+
+func saveAccount(account *models.Account) error {
+	logger.Get().Printf("account saved: %d", account.ID)
 	return nil
 }
