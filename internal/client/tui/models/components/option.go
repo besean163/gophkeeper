@@ -58,10 +58,6 @@ func (o *OptionModel) Submit() tea.Cmd {
 	return nil
 }
 
-func (o *OptionModel) Submitted() bool {
-	return o.submitted
-}
-
 func (m *OptionModel) View() string {
 	result := m.name
 
