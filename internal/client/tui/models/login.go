@@ -1,6 +1,7 @@
 package models
 
 import (
+	"reflect"
 	"strings"
 
 	"github.com/besean163/gophkeeper/internal/client/tui/logger"
@@ -22,25 +23,28 @@ const (
 
 const (
 	LoginButtonEnter = iota
+	LoginButtonBack
 )
 
 type LoginModel struct {
 	fc           *components.GroupFocusCursor
 	inputs       []components.TextInputModel
 	buttons      []components.ButtonModel
-	registration bool
 	errorMessage *components.ErrorMessageModel
 }
 
-func NewLoginModel(registration bool) *LoginModel {
+type ButtonEnterMsg struct{}
+type ButtonBackMsg struct{}
 
-	return &LoginModel{
+func NewLoginModel() *LoginModel {
+	item := &LoginModel{
 		fc:           components.NewGroupFocusCursor(LoginGroupInput, 0),
-		registration: registration,
 		inputs:       getInputs(),
 		buttons:      getButtons(),
 		errorMessage: &components.ErrorMessageModel{},
 	}
+	item.activateButtons()
+	return item
 }
 
 func (m *LoginModel) Init() tea.Cmd {
@@ -48,16 +52,27 @@ func (m *LoginModel) Init() tea.Cmd {
 }
 
 func (m *LoginModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	m.updateInputs(msg)
-
+	logger.Get().Println("login update")
+	logger.Get().Println(reflect.TypeOf(msg))
+	m.activateButtons()
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "tab", "shift+tab", "enter", "up", "down":
+			var cmd tea.Cmd
+			cmd = m.pressButtons(msg)
+			if cmd != nil {
+				return m, cmd
+			}
 			logger.Get().Println("update")
 			m.moveFocus(msg)
 		}
+	case ButtonEnterMsg:
+		logger.Get().Println("enter msg")
+	case ButtonBackMsg:
+		logger.Get().Println("back msg")
 	}
+	m.updateInputs(msg)
 
 	// var cmds []tea.Cmd
 	// cmds = append(cmds, m.updateInputs(msg))
@@ -77,7 +92,7 @@ func (m *LoginModel) View() string {
 	}
 	b.WriteRune('\n')
 	for _, button := range m.buttons {
-		b.WriteString(lipgloss.NewStyle().PaddingLeft(4).Render(button.View()))
+		b.WriteString(button.View())
 		b.WriteRune('\n')
 	}
 	return b.String()
@@ -89,47 +104,44 @@ func (m *LoginModel) moveFocus(msg tea.KeyMsg) tea.Cmd {
 		m.inputs[i].Blur()
 	}
 
-	for i := range m.inputs {
+	// проставляем активность на кнопках, чтобы не активные не выбирать
+	m.activateButtons()
+	for i := range m.buttons {
 		m.buttons[i].Blur()
 	}
 
-	key := msg.String()
-	if key == "up" || key == "shift+tab" {
-		m.fc.Index--
-	} else {
-		m.fc.Index++
-	}
-
-	// переключить на другой список если требуется и установить верный индекс
-	if m.fc.Group == LoginGroupInput && m.fc.Index > len(m.inputs) {
-		m.fc.Move(LoginGroupButtons, 0)
-	}
-
-	if m.fc.Group == LoginGroupButtons && m.fc.Index < 0 {
-		m.fc.Move(LoginGroupInput, len(m.inputs))
-	}
-
-	if m.fc.Group == LoginGroupInput {
-		if m.fc.Index < 0 {
-			m.fc.Index = 0
+	for {
+		key := msg.String()
+		if key == "up" || key == "shift+tab" {
+			m.fc.Index--
+		} else {
+			m.fc.Index++
 		}
-		return m.inputs[m.fc.Index].Focus()
-	}
 
-	if m.fc.Group == LoginGroupButtons {
-		for {
-			// сбрасываем на инпуты
-			if m.fc.Index >= len(m.buttons) {
-				m.fc.Group = LoginGroupInput
-				m.fc.Index = len(m.inputs) - 1
-				break
+		// переключить на другой список если требуется и установить верный индекс
+		if m.fc.Group == LoginGroupInput && m.fc.Index >= len(m.inputs) {
+			m.fc.Move(LoginGroupButtons, 0)
+		}
+
+		if m.fc.Group == LoginGroupButtons && (m.fc.Index >= len(m.buttons) || m.fc.Index < 0) {
+			m.fc.Move(LoginGroupInput, 0)
+		}
+
+		if m.fc.Group == LoginGroupInput {
+			if m.fc.Index < 0 {
+				m.fc.Index = 0
 			}
+			return m.inputs[m.fc.Index].Focus()
+		}
+
+		if m.fc.Group == LoginGroupButtons {
 			// если кнопка активна оставляем фокус
 			if m.buttons[m.fc.Index].IsActive() {
 				logger.Get().Println("here")
 				m.buttons[m.fc.Index].Focus()
 				break
 			}
+
 		}
 	}
 
@@ -145,24 +157,37 @@ func (m *LoginModel) updateInputs(msg tea.Msg) tea.Cmd {
 		m.inputs[i], cmds[i] = m.inputs[i].Update(msg)
 	}
 
-	m.buttons[LoginButtonEnter].Activate(func() bool { return m.isValid() })
-
 	return tea.Batch(cmds...)
+}
+
+func (m *LoginModel) activateButtons() {
+	m.buttons[LoginButtonEnter].Activate(func() bool { return m.isValid() })
+	m.buttons[LoginButtonBack].Activate(func() bool { return true })
+}
+
+func (m *LoginModel) pressButtons(msg tea.Msg) tea.Cmd {
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "enter":
+			var cmd tea.Cmd
+			for _, button := range m.buttons {
+				cmd = button.Press()
+				if cmd != nil {
+					return cmd
+				}
+			}
+		}
+	}
+	return nil
 }
 
 func (m *LoginModel) isValid() bool {
 
 	login := m.inputs[LoginInputLogin].Value()
-	if login == "" {
-		return false
-	}
-
 	password := m.inputs[LoginInputPassword].Value()
-	if password == "" {
-		return false
-	}
 
-	return true
+	return login != "" && password != ""
 }
 
 func getInputs() []components.TextInputModel {
@@ -186,12 +211,25 @@ func getInputs() []components.TextInputModel {
 }
 
 func getButtons() []components.ButtonModel {
+	logger.Get().Println("view")
 
 	var button components.ButtonModel
 	items := make([]components.ButtonModel, 0)
+
+	// добавляем кнопку вход
 	button = components.NewButtonModel("Вход")
+	button.WithStyle(lipgloss.NewStyle().PaddingLeft(4))
 	button.WithSelectedStyle(lipgloss.NewStyle().PaddingLeft(4).Foreground(styles.ColorAzure))
 	button.WithNotActiveStyle(lipgloss.NewStyle().PaddingLeft(4).Foreground(styles.ColorGrey))
+	button.WithPressMsg(ButtonEnterMsg{})
+	items = append(items, button)
+
+	// добавляем кнопку назад
+	button = components.NewButtonModel("Назад")
+	button.WithStyle(lipgloss.NewStyle().PaddingLeft(4))
+	button.WithSelectedStyle(lipgloss.NewStyle().PaddingLeft(4).Foreground(styles.ColorOrange))
+	button.WithNotActiveStyle(lipgloss.NewStyle().PaddingLeft(4).Foreground(styles.ColorGrey))
+	button.WithPressMsg(ButtonBackMsg{})
 	items = append(items, button)
 
 	return items

@@ -48,6 +48,11 @@ func (b *ButtonModel) Activate(fn func() bool) *ButtonModel {
 	return b
 }
 
+func (b *ButtonModel) WithPressMsg(msg tea.Msg) *ButtonModel {
+	b.pressMsg = msg
+	return b
+}
+
 func (b *ButtonModel) Focus() {
 	b.focus = true
 }
@@ -57,7 +62,7 @@ func (b *ButtonModel) Blur() {
 }
 
 func (b *ButtonModel) Press() tea.Cmd {
-	if b.pressMsg != nil {
+	if b.focus && b.pressMsg != nil {
 		return func() tea.Msg { return b.pressMsg }
 	}
 	return nil
