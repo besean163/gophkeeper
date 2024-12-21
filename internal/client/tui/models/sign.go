@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/besean163/gophkeeper/internal/client/tui/logger"
+	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/components"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/styles"
 	tea "github.com/charmbracelet/bubbletea"
@@ -13,11 +14,6 @@ import (
 const (
 	SignOptionLogin = iota
 	SignOptionRegistration
-)
-
-type (
-	SignLoginMsg        struct{}
-	SignRegistrationMsg struct{}
 )
 
 type SignModel struct {
@@ -30,13 +26,13 @@ func NewSignModel() *SignModel {
 	options := []*components.OptionModel{
 		components.NewOption("Вход").
 			WithSelectedName("Вход \u279C").
-			WithSubmitMsg(SignLoginMsg{}).
+			WithSubmitMsg(messages.SignLoginMsg{}).
 			WithStyle(lipgloss.NewStyle().PaddingLeft(4)).
 			WithSelectStyle(lipgloss.NewStyle().PaddingLeft(4).Foreground(styles.ColorAzure)).
 			Select(),
 		components.NewOption("Регистрация").
 			WithSelectedName("Регистрация \u279C").
-			WithSubmitMsg(SignRegistrationMsg{}).
+			WithSubmitMsg(messages.SignRegistrationMsg{}).
 			WithStyle(lipgloss.NewStyle().PaddingLeft(4)).
 			WithSelectStyle(lipgloss.NewStyle().PaddingLeft(4).Foreground(styles.ColorGreen)),
 	}
@@ -53,10 +49,10 @@ func (m *SignModel) Init() tea.Cmd {
 func (m *SignModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	logger.Get().Println("update")
 	switch msg.(type) {
-	case SignLoginMsg:
+	case messages.SignLoginMsg:
 		logger.Get().Println("login")
 		return m, nil
-	case SignRegistrationMsg:
+	case messages.SignRegistrationMsg:
 		logger.Get().Println("registration")
 		return m, nil
 	}
