@@ -3,6 +3,9 @@ package services
 import "github.com/besean163/gophkeeper/internal/server/models"
 
 type BucketRepository interface {
+	GetAccounts(user models.User) ([]*models.Account, error)
+	SaveAccount(account models.Account) error
+	DeleteAccount(id int) error
 }
 
 type BucketService struct {
@@ -15,22 +18,23 @@ func NewBucketService(repository BucketRepository) BucketService {
 	}
 }
 
-func (s BucketService) GetAccounts() []*models.Account {
-	accounts := make([]*models.Account, 0)
-	// accounts = append(accounts, &models.Account{
-	// 	Name: "test",
-	// })
-	return accounts
+func (s BucketService) GetAccounts(user models.User) ([]*models.Account, error) {
+	items, err := s.repository.GetAccounts(user)
+	if err != nil {
+		return nil, err
+	}
+
+	return items, nil
 }
 
 func (s BucketService) CreateAccount(account *models.Account) error {
-	return nil
+	return s.repository.SaveAccount(*account)
 }
 
 func (s BucketService) UpdateAccount(account *models.Account) error {
-	return nil
+	return s.repository.SaveAccount(*account)
 }
 
 func (s BucketService) DeleteAccount(id int) error {
-	return nil
+	return s.repository.DeleteAccount(id)
 }

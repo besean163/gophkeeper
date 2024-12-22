@@ -21,7 +21,7 @@ func NewHandler(secret string, authService interfaces.AuthService, bucketService
 	r.With(middleware.CheckContentTypeJSONMiddleware()).Post("/register", route.RegisterRoute(authService))
 	r.With(middleware.CheckContentTypeJSONMiddleware()).Post("/login", route.LoginRoute(authService))
 	r.Route("/api/", func(r chi.Router) {
-		r.Use(middleware.AuthMiddleware(secret))
+		r.Use(middleware.AuthMiddleware(authService, secret))
 		r.Get("/accounts", route.AccountsRoute(bucketService))
 		// r.Get("/account", nil)
 		r.Post("/account", route.AccountRoute(bucketService))

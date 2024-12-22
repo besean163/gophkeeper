@@ -4,7 +4,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/besean163/gophkeeper/internal/client/tui/logger"
 	"github.com/besean163/gophkeeper/internal/server/models"
 	jwttoken "github.com/besean163/gophkeeper/internal/server/utils/jwt_token"
 	"github.com/golang-jwt/jwt/v5"
@@ -13,7 +12,8 @@ import (
 const tokenExpireTime = 1 * time.Hour
 
 type UserRepository interface {
-	GetUser(login string) (*models.User, error)
+	GetUser(id int) (*models.User, error)
+	GetUserByLogin(login string) (*models.User, error)
 	SaveUser(user *models.User) error
 }
 
@@ -34,7 +34,7 @@ func (s AuthService) SaveUser(user *models.User) error {
 }
 
 func (s AuthService) RegisterUser(login, password string) (string, error) {
-	exist, err := s.repository.GetUser(login)
+	exist, err := s.repository.GetUserByLogin(login)
 	if err != nil {
 		return "", err
 	}
@@ -63,9 +63,7 @@ func (s AuthService) RegisterUser(login, password string) (string, error) {
 }
 
 func (s AuthService) LoginUser(login, password string) (string, error) {
-	user, err := s.repository.GetUser(login)
-	logger.Get().Println("here")
-	logger.Get().Println(user)
+	user, err := s.repository.GetUserByLogin(login)
 	if err != nil {
 		return "", err
 	}
@@ -86,9 +84,13 @@ func (s AuthService) LoginUser(login, password string) (string, error) {
 	return s.createUserToken(user)
 }
 
+func (s AuthService) GetUser(id int) (*models.User, error) {
+	return s.repository.GetUser(id)
+}
+
 func (s AuthService) createUserToken(user *models.User) (string, error) {
 	claims := jwt.MapClaims{
-		"user_id": user.Login,
+		"user_id": user.ID,
 		"exp":     time.Now().Add(tokenExpireTime).Unix(), // Время истечения
 	}
 	tokenString, err := jwttoken.GetJWTToken(s.secret, claims)

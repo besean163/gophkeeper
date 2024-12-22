@@ -17,7 +17,18 @@ func NewUserRepository() UserRepository {
 	return UserRepository{}
 }
 
-func (r UserRepository) GetUser(login string) (*models.User, error) {
+func (r UserRepository) GetUser(id int) (*models.User, error) {
+	connect, err := getDB()
+	if err != nil {
+		return nil, err
+	}
+
+	user := &models.User{}
+	connect.Find(user, id)
+	return user, nil
+}
+
+func (r UserRepository) GetUserByLogin(login string) (*models.User, error) {
 	connect, err := getDB()
 	if err != nil {
 		return nil, err

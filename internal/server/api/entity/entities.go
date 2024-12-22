@@ -5,6 +5,8 @@ import (
 	"github.com/besean163/gophkeeper/internal/server/models"
 )
 
+type RequestUserKey string
+
 type LoginInput struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
