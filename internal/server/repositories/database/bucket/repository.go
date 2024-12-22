@@ -1,4 +1,4 @@
-package repositories
+package bucket
 
 type BucketRepository struct {
 }

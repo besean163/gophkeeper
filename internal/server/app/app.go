@@ -10,7 +10,8 @@ import (
 
 	"github.com/besean163/gophkeeper/internal/server/api"
 	"github.com/besean163/gophkeeper/internal/server/interfaces"
-	"github.com/besean163/gophkeeper/internal/server/repositories"
+	"github.com/besean163/gophkeeper/internal/server/repositories/database/bucket"
+	"github.com/besean163/gophkeeper/internal/server/repositories/database/user"
 	"github.com/besean163/gophkeeper/internal/server/services"
 	"golang.org/x/sync/errgroup"
 )
@@ -54,14 +55,14 @@ func NewApp() (*App, error) {
 }
 
 func (app *App) initAuthService() error {
-	r := repositories.NewUserRepository()
+	r := user.NewUserRepository()
 	s := services.NewAuthService(app.config.Secret, r)
 	app.AuthService = s
 	return nil
 }
 
 func (app *App) initBucketService() error {
-	r := repositories.NewBucketRepository()
+	r := bucket.NewBucketRepository()
 	s := services.NewBucketService(r)
 	app.BucketService = s
 	return nil

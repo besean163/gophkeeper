@@ -9,7 +9,6 @@ import (
 	"github.com/besean163/gophkeeper/internal/server/api/entity"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
 	"github.com/besean163/gophkeeper/internal/server/interfaces"
-	"github.com/besean163/gophkeeper/internal/server/models"
 )
 
 func RegisterRoute(s interfaces.AuthService) http.HandlerFunc {
@@ -36,18 +35,7 @@ func RegisterRoute(s interfaces.AuthService) http.HandlerFunc {
 			return
 		}
 
-		existUser := s.GetUser(input.Login)
-		if existUser != nil {
-			apierrors.SendError(w, http.StatusBadRequest, apierrors.ErrorRegisterUserExist.Error())
-			return
-		}
-
-		user := models.User{
-			Login:    input.Login,
-			Password: input.Password,
-		}
-
-		tokenString, err := s.RegisterUser(&user)
+		tokenString, err := s.RegisterUser(input.Login, input.Password)
 		if err != nil {
 			log.Println("get token error:", err.Error())
 			apierrors.SendError(w, http.StatusInternalServerError, apierrors.ErrorInternalUnknown.Error())

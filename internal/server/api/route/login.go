@@ -35,13 +35,7 @@ func LoginRoute(s interfaces.AuthService) http.HandlerFunc {
 			return
 		}
 
-		user := s.GetUser(input.Login)
-		if user == nil {
-			apierrors.SendError(w, http.StatusBadRequest, apierrors.ErrorLoginUserNotExist.Error())
-			return
-		}
-
-		tokenString, err := s.CreateUserToken(user)
+		tokenString, err := s.LoginUser(input.Login, input.Password)
 		if err != nil {
 			log.Println("get token error:", err.Error())
 			apierrors.SendError(w, http.StatusInternalServerError, apierrors.ErrorInternalUnknown.Error())
