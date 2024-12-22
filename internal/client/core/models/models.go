@@ -1,11 +1,13 @@
 package models
 
+import "time"
+
 type User struct {
 	ID        int
 	Login     string
 	Password  string
 	Token     string
-	CreatedAt int
+	CreatedAt time.Time
 }
 
 type Account struct {
@@ -14,8 +16,8 @@ type Account struct {
 	Name      string
 	Login     string
 	Password  string
-	CreatedAt int
-	UpdatedAt int
-	DeletedAt int
-	SyncedAt  int
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt time.Time
+	SyncedAt  time.Time
 }

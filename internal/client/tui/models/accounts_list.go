@@ -6,9 +6,9 @@ import (
 
 	"github.com/besean163/gophkeeper/internal/client/core"
 	"github.com/besean163/gophkeeper/internal/client/core/models"
-	"github.com/besean163/gophkeeper/internal/client/tui/logger"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/styles"
+	"github.com/besean163/gophkeeper/internal/logger"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -78,7 +78,11 @@ func (m *AccountListModel) View() string {
 
 func (m *AccountListModel) fiilList() {
 
-	accounts := core.Instance.GetAccounts()
+	accounts, err := core.Instance.GetAccounts()
+	if err != nil {
+		logger.Debug("fill error", err.Error())
+		accounts = make([]models.Account, 0)
+	}
 	items := make([]list.Item, 0)
 	for _, account := range accounts {
 		accountItem := AccountItem{

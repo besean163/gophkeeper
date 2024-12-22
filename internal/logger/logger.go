@@ -13,3 +13,7 @@ func Get() *log.Logger {
 	}
 	return log.New(f, "", log.Ldate|log.Ltime)
 }
+
+func Debug(v ...any) {
+	Get().Println(v...)
+}

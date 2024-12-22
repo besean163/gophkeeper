@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/besean163/gophkeeper/internal/client/tui/logger"
+	"github.com/besean163/gophkeeper/internal/logger"
 	"github.com/besean163/gophkeeper/internal/server/api/entity"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
 	"github.com/besean163/gophkeeper/internal/server/interfaces"
@@ -53,6 +53,7 @@ func AuthMiddleware(authService interfaces.AuthService, secret string) func(h ht
 			}
 
 			ctx := context.WithValue(r.Context(), entity.RequestUserKey("user"), user)
+			logger.Get().Println(user)
 
 			log.Println("user find ", userId)
 			h.ServeHTTP(w, r.WithContext(ctx))

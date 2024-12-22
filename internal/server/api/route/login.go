@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/besean163/gophkeeper/internal/logger"
 	"github.com/besean163/gophkeeper/internal/server/api/entity"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
 	"github.com/besean163/gophkeeper/internal/server/interfaces"
@@ -35,6 +36,7 @@ func LoginRoute(s interfaces.AuthService) http.HandlerFunc {
 			return
 		}
 
+		logger.Debug(input)
 		tokenString, err := s.LoginUser(input.Login, input.Password)
 		if err != nil {
 			log.Println("get token error:", err.Error())

@@ -5,10 +5,10 @@ import (
 	"strings"
 
 	"github.com/besean163/gophkeeper/internal/client/core"
-	"github.com/besean163/gophkeeper/internal/client/tui/logger"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/components"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/styles"
+	"github.com/besean163/gophkeeper/internal/logger"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )

@@ -15,6 +15,17 @@ func NewBucketRepository() BucketRepository {
 	return BucketRepository{}
 }
 
+func (r BucketRepository) GetAccount(id int) (*models.Account, error) {
+	connect, err := getDB()
+	if err != nil {
+		return nil, err
+	}
+
+	var account *models.Account
+	connect.Find(&account)
+	return account, nil
+}
+
 func (r BucketRepository) GetAccounts(user models.User) ([]*models.Account, error) {
 	connect, err := getDB()
 	if err != nil {

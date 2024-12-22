@@ -1,8 +1,12 @@
 package user
 
 import (
+	"errors"
 	"fmt"
 
+	dblogger "gorm.io/gorm/logger"
+
+	"github.com/besean163/gophkeeper/internal/logger"
 	"github.com/besean163/gophkeeper/internal/server/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -35,7 +39,12 @@ func (r UserRepository) GetUserByLogin(login string) (*models.User, error) {
 	}
 
 	user := &models.User{}
-	connect.Where("login  = ?", login).Find(user)
+	connect.Where("login = ?", login).First(user)
+
+	if user.ID == 0 {
+		return nil, errors.New("user not found")
+	}
+
 	return user, nil
 }
 
@@ -70,7 +79,9 @@ func (r UserRepository) insertUser(user *models.User) error {
 func getDB() (*gorm.DB, error) {
 	if db == nil {
 		dsn := "postgres://gophkeeper:gophkeeper@localhost:5432/gophkeeper?sslmode=disable"
-		conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+			Logger: dblogger.New(logger.Get(), dblogger.Config{}),
+		})
 		if err != nil {
 			return nil, err
 		}

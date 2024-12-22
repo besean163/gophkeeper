@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/besean163/gophkeeper/internal/logger"
 	"github.com/besean163/gophkeeper/internal/server/models"
 	jwttoken "github.com/besean163/gophkeeper/internal/server/utils/jwt_token"
 	"github.com/golang-jwt/jwt/v5"
@@ -67,6 +68,8 @@ func (s AuthService) LoginUser(login, password string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	logger.Debug("login", login)
+	logger.Debug("service login", user)
 
 	if user == nil {
 		return "", errors.New("user not exist")

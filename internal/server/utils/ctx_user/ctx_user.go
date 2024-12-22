@@ -8,6 +8,6 @@ import (
 )
 
 func GetUserFromContext(ctx context.Context) (*models.User, bool) {
-	user, ok := ctx.Value(entity.RequestUserKey("user")).(models.User)
-	return &user, ok
+	user, ok := ctx.Value(entity.RequestUserKey("user")).(*models.User)
+	return user, ok
 }

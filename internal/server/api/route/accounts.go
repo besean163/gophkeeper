@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/besean163/gophkeeper/internal/logger"
 	"github.com/besean163/gophkeeper/internal/server/api/entity"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
 	"github.com/besean163/gophkeeper/internal/server/interfaces"
@@ -13,6 +14,7 @@ import (
 
 func AccountsRoute(s interfaces.BucketService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		logger.Get().Println(r.Context())
 		user, ok := ctxuser.GetUserFromContext(r.Context())
 		if !ok {
 			http.Error(w, "User not found in context", http.StatusUnauthorized)

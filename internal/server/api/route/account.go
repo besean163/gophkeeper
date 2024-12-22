@@ -11,11 +11,17 @@ import (
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
 	"github.com/besean163/gophkeeper/internal/server/interfaces"
 	"github.com/besean163/gophkeeper/internal/server/models"
+	ctxuser "github.com/besean163/gophkeeper/internal/server/utils/ctx_user"
 )
 
 func AccountRoute(s interfaces.BucketService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("here")
+		user, ok := ctxuser.GetUserFromContext(r.Context())
+		if !ok {
+			http.Error(w, "User not found in context", http.StatusUnauthorized)
+			return
+		}
 
 		switch r.Method {
 		case http.MethodPost:
@@ -36,6 +42,7 @@ func AccountRoute(s interfaces.BucketService) http.HandlerFunc {
 			}
 
 			account := models.Account{
+				UserID:   user.ID,
 				Name:     input.Name,
 				Login:    input.Login,
 				Password: input.Password,
@@ -64,6 +71,7 @@ func AccountRoute(s interfaces.BucketService) http.HandlerFunc {
 
 			account := models.Account{
 				ID:       input.ID,
+				UserID:   user.ID,
 				Name:     input.Name,
 				Login:    input.Login,
 				Password: input.Password,

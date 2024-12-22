@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/besean163/gophkeeper/internal/client/core/models"
-	"github.com/besean163/gophkeeper/internal/client/tui/logger"
+	"github.com/besean163/gophkeeper/internal/logger"
 )
 
 type Repository interface{}

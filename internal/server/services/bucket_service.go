@@ -1,8 +1,14 @@
 package services
 
-import "github.com/besean163/gophkeeper/internal/server/models"
+import (
+	"errors"
+	"time"
+
+	"github.com/besean163/gophkeeper/internal/server/models"
+)
 
 type BucketRepository interface {
+	GetAccount(id int) (*models.Account, error)
 	GetAccounts(user models.User) ([]*models.Account, error)
 	SaveAccount(account models.Account) error
 	DeleteAccount(id int) error
@@ -32,6 +38,18 @@ func (s BucketService) CreateAccount(account *models.Account) error {
 }
 
 func (s BucketService) UpdateAccount(account *models.Account) error {
+	exist, err := s.repository.GetAccount(account.ID)
+	if err != nil {
+		return err
+	}
+
+	if exist == nil {
+		return errors.New("account not found")
+	}
+
+	account.CreatedAt = exist.CreatedAt
+	account.UpdatedAt = time.Now()
+
 	return s.repository.SaveAccount(*account)
 }
 

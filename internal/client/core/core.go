@@ -2,12 +2,10 @@ package core
 
 import (
 	"github.com/besean163/gophkeeper/internal/client/core/api"
-	"github.com/besean163/gophkeeper/internal/client/core/api/entities"
 	"github.com/besean163/gophkeeper/internal/client/core/interfaces"
 	"github.com/besean163/gophkeeper/internal/client/core/models"
-	"github.com/besean163/gophkeeper/internal/client/core/repositories/database"
-	"github.com/besean163/gophkeeper/internal/client/core/services"
-	"github.com/besean163/gophkeeper/internal/client/tui/logger"
+	apidataservice "github.com/besean163/gophkeeper/internal/client/core/services/api_data_service"
+	"github.com/besean163/gophkeeper/internal/logger"
 )
 
 var Instance *Core
@@ -23,27 +21,14 @@ func Init() {
 		return
 	}
 
-	repository := database.NewRepository()
-	dataService := services.NewDataService(repository)
+	// repository := database.NewRepository()
+	// dataService := services.NewDataService(repository)
+	dataService := apidataservice.NewService()
 
 	Instance = &Core{
 		DataService: dataService,
 		APIClient:   api.NewClient(),
 	}
-}
-
-func (core *Core) GetToken(login, password string) (string, error) {
-	input := entities.RegisterInput{
-		Login:    login,
-		Password: password,
-	}
-
-	token, err := core.APIClient.Register(input)
-	if err != nil {
-		return "", err
-	}
-
-	return token.Token, nil
 }
 
 func (core *Core) Login(login, password string) error {
@@ -69,24 +54,26 @@ func (core *Core) Register(login, password string) error {
 	return nil
 }
 
-func (core *Core) GetAccounts() []models.Account {
-	return []models.Account{
-		{
-			Name:     "account_1",
-			Login:    "login_1",
-			Password: "password_1",
-		},
-		{
-			Name:     "account_2",
-			Login:    "login_2",
-			Password: "password_2",
-		},
-		{
-			Name:     "account_3",
-			Login:    "login_3",
-			Password: "password_3",
-		},
-	}
+func (core *Core) GetAccounts() ([]models.Account, error) {
+	// return []models.Account{
+	// 	{
+	// 		Name:     "account_1",
+	// 		Login:    "login_1",
+	// 		Password: "password_1",
+	// 	},
+	// 	{
+	// 		Name:     "account_2",
+	// 		Login:    "login_2",
+	// 		Password: "password_2",
+	// 	},
+	// 	{
+	// 		Name:     "account_3",
+	// 		Login:    "login_3",
+	// 		Password: "password_3",
+	// 	},
+	// }
+
+	return core.DataService.GetAccounts(*core.User)
 }
 
 func (core *Core) Save(account models.Account) error {
