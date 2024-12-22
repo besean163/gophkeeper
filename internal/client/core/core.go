@@ -88,3 +88,7 @@ func (core *Core) GetAccounts() []models.Account {
 		},
 	}
 }
+
+func (core *Core) Save(account models.Account) error {
+	return nil
+}

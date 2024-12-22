@@ -19,6 +19,7 @@ const (
 	rootRegistrationState
 	rootSectionsState
 	rootAccountListState
+	rootAccountEditState
 )
 
 type RootModel struct {
@@ -29,6 +30,7 @@ type RootModel struct {
 	*RegistrationModel
 	*SectionListModel
 	*AccountListModel
+	*AccountEditModel
 	Quit bool
 }
 
@@ -81,6 +83,14 @@ func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.clearModels()
 		m.State = rootAccountListState
 		m.AccountListModel = NewAccountListModel()
+	case messages.AccountListBackMsg:
+		m.clearModels()
+		m.State = rootAccountListState
+		m.AccountListModel = NewAccountListModel()
+	case messages.AccountEditMsg:
+		m.clearModels()
+		m.State = rootAccountEditState
+		m.AccountEditModel = NewAccountEditModel(msg.Account)
 	}
 
 	var cmd tea.Cmd
@@ -95,6 +105,8 @@ func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		_, cmd = m.SectionListModel.Update(msg)
 	case rootAccountListState:
 		_, cmd = m.AccountListModel.Update(msg)
+	case rootAccountEditState:
+		_, cmd = m.AccountEditModel.Update(msg)
 	}
 
 	return m, cmd
@@ -116,6 +128,8 @@ func (m RootModel) View() string {
 		result.WriteString(m.SectionListModel.View())
 	case rootAccountListState:
 		result.WriteString(m.AccountListModel.View())
+	case rootAccountEditState:
+		result.WriteString(m.AccountEditModel.View())
 	}
 
 	result.WriteRune('\n')
@@ -129,4 +143,5 @@ func (m *RootModel) clearModels() {
 	m.RegistrationModel = nil
 	m.SectionListModel = nil
 	m.AccountListModel = nil
+	m.AccountEditModel = nil
 }

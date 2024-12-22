@@ -24,29 +24,6 @@ func (i AccountItem) Description() string {
 	return fmt.Sprintf("%s %s", i.account.Login, i.account.Password)
 }
 
-// type AccountItemDelegate struct{}
-
-// func (d AccountItemDelegate) Height() int                             { return 1 }
-// func (d AccountItemDelegate) Spacing() int                            { return 0 }
-// func (d AccountItemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
-// func (d AccountItemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
-// 	i, ok := listItem.(AccountItem)
-// 	if !ok {
-// 		return
-// 	}
-
-// 	str := fmt.Sprintf("%d. %s", index+1, i)
-
-// 	fn := lipgloss.NewStyle().PaddingLeft(4).Render
-// 	if index == m.Index() {
-// 		fn = func(s ...string) string {
-// 			return lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170")).Render("> " + strings.Join(s, " "))
-// 		}
-// 	}
-
-// 	fmt.Fprint(w, fn(str))
-// }
-
 type AccountListModel struct {
 	list list.Model
 }
@@ -72,13 +49,16 @@ func (m *AccountListModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			logger.Get().Println("choose msg")
 			if item, ok := m.list.SelectedItem().(AccountItem); ok {
-				logger.Get().Println("account name", item.account.Name)
+				return m, func() tea.Msg { return messages.AccountEditMsg{Account: item.account} }
 			}
 
-			// return m, func() tea.Msg { return messages.SectionBackMsg{} }
+			return m, func() tea.Msg { return messages.AccountEditMsg{} }
 		case "ctrl+b":
 			logger.Get().Println("back msg")
 			return m, func() tea.Msg { return messages.SectionBackMsg{} }
+		case "ctrl+a":
+			logger.Get().Println("create account msg")
+			return m, func() tea.Msg { return messages.AccountEditMsg{Account: models.Account{}} }
 		}
 	}
 

@@ -125,8 +125,12 @@ func (m *LoginModel) moveFocus(msg tea.KeyMsg) tea.Cmd {
 			m.fc.Move(LoginGroupButtons, 0)
 		}
 
-		if m.fc.Group == LoginGroupButtons && (m.fc.Index >= len(m.buttons) || m.fc.Index < 0) {
-			m.fc.Move(LoginGroupInput, 0)
+		if m.fc.Group == LoginGroupButtons {
+			if m.fc.Index >= len(m.buttons) {
+				m.fc.Move(LoginGroupInput, 0)
+			} else if m.fc.Index < 0 {
+				m.fc.Move(LoginGroupInput, len(m.inputs)-1)
+			}
 		}
 
 		if m.fc.Group == LoginGroupInput {
@@ -139,7 +143,6 @@ func (m *LoginModel) moveFocus(msg tea.KeyMsg) tea.Cmd {
 		if m.fc.Group == LoginGroupButtons {
 			// если кнопка активна оставляем фокус
 			if m.buttons[m.fc.Index].IsActive() {
-				logger.Get().Println("here")
 				m.buttons[m.fc.Index].Focus()
 				break
 			}
@@ -148,7 +151,6 @@ func (m *LoginModel) moveFocus(msg tea.KeyMsg) tea.Cmd {
 	}
 
 	return nil
-
 }
 
 func (m *LoginModel) updateInputs(msg tea.Msg) tea.Cmd {
