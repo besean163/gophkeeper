@@ -27,3 +27,10 @@ type AccountOutput struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+type AccountInput struct {
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Login    string `json:"login"`
+	Password string `json:"password"`
+}

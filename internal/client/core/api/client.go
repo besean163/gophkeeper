@@ -13,10 +13,17 @@ import (
 
 const serverURL = "http://localhost:8080"
 
-type Client struct{}
+type Client struct {
+	Token string
+}
 
-func NewClient() Client {
-	return Client{}
+func NewClient() *Client {
+	return &Client{}
+}
+
+func (c *Client) SetToken(token string) *Client {
+	c.Token = token
+	return c
 }
 
 func (c Client) Register(input entities.GetTokenInput) (entities.TokenOutput, error) {
@@ -106,11 +113,11 @@ func (c Client) Login(input entities.GetTokenInput) (entities.TokenOutput, error
 	return t, nil
 }
 
-func (c Client) GetAccounts(token string) (entities.AccountsOutput, error) {
+func (c Client) GetAccounts() (entities.AccountsOutput, error) {
 	output := entities.AccountsOutput{}
 
 	r, err := http.NewRequest(http.MethodGet, serverURL+"/api/accounts", nil)
-	r.Header.Add("Authorization", "Bearer "+token)
+	r.Header.Add("Authorization", "Bearer "+c.Token)
 
 	if err != nil {
 		logger.Get().Println(err.Error())
@@ -140,4 +147,38 @@ func (c Client) GetAccounts(token string) (entities.AccountsOutput, error) {
 	}
 
 	return output, nil
+}
+
+func (c Client) SaveAccount(input entities.AccountInput) error {
+	b, err := json.Marshal(input)
+	if err != nil {
+		logger.Get().Println(err.Error())
+		return errors.New("ошибка зашифровки запроса")
+	}
+	body := bytes.NewBuffer(b)
+
+	logger.Debug(input)
+	method := http.MethodPut
+	if input.ID == 0 {
+		method = http.MethodPost
+	}
+	r, err := http.NewRequest(method, serverURL+"/api/account", body)
+	r.Header.Add("Authorization", "Bearer "+c.Token)
+
+	if err != nil {
+		logger.Get().Println(err.Error())
+		return errors.New("ошибка запроса")
+	}
+
+	response, err := http.DefaultClient.Do(r)
+	if err != nil {
+		logger.Get().Println(err.Error())
+		return errors.New("ошибка ответа")
+	}
+
+	if response.StatusCode != http.StatusOK {
+		return errors.New("ошибка сервера")
+	}
+
+	return nil
 }

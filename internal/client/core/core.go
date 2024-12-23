@@ -12,7 +12,7 @@ var Instance *Core
 
 type Core struct {
 	DataService interfaces.DataService
-	APIClient   api.Client
+	APIClient   *api.Client
 	*models.User
 }
 
@@ -55,27 +55,13 @@ func (core *Core) Register(login, password string) error {
 }
 
 func (core *Core) GetAccounts() ([]models.Account, error) {
-	// return []models.Account{
-	// 	{
-	// 		Name:     "account_1",
-	// 		Login:    "login_1",
-	// 		Password: "password_1",
-	// 	},
-	// 	{
-	// 		Name:     "account_2",
-	// 		Login:    "login_2",
-	// 		Password: "password_2",
-	// 	},
-	// 	{
-	// 		Name:     "account_3",
-	// 		Login:    "login_3",
-	// 		Password: "password_3",
-	// 	},
-	// }
-
 	return core.DataService.GetAccounts(*core.User)
 }
 
 func (core *Core) Save(account models.Account) error {
+	err := core.DataService.SaveAccount(*Instance.User, account)
+	if err != nil {
+		return err
+	}
 	return nil
 }

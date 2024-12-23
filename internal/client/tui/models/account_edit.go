@@ -42,6 +42,9 @@ func NewAccountEditModel(account coremodels.Account) *AccountEditModel {
 		account: account,
 	}
 
+	logger.Debug("here")
+	logger.Debug(account)
+
 	item.setInputs()
 	item.setButtons()
 	return item
@@ -248,6 +251,7 @@ func (m *AccountEditModel) setButtons() {
 
 func (m *AccountEditModel) save() tea.Cmd {
 	account := m.account
+	account.ID = m.account.ID
 	account.Name = m.inputs[AccountEditInputName].Value()
 	account.Login = m.inputs[AccountEditInputLogin].Value()
 	account.Password = m.inputs[AccountEditInputPassword].Value()
@@ -257,7 +261,7 @@ func (m *AccountEditModel) save() tea.Cmd {
 	if err != nil {
 		logger.Get().Println("error")
 	} else {
-		logger.Get().Println("login success continue")
+		logger.Get().Println("save success continue")
 	}
 
 	return func() tea.Msg { return messages.AccountListBackMsg{} }

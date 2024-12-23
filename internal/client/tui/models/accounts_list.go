@@ -79,6 +79,7 @@ func (m *AccountListModel) View() string {
 func (m *AccountListModel) fiilList() {
 
 	accounts, err := core.Instance.GetAccounts()
+	logger.Debug(accounts)
 	if err != nil {
 		logger.Debug("fill error", err.Error())
 		accounts = make([]models.Account, 0)

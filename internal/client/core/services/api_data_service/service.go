@@ -4,7 +4,6 @@ import (
 	"github.com/besean163/gophkeeper/internal/client/core/api"
 	"github.com/besean163/gophkeeper/internal/client/core/api/entities"
 	"github.com/besean163/gophkeeper/internal/client/core/models"
-	"github.com/besean163/gophkeeper/internal/logger"
 )
 
 type Service struct {
@@ -30,7 +29,6 @@ func (s Service) LoginUser(login, password string) (*models.User, error) {
 		return nil, err
 	}
 	user.Token = token.Token
-	logger.Debug("user with token", user)
 
 	return user, nil
 }
@@ -40,16 +38,23 @@ func (s Service) RegisterUser(login, password string) (*models.User, error) {
 		Login:    login,
 		Password: password,
 	}
-	err := initUserToken(user)
+
+	input := entities.GetTokenInput{
+		Login:    user.Login,
+		Password: user.Password,
+	}
+
+	token, err := api.NewClient().Register(input)
 	if err != nil {
 		return nil, err
 	}
+	user.Token = token.Token
+
 	return user, nil
-	// return nil, errors.New("user already exist")
 }
 
 func (s Service) GetAccounts(user models.User) ([]models.Account, error) {
-	output, err := api.NewClient().GetAccounts(user.Token)
+	output, err := api.NewClient().SetToken(user.Token).GetAccounts()
 	if err != nil {
 		return nil, err
 	}
@@ -57,6 +62,7 @@ func (s Service) GetAccounts(user models.User) ([]models.Account, error) {
 	accounts := make([]models.Account, 0)
 	for _, item := range output.Accounts {
 		account := models.Account{
+			ID:        item.ID,
 			Name:      item.Name,
 			Login:     item.Login,
 			Password:  item.Password,
@@ -68,38 +74,18 @@ func (s Service) GetAccounts(user models.User) ([]models.Account, error) {
 	return accounts, nil
 }
 
-func initUserToken(user *models.User) error {
-	// input := entities.RegisterInput{
-	// 	Login:    user.Login,
-	// 	Password: user.Password,
-	// }
+func (s Service) SaveAccount(user models.User, account models.Account) error {
+	input := entities.AccountInput{
+		ID:       account.ID,
+		Name:     account.Name,
+		Login:    account.Login,
+		Password: account.Password,
+	}
 
-	// token, err := api.NewClient().Register(input)
-	// if err != nil {
-	// 	return err
-	// }
+	err := api.NewClient().SetToken(user.Token).SaveAccount(input)
+	if err != nil {
+		return err
+	}
 
-	// user.Token = token.Token
-	user.Token = "test token"
 	return nil
 }
-
-// func getAccount(id int) (*models.Account, error) {
-// 	account := &models.Account{
-// 		ID:       id,
-// 		Name:     fmt.Sprintf("account_name_%d", id),
-// 		Login:    fmt.Sprintf("account_login_%d", id),
-// 		Password: fmt.Sprintf("account_password_%d", id),
-// 	}
-// 	return account, nil
-// }
-
-// func deleteAccount(id int) error {
-// 	logger.Get().Printf("account deleted: %d", id)
-// 	return nil
-// }
-
-// func saveAccount(account *models.Account) error {
-// 	logger.Get().Printf("account saved: %d", account.ID)
-// 	return nil
-// }
