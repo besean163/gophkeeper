@@ -34,3 +34,7 @@ type AccountInput struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }
+
+type AccountDeleteInput struct {
+	ID int `json:"id"`
+}

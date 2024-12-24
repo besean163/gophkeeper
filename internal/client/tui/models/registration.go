@@ -238,10 +238,11 @@ func (m *RegistrationModel) setButtons() {
 }
 
 func (m *RegistrationModel) registration() tea.Cmd {
-	err := core.Instance.Register(m.inputs[LoginInputLogin].Value(), m.inputs[LoginInputPassword].Value())
+	err := core.Register(m.inputs[LoginInputLogin].Value(), m.inputs[LoginInputPassword].Value())
 
 	if err != nil {
 		logger.Get().Println("error")
+		return nil
 	} else {
 		logger.Get().Println("registration success continue")
 	}

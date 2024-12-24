@@ -240,7 +240,7 @@ func (m *LoginModel) setButtons() {
 }
 
 func (m *LoginModel) login() tea.Cmd {
-	err := core.Instance.Login(m.inputs[LoginInputLogin].Value(), m.inputs[LoginInputPassword].Value())
+	err := core.Login(m.inputs[LoginInputLogin].Value(), m.inputs[LoginInputPassword].Value())
 
 	if err != nil {
 		logger.Get().Println("error")

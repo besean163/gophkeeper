@@ -3,8 +3,8 @@ package database
 import (
 	"database/sql"
 	"embed"
-	"log"
 
+	"github.com/besean163/gophkeeper/internal/logger"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
@@ -43,6 +43,6 @@ func RunMigrations(dbPath string) error {
 		return err
 	}
 
-	log.Println("Миграции успешно применены.")
+	logger.Debug("Миграции успешно применены.")
 	return nil
 }

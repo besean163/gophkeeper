@@ -182,3 +182,33 @@ func (c Client) SaveAccount(input entities.AccountInput) error {
 
 	return nil
 }
+
+func (c Client) DeleteAccount(input entities.AccountDeleteInput) error {
+	b, err := json.Marshal(input)
+	if err != nil {
+		logger.Get().Println(err.Error())
+		return errors.New("ошибка зашифровки запроса")
+	}
+	body := bytes.NewBuffer(b)
+
+	logger.Debug(input)
+	r, err := http.NewRequest(http.MethodDelete, serverURL+"/api/account", body)
+	r.Header.Add("Authorization", "Bearer "+c.Token)
+
+	if err != nil {
+		logger.Get().Println(err.Error())
+		return errors.New("ошибка запроса")
+	}
+
+	response, err := http.DefaultClient.Do(r)
+	if err != nil {
+		logger.Get().Println(err.Error())
+		return errors.New("ошибка ответа")
+	}
+
+	if response.StatusCode != http.StatusOK {
+		return errors.New("ошибка сервера")
+	}
+
+	return nil
+}

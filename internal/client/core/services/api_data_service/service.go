@@ -89,3 +89,16 @@ func (s Service) SaveAccount(user models.User, account models.Account) error {
 
 	return nil
 }
+
+func (s Service) DeleteAccount(user models.User, account models.Account) error {
+	input := entities.AccountDeleteInput{
+		ID: account.ID,
+	}
+
+	err := api.NewClient().SetToken(user.Token).DeleteAccount(input)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

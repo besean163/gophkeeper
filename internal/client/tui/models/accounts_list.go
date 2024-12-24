@@ -59,7 +59,14 @@ func (m *AccountListModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+a":
 			logger.Get().Println("create account msg")
 			return m, func() tea.Msg { return messages.AccountEditMsg{Account: models.Account{}} }
+		case "ctrl+d":
+			logger.Get().Println("delete account msg")
+			if item, ok := m.list.SelectedItem().(AccountItem); ok {
+				return m, func() tea.Msg { return messages.AccountDeleteMsg{Account: item.account} }
+			}
 		}
+	case messages.AccountDeleteMsg:
+		return m, m.delete(msg)
 	}
 
 	var cmd tea.Cmd
@@ -78,7 +85,7 @@ func (m *AccountListModel) View() string {
 
 func (m *AccountListModel) fiilList() {
 
-	accounts, err := core.Instance.GetAccounts()
+	accounts, err := core.GetAccounts()
 	logger.Debug(accounts)
 	if err != nil {
 		logger.Debug("fill error", err.Error())
@@ -106,4 +113,13 @@ func (m *AccountListModel) fiilList() {
 	l.SetShowStatusBar(false)
 	l.FilterInput.Prompt = "Фильтр: "
 	m.list = l
+}
+
+func (m *AccountListModel) delete(msg messages.AccountDeleteMsg) tea.Cmd {
+	err := core.DeleteAccount(msg.Account)
+	if err != nil {
+		logger.Debug(err.Error())
+	}
+	m.fiilList()
+	return func() tea.Msg { return struct{}{} }
 }

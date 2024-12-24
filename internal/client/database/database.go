@@ -1,14 +1,15 @@
 package database
 
 import (
-	"log"
 	"os"
+
+	"github.com/besean163/gophkeeper/internal/logger"
 )
 
 func InitializeDatabase(dbPath string) error {
 	// Проверяем, существует ли база данных
 	if _, err := os.Stat(dbPath); err == nil {
-		log.Println("База данных уже существует.")
+		logger.Debug("База данных уже существует.")
 		return nil
 	}
 
@@ -19,6 +20,6 @@ func InitializeDatabase(dbPath string) error {
 	}
 	file.Close()
 
-	log.Println("Пустая база данных создана.")
+	logger.Debug("Пустая база данных создана.")
 	return nil
 }

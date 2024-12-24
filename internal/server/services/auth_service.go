@@ -4,7 +4,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/besean163/gophkeeper/internal/logger"
 	"github.com/besean163/gophkeeper/internal/server/models"
 	jwttoken "github.com/besean163/gophkeeper/internal/server/utils/jwt_token"
 	"github.com/golang-jwt/jwt/v5"
@@ -14,7 +13,7 @@ const tokenExpireTime = 1 * time.Hour
 
 type UserRepository interface {
 	GetUser(id int) (*models.User, error)
-	GetUserByLogin(login string) (*models.User, error)
+	GetUserByLogin(login string) *models.User
 	SaveUser(user *models.User) error
 }
 
@@ -35,12 +34,10 @@ func (s AuthService) SaveUser(user *models.User) error {
 }
 
 func (s AuthService) RegisterUser(login, password string) (string, error) {
-	exist, err := s.repository.GetUserByLogin(login)
-	if err != nil {
-		return "", err
-	}
+	var user *models.User
+	user = s.repository.GetUserByLogin(login)
 
-	if exist != nil {
+	if user != nil {
 		return "", errors.New("user already exist")
 	}
 
@@ -49,7 +46,7 @@ func (s AuthService) RegisterUser(login, password string) (string, error) {
 		return "", err
 	}
 
-	user := &models.User{
+	user = &models.User{
 		Login:     login,
 		Password:  encryptPassword,
 		CreatedAt: time.Now(),
@@ -64,12 +61,8 @@ func (s AuthService) RegisterUser(login, password string) (string, error) {
 }
 
 func (s AuthService) LoginUser(login, password string) (string, error) {
-	user, err := s.repository.GetUserByLogin(login)
-	if err != nil {
-		return "", err
-	}
-	logger.Debug("login", login)
-	logger.Debug("service login", user)
+	var user *models.User
+	user = s.repository.GetUserByLogin(login)
 
 	if user == nil {
 		return "", errors.New("user not exist")

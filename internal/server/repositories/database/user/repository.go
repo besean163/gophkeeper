@@ -1,7 +1,6 @@
 package user
 
 import (
-	"errors"
 	"fmt"
 
 	dblogger "gorm.io/gorm/logger"
@@ -32,20 +31,21 @@ func (r UserRepository) GetUser(id int) (*models.User, error) {
 	return user, nil
 }
 
-func (r UserRepository) GetUserByLogin(login string) (*models.User, error) {
+func (r UserRepository) GetUserByLogin(login string) *models.User {
 	connect, err := getDB()
 	if err != nil {
-		return nil, err
+		return nil
 	}
 
-	user := &models.User{}
+	// user := &models.User{}
+	user := new(models.User)
 	connect.Where("login = ?", login).First(user)
 
 	if user.ID == 0 {
-		return nil, errors.New("user not found")
+		return nil
 	}
 
-	return user, nil
+	return user
 }
 
 func (r UserRepository) SaveUser(user *models.User) error {

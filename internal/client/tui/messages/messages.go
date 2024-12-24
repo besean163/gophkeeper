@@ -14,6 +14,7 @@ type SectionBackMsg struct{}
 
 type AccountListBackMsg struct{}
 type AccountEditMsg struct{ models.Account }
+type AccountDeleteMsg struct{ models.Account }
 
 type ButtonSubmitMsg struct{}
 type ButtonBackMsg struct{}

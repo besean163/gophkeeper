@@ -1,6 +1,7 @@
 package bucket
 
 import (
+	"github.com/besean163/gophkeeper/internal/logger"
 	"github.com/besean163/gophkeeper/internal/server/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -62,6 +63,7 @@ func (r BucketRepository) DeleteAccount(id int) error {
 		return err
 	}
 
+	logger.Debug("here")
 	connect.Delete(&models.Account{}, id)
 	return nil
 }

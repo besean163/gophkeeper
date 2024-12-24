@@ -256,7 +256,7 @@ func (m *AccountEditModel) save() tea.Cmd {
 	account.Login = m.inputs[AccountEditInputLogin].Value()
 	account.Password = m.inputs[AccountEditInputPassword].Value()
 
-	err := core.Instance.Save(account)
+	err := core.SaveAccount(account)
 
 	if err != nil {
 		logger.Get().Println("error")

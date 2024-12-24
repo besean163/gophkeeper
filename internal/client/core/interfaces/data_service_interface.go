@@ -7,4 +7,5 @@ type DataService interface {
 	RegisterUser(login, password string) (*models.User, error)
 	GetAccounts(user models.User) ([]models.Account, error)
 	SaveAccount(user models.User, account models.Account) error
+	DeleteAccount(user models.User, account models.Account) error
 }
