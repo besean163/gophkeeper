@@ -1,0 +1,2 @@
+/home/besean/go/bin/mockgen -source=internal/server/interfaces/auth_service.go -destination=internal/server/interfaces/mocks/auth_service_mock.go -package=mock AuthService
+/home/besean/go/bin/mockgen -source=internal/server/interfaces/bucket_service.go -destination=internal/server/interfaces/mocks/bucket_service_mock.go -package=mock BucketService
