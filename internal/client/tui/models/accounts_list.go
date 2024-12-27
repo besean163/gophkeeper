@@ -80,6 +80,12 @@ func (m *AccountListModel) View() string {
 	b.WriteRune('\n')
 	b.WriteRune('\n')
 	b.WriteString(lipgloss.NewStyle().PaddingLeft(2).Render(m.list.View()))
+	b.WriteRune('\n')
+	b.WriteString(lipgloss.NewStyle().Foreground(lipgloss.Color("241")).Render("ctrl+a: add"))
+	b.WriteRune('\n')
+	b.WriteString(lipgloss.NewStyle().Foreground(lipgloss.Color("241")).Render("ctrl+d: delete"))
+	b.WriteRune('\n')
+	b.WriteString(lipgloss.NewStyle().Foreground(lipgloss.Color("241")).Render(" enter: edit"))
 	return b.String()
 }
 
@@ -110,6 +116,7 @@ func (m *AccountListModel) fiilList() {
 
 	l := list.New(items, delegate, 20, 15)
 	l.SetShowTitle(false)
+	l.SetShowHelp(false)
 	l.SetShowStatusBar(false)
 	l.FilterInput.Prompt = "Фильтр: "
 	m.list = l
