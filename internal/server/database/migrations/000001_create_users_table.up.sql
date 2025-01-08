@@ -1,6 +1,7 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    login VARCHAR(20),
+    uuid UUID  UNIQUE,
+    login VARCHAR(20) UNIQUE,
     password VARCHAR(100),
-    created_at TIMESTAMP
+    created_at INTEGER
 );

@@ -1,3 +1,4 @@
+// Package database предоставляет методы для работы с базой, например миграции
 package database
 
 import (
@@ -14,6 +15,7 @@ import (
 //go:embed migrations/*.sql
 var migrations embed.FS
 
+// RunMigrations запуск миграций
 func RunMigrations(dsn string) error {
 	db, err := sql.Open("pgx", dsn)
 	if err != nil {

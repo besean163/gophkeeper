@@ -14,7 +14,8 @@ import (
 //go:embed migrations/*.sql
 var migrations embed.FS
 
-func RunMigrations(dbPath string) error {
+// RunMigrations запуск миграций
+func RunMigrations(dbPath string, logger logger.Logger) error {
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return err

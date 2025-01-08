@@ -1,4 +1,0 @@
-migrate create -ext sql -dir /opt/gophkeeper/internal/client/database/migrations -seq create_users_table
-
-migrate -database postgres://gophkeeper:gophkeeper@localhost:5432/gophkeeper?sslmode=disable -path /opt/gophkeeper/internal/server/database/migrations up
-migrate -database postgres://gophkeeper:gophkeeper@localhost:5432/gophkeeper?sslmode=disable -path /opt/gophkeeper/internal/server/database/migrations down

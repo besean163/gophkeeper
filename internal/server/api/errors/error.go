@@ -6,15 +6,18 @@ import (
 	"net/http"
 )
 
+// Error структура ошибки в ответе REST API.
 type Error struct {
 	Error ErrorData `json:"error"`
 }
 
+// ErrorData детальные данные ошибки.
 type ErrorData struct {
 	Code        int    `json:"code"`
 	Description string `json:"description"`
 }
 
+// NewError создание ошибки.
 func NewError(code int, description string) *Error {
 	e := &Error{}
 	e.Error.Code = code
@@ -22,6 +25,7 @@ func NewError(code int, description string) *Error {
 	return e
 }
 
+// SendError запись ошибки в тело ответа.
 func SendError(w http.ResponseWriter, code int, description string) {
 	apiError := Error{}
 	apiError.Error.Code = code

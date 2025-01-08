@@ -17,13 +17,15 @@ const (
 	SectionOptionCard
 )
 
+// SectionListModel модель окна выбора
 type SectionListModel struct {
+	logger         logger.Logger
 	OptionSelected int
 	OptionOrder    []int
 	Options        []*components.OptionModel
 }
 
-func NewSectionListModel() *SectionListModel {
+func NewSectionListModel(logger logger.Logger) *SectionListModel {
 	options := []*components.OptionModel{
 		components.NewOption("1. Аккаунты").
 			WithSelectedName("1. Аккаунты \u279C").
@@ -43,6 +45,7 @@ func NewSectionListModel() *SectionListModel {
 			WithSelectStyle(lipgloss.NewStyle().PaddingLeft(4).Foreground(styles.ColorAzure)),
 	}
 	return &SectionListModel{
+		logger:      logger,
 		OptionOrder: []int{SectionOptionAccount, SectionOptionNote, SectionOptionCard},
 		Options:     options,
 	}
@@ -53,16 +56,15 @@ func (m *SectionListModel) Init() tea.Cmd {
 }
 
 func (m *SectionListModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	logger.Get().Println("update")
 	switch msg.(type) {
 	case messages.SelectAccountMsg:
-		logger.Get().Println("choose accounts")
+		m.logger.Debug("choose accounts")
 		return m, nil
 	case messages.SelectNoteMsg:
-		logger.Get().Println("choose notes")
+		m.logger.Debug("choose notes")
 		return m, nil
 	case messages.SelectCardMsg:
-		logger.Get().Println("choose carts")
+		m.logger.Debug("choose carts")
 		return m, nil
 	}
 

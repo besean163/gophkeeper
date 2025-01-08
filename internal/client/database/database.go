@@ -1,3 +1,4 @@
+// Package database предоставляет методы для работы с базой, например миграции
 package database
 
 import (
@@ -6,7 +7,7 @@ import (
 	"github.com/besean163/gophkeeper/internal/logger"
 )
 
-func InitializeDatabase(dbPath string) error {
+func InitializeDatabase(dbPath string, logger logger.Logger) error {
 	// Проверяем, существует ли база данных
 	if _, err := os.Stat(dbPath); err == nil {
 		logger.Debug("База данных уже существует.")

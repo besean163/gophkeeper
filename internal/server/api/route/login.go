@@ -2,20 +2,18 @@ package route
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
-	"log"
 	"net/http"
 
 	"github.com/besean163/gophkeeper/internal/logger"
-	"github.com/besean163/gophkeeper/internal/server/api/entity"
+	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
+	"github.com/besean163/gophkeeper/internal/server/api/entities"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
-	"github.com/besean163/gophkeeper/internal/server/interfaces"
 )
 
-func LoginRoute(s interfaces.AuthService) http.HandlerFunc {
+func LoginRoute(dep dependencies.Dependencies) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		log.Println("login route")
-
 		var err error
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
@@ -23,10 +21,10 @@ func LoginRoute(s interfaces.AuthService) http.HandlerFunc {
 			return
 		}
 
-		input := entity.LoginInput{}
+		input := entities.LoginInput{}
 		err = json.Unmarshal(body, &input)
 		if err != nil {
-			apierrors.SendError(w, http.StatusBadRequest, err.Error())
+			apierrors.SendError(w, http.StatusBadRequest, apierrors.ErrorInvalidJSONData.Error())
 			return
 		}
 
@@ -36,21 +34,25 @@ func LoginRoute(s interfaces.AuthService) http.HandlerFunc {
 			return
 		}
 
-		logger.Debug(input)
-		tokenString, err := s.LoginUser(input.Login, input.Password)
+		tokenString, err := dep.AuthService.LoginUser(input.Login, input.Password)
 		if err != nil {
-			log.Println("get token error:", err.Error())
-			apierrors.SendError(w, http.StatusInternalServerError, apierrors.ErrorInternalUnknown.Error())
-			return
+			if errors.Is(err, apierrors.ErrorUserNotExist) {
+				apierrors.SendError(w, http.StatusBadRequest, apierrors.ErrorUserNotExist.Error())
+				return
+			} else {
+				dep.Logger.Error("get token", logger.NewField("error", err.Error()))
+				apierrors.SendError(w, http.StatusInternalServerError, apierrors.ErrorInternalUnknown.Error())
+				return
+			}
 		}
 
-		token := entity.TokenOutput{
+		token := entities.TokenOutput{
 			Token: tokenString,
 		}
 
 		result, err := json.Marshal(token)
 		if err != nil {
-			log.Println("json make error:", err.Error())
+			dep.Logger.Error("json make", logger.NewField("error", err.Error()))
 			apierrors.SendError(w, http.StatusInternalServerError, apierrors.ErrorInternalUnknown.Error())
 			return
 		}

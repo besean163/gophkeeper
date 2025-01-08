@@ -1,3 +1,4 @@
+// Package app пакет предоставляет абстракцию работы сервера REST API
 package app
 
 import (
@@ -8,25 +9,40 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/besean163/gophkeeper/internal/logger"
+	zaplogger "github.com/besean163/gophkeeper/internal/logger/zap_logger"
 	"github.com/besean163/gophkeeper/internal/server/api"
+	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
 	"github.com/besean163/gophkeeper/internal/server/interfaces"
 	"github.com/besean163/gophkeeper/internal/server/repositories/database/bucket"
 	"github.com/besean163/gophkeeper/internal/server/repositories/database/user"
-	"github.com/besean163/gophkeeper/internal/server/services"
+	"github.com/besean163/gophkeeper/internal/server/services/auth"
+	bucketservice "github.com/besean163/gophkeeper/internal/server/services/bucket"
+	apitoken "github.com/besean163/gophkeeper/internal/utils/api_token"
+	jwttoken "github.com/besean163/gophkeeper/internal/utils/api_token/jwt_token"
+	bcryptencrypter "github.com/besean163/gophkeeper/internal/utils/password_encrypter/bcrypt"
+	standarttimecontroller "github.com/besean163/gophkeeper/internal/utils/time_controller/standart_time_controller"
+	standartuuidcontroller "github.com/besean163/gophkeeper/internal/utils/uuid_controller/standart_uuid_controller"
 	"golang.org/x/sync/errgroup"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
+// App структура приложения
 type App struct {
+	logger logger.Logger
 	ctx    context.Context
 	config *Config
 	server *http.Server
 	interfaces.AuthService
 	interfaces.BucketService
+	apitoken.Tokener
 }
 
+// NewApp создание структуры приложения
 func NewApp() (*App, error) {
 	var err error
-	config, err := ReadConfig()
+	config, err := NewConfig()
 	if err != nil {
 		return nil, err
 	}
@@ -35,6 +51,13 @@ func NewApp() (*App, error) {
 		ctx:    context.Background(),
 		config: config,
 	}
+
+	err = app.initLogger()
+	if err != nil {
+		return nil, err
+	}
+
+	app.initTokener()
 
 	err = app.initAuthService()
 	if err != nil {
@@ -54,35 +77,70 @@ func NewApp() (*App, error) {
 	return app, nil
 }
 
+func (app *App) initLogger() error {
+	logger, err := zaplogger.NewLogger()
+	if err != nil {
+		return err
+	}
+
+	app.logger = logger
+	return nil
+}
+
+func (app *App) initTokener() {
+	app.Tokener = jwttoken.NewTokener(app.config.Secret)
+}
+
 func (app *App) initAuthService() error {
-	r := user.NewUserRepository()
-	s := services.NewAuthService(app.config.Secret, r)
+	timeController := standarttimecontroller.NewTimeController()
+	uuidController := standartuuidcontroller.NewUUIDController()
+	encrypter := bcryptencrypter.NewEncrypter()
+	db, err := getDB()
+	if err != nil {
+		return err
+	}
+	r := user.NewRepository(db)
+	s := auth.NewService(r, encrypter, app.Tokener, timeController, uuidController)
 	app.AuthService = s
 	return nil
 }
 
 func (app *App) initBucketService() error {
-	r := bucket.NewBucketRepository()
-	s := services.NewBucketService(r)
+	timeController := standarttimecontroller.NewTimeController()
+	uuidController := standartuuidcontroller.NewUUIDController()
+	db, err := getDB()
+	if err != nil {
+		return err
+	}
+	r := bucket.NewRepository(db)
+	s := bucketservice.NewService(r, timeController, uuidController, nil)
 	app.BucketService = s
 	return nil
 }
 
 func (app *App) initServer() error {
-	handler := api.NewHandler(app.config.Secret, app.AuthService, app.BucketService)
-	app.server = NewServer(app.config.Host, handler)
+	dependencies := dependencies.Dependencies{
+		Logger:        app.logger,
+		Tokener:       app.Tokener,
+		AuthService:   app.AuthService,
+		BucketService: app.BucketService,
+	}
+
+	handler := api.NewHandler(dependencies)
+	app.server = newServer(app.config.Host, handler)
 	return nil
 }
 
+// Run запуск приложения
 func (app *App) Run() error {
-	app.RunGracefulStop()
-	return app.StartServer()
+	app.runGracefulStop()
+	return app.startServer()
 }
 
-func (app *App) StartServer() error {
+func (app *App) startServer() error {
 	errGroup := errgroup.Group{}
-	errGroup.Go(GetShutdownServerRoutine(app.ctx, app.server))
-	errGroup.Go(GetRunServerRoutine(app.server))
+	errGroup.Go(getShutdownServerRoutine(app.ctx, app.server))
+	errGroup.Go(getRunServerRoutine(app.server))
 
 	if err := errGroup.Wait(); err != nil {
 		return err
@@ -90,7 +148,7 @@ func (app *App) StartServer() error {
 	return nil
 }
 
-func (app *App) RunGracefulStop() {
+func (app *App) runGracefulStop() {
 	ctx, cancel := context.WithCancel(app.ctx)
 	app.ctx = ctx
 	sig := make(chan os.Signal, 1)
@@ -101,4 +159,9 @@ func (app *App) RunGracefulStop() {
 		log.Println("graceful stop")
 		cancel()
 	}()
+}
+
+func getDB() (*gorm.DB, error) {
+	dsn := "postgres://gophkeeper:gophkeeper@localhost:5432/gophkeeper?sslmode=disable"
+	return gorm.Open(postgres.Open(dsn), &gorm.Config{})
 }

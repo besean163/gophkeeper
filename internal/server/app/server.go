@@ -6,14 +6,14 @@ import (
 	"net/http"
 )
 
-func NewServer(addr string, handler http.Handler) *http.Server {
+func newServer(addr string, handler http.Handler) *http.Server {
 	return &http.Server{
 		Addr:    addr,
 		Handler: handler,
 	}
 }
 
-func GetRunServerRoutine(server *http.Server) func() error {
+func getRunServerRoutine(server *http.Server) func() error {
 	return func() error {
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Println(err.Error())
@@ -23,7 +23,7 @@ func GetRunServerRoutine(server *http.Server) func() error {
 	}
 }
 
-func GetShutdownServerRoutine(ctx context.Context, server *http.Server) func() error {
+func getShutdownServerRoutine(ctx context.Context, server *http.Server) func() error {
 	return func() error {
 		<-ctx.Done()
 		log.Println("shutdown work")

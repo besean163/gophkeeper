@@ -1,10 +1,9 @@
 package models
 
 import (
-	"reflect"
 	"strings"
 
-	"github.com/besean163/gophkeeper/internal/client/core"
+	"github.com/besean163/gophkeeper/internal/client/interfaces"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/components"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/styles"
@@ -28,15 +27,20 @@ const (
 	LoginButtonBack
 )
 
+// LoginModel модель окна авторизации
 type LoginModel struct {
+	logger  logger.Logger
+	core    interfaces.Core
 	fc      *components.GroupFocusCursor
 	inputs  []components.TextInputModel
 	buttons []components.ButtonModel
 }
 
-func NewLoginModel() *LoginModel {
+func NewLoginModel(core interfaces.Core, logger logger.Logger) *LoginModel {
 	item := &LoginModel{
-		fc: components.NewGroupFocusCursor(LoginGroupInput, 0),
+		logger: logger,
+		core:   core,
+		fc:     components.NewGroupFocusCursor(LoginGroupInput, 0),
 	}
 	item.setInputs()
 	item.setButtons()
@@ -50,8 +54,6 @@ func (m *LoginModel) Init() tea.Cmd {
 }
 
 func (m *LoginModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	logger.Get().Println("login update")
-	logger.Get().Println(reflect.TypeOf(msg))
 	m.activateButtons()
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -62,27 +64,19 @@ func (m *LoginModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if cmd != nil {
 				return m, cmd
 			}
-			logger.Get().Println("update")
 			m.moveFocus(msg)
 		}
 	case messages.ButtonSubmitMsg:
-		logger.Get().Println("enter msg")
 		return m, m.login()
 	case messages.ButtonBackMsg:
-		logger.Get().Println("back msg")
 		return m, func() tea.Msg { return messages.SignBackMsg{} }
 	}
 	m.updateInputs(msg)
 
-	// var cmds []tea.Cmd
-	// cmds = append(cmds, m.updateInputs(msg))
-
-	// return m, tea.Batch(cmds...)
 	return m, nil
 }
 
 func (m *LoginModel) View() string {
-	logger.Get().Println("login view")
 	var b strings.Builder
 	b.WriteString(lipgloss.NewStyle().PaddingLeft(2).Render("Вход"))
 	b.WriteRune('\n')
@@ -215,8 +209,6 @@ func (m *LoginModel) setInputs() {
 }
 
 func (m *LoginModel) setButtons() {
-	logger.Get().Println("view")
-
 	var button components.ButtonModel
 	items := make([]components.ButtonModel, 2)
 
@@ -240,13 +232,13 @@ func (m *LoginModel) setButtons() {
 }
 
 func (m *LoginModel) login() tea.Cmd {
-	err := core.Login(m.inputs[LoginInputLogin].Value(), m.inputs[LoginInputPassword].Value())
+	err := m.core.Login(m.inputs[LoginInputLogin].Value(), m.inputs[LoginInputPassword].Value())
 
 	if err != nil {
-		logger.Get().Println("error")
+		m.logger.Debug("login error", logger.NewField("error", err.Error()))
 		return nil
 	} else {
-		logger.Get().Println("login success continue")
+		m.logger.Debug("login success continue")
 	}
 
 	return func() tea.Msg { return messages.LoginSuccessMsg{} }

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/besean163/gophkeeper/internal/client/core"
 	"github.com/besean163/gophkeeper/internal/client/core/models"
+	"github.com/besean163/gophkeeper/internal/client/interfaces"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/styles"
 	"github.com/besean163/gophkeeper/internal/logger"
@@ -24,43 +24,41 @@ func (i AccountItem) Description() string {
 	return fmt.Sprintf("%s %s", i.account.Login, i.account.Password)
 }
 
+// AccountListModel модель окна списка аккаунтов
 type AccountListModel struct {
-	list list.Model
+	logger logger.Logger
+	core   interfaces.Core
+	list   list.Model
 }
 
-func NewAccountListModel() *AccountListModel {
-	item := &AccountListModel{}
+func NewAccountListModel(core interfaces.Core, logger logger.Logger) *AccountListModel {
+	item := &AccountListModel{
+		logger: logger,
+		core:   core,
+	}
 	item.fiilList()
 	return item
 }
 
 func (m *AccountListModel) Init() tea.Cmd {
-	logger.Get().Println("init")
-
 	return nil
 }
 
 func (m *AccountListModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	logger.Get().Println("update")
-
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "enter":
-			logger.Get().Println("choose msg")
 			if item, ok := m.list.SelectedItem().(AccountItem); ok {
 				return m, func() tea.Msg { return messages.AccountEditMsg{Account: item.account} }
 			}
 
 			return m, func() tea.Msg { return messages.AccountEditMsg{} }
 		case "ctrl+b":
-			logger.Get().Println("back msg")
 			return m, func() tea.Msg { return messages.SectionBackMsg{} }
 		case "ctrl+a":
-			logger.Get().Println("create account msg")
 			return m, func() tea.Msg { return messages.AccountEditMsg{Account: models.Account{}} }
 		case "ctrl+d":
-			logger.Get().Println("delete account msg")
 			if item, ok := m.list.SelectedItem().(AccountItem); ok {
 				return m, func() tea.Msg { return messages.AccountDeleteMsg{Account: item.account} }
 			}
@@ -91,10 +89,9 @@ func (m *AccountListModel) View() string {
 
 func (m *AccountListModel) fiilList() {
 
-	accounts, err := core.GetAccounts()
-	logger.Debug(accounts)
+	accounts, err := m.core.GetAccounts()
 	if err != nil {
-		logger.Debug("fill error", err.Error())
+		m.logger.Debug("account fill error", logger.NewField("error", err.Error()))
 		accounts = make([]models.Account, 0)
 	}
 	items := make([]list.Item, 0)
@@ -104,7 +101,6 @@ func (m *AccountListModel) fiilList() {
 		}
 		items = append(items, accountItem)
 	}
-	// logger.Get().Println(len(items))
 
 	delegate := list.NewDefaultDelegate()
 	delegate.Styles.SelectedTitle = lipgloss.NewStyle().
@@ -123,9 +119,9 @@ func (m *AccountListModel) fiilList() {
 }
 
 func (m *AccountListModel) delete(msg messages.AccountDeleteMsg) tea.Cmd {
-	err := core.DeleteAccount(msg.Account)
+	err := m.core.DeleteAccount(msg.Account)
 	if err != nil {
-		logger.Debug(err.Error())
+		m.logger.Debug("account delete error", logger.NewField("error", err.Error()))
 	}
 	m.fiilList()
 	return func() tea.Msg { return struct{}{} }
