@@ -1,10 +1,9 @@
 package models
 
 import (
-	"reflect"
 	"strings"
 
-	"github.com/besean163/gophkeeper/internal/client/core"
+	"github.com/besean163/gophkeeper/internal/client/interfaces"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/components"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/styles"
@@ -29,15 +28,20 @@ const (
 	RegistrationButtonBack
 )
 
+// RegistrationModel модель окна регистрации
 type RegistrationModel struct {
+	logger  logger.Logger
+	core    interfaces.Core
 	fc      *components.GroupFocusCursor
 	inputs  []components.TextInputModel
 	buttons []components.ButtonModel
 }
 
-func NewRegistrationModel() *RegistrationModel {
+func NewRegistrationModel(core interfaces.Core, logger logger.Logger) *RegistrationModel {
 	item := &RegistrationModel{
-		fc: components.NewGroupFocusCursor(RegistrationGroupInput, 0),
+		logger: logger,
+		core:   core,
+		fc:     components.NewGroupFocusCursor(RegistrationGroupInput, 0),
 	}
 	item.setInputs()
 	item.setButtons()
@@ -50,8 +54,6 @@ func (m *RegistrationModel) Init() tea.Cmd {
 }
 
 func (m *RegistrationModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	logger.Get().Println("login update")
-	logger.Get().Println(reflect.TypeOf(msg))
 	m.activateButtons()
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -62,14 +64,11 @@ func (m *RegistrationModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if cmd != nil {
 				return m, cmd
 			}
-			logger.Get().Println("update")
 			m.moveFocus(msg)
 		}
 	case messages.ButtonSubmitMsg:
-		logger.Get().Println("enter msg")
 		return m, m.registration()
 	case messages.ButtonBackMsg:
-		logger.Get().Println("back msg")
 		return m, func() tea.Msg { return messages.SignBackMsg{} }
 	}
 	m.updateInputs(msg)
@@ -133,7 +132,6 @@ func (m *RegistrationModel) moveFocus(msg tea.KeyMsg) tea.Cmd {
 		if m.fc.Group == RegistrationGroupButtons {
 			// если кнопка активна оставляем фокус
 			if m.buttons[m.fc.Index].IsActive() {
-				logger.Get().Println("here")
 				m.buttons[m.fc.Index].Focus()
 				break
 			}
@@ -213,8 +211,6 @@ func (m *RegistrationModel) setInputs() {
 }
 
 func (m *RegistrationModel) setButtons() {
-	logger.Get().Println("view")
-
 	var button components.ButtonModel
 	items := make([]components.ButtonModel, 2)
 
@@ -238,14 +234,14 @@ func (m *RegistrationModel) setButtons() {
 }
 
 func (m *RegistrationModel) registration() tea.Cmd {
-	err := core.Register(m.inputs[LoginInputLogin].Value(), m.inputs[LoginInputPassword].Value())
+	err := m.core.Register(m.inputs[LoginInputLogin].Value(), m.inputs[LoginInputPassword].Value())
 
 	if err != nil {
-		logger.Get().Println("error")
+		m.logger.Debug("registration error", logger.NewField("error", err.Error()))
 		return nil
 	} else {
-		logger.Get().Println("registration success continue")
+		m.logger.Debug("registration success continue")
 	}
 
-	return func() tea.Msg { return messages.LoginSuccessMsg{} }
+	return func() tea.Msg { return messages.RegistrationSuccessMsg{} }
 }

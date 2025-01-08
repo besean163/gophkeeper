@@ -1,23 +1,17 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
+
+	"github.com/besean163/gophkeeper/internal/logger"
+	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
 )
 
-func LogMiddleware() func(h http.Handler) http.Handler {
+// LogMiddleware запись в жернал данных о запросе.
+func LogMiddleware(dep dependencies.Dependencies) func(h http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			log.Println("log mid")
-
-			// body, err := io.ReadAll(r.Body)
-			// if err != nil {
-			// 	log.Println(err)
-			// 	return
-			// }
-			// log.Println(string(body))
-
-			// r.Body = io.NopCloser(bytes.NewBuffer(body))
+			dep.Logger.Debug("visit", logger.NewField("url", r.URL), logger.NewField("method", r.Method))
 			h.ServeHTTP(w, r)
 		})
 	}

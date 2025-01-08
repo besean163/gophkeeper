@@ -11,6 +11,7 @@ var (
 	ErrorRegisterNotJSONData = errors.New("expect JSON data")
 )
 
+// CheckContentTypeJSONMiddleware проверка наличия заголовка application/json.
 func CheckContentTypeJSONMiddleware() func(h http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

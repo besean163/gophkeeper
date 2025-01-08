@@ -2,40 +2,38 @@ package route
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/besean163/gophkeeper/internal/logger"
-	"github.com/besean163/gophkeeper/internal/server/api/entity"
+	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
+	"github.com/besean163/gophkeeper/internal/server/api/entities"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
-	"github.com/besean163/gophkeeper/internal/server/interfaces"
 	ctxuser "github.com/besean163/gophkeeper/internal/server/utils/ctx_user"
 )
 
-func AccountsRoute(s interfaces.BucketService) http.HandlerFunc {
+func AccountsRoute(dep dependencies.Dependencies) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		logger.Get().Println(r.Context())
 		user, ok := ctxuser.GetUserFromContext(r.Context())
 		if !ok {
-			http.Error(w, "User not found in context", http.StatusUnauthorized)
+			dep.Logger.Error("get user", logger.NewField("error", "user not found in context"))
+			apierrors.SendError(w, http.StatusUnauthorized, apierrors.ErrorNotAuthorized.Error())
 			return
 		}
 
-		log.Println("get accounts route")
-
-		accounts, err := s.GetAccounts(*user)
+		accounts, err := dep.BucketService.GetAccounts(*user)
 		if err != nil {
-			log.Println("get accounts error:", err.Error())
+			dep.Logger.Error("get accounts", logger.NewField("error", err.Error()))
 			apierrors.SendError(w, http.StatusInternalServerError, apierrors.ErrorInternalUnknown.Error())
 			return
 		}
-		output := entity.GetAccountsOutput{
+
+		output := entities.GetAccountsOutput{
 			Accounts: accounts,
 		}
 
 		result, err := json.Marshal(output)
 		if err != nil {
-			log.Println("json make error:", err.Error())
+			dep.Logger.Error("json make", logger.NewField("error", err.Error()))
 			apierrors.SendError(w, http.StatusInternalServerError, apierrors.ErrorInternalUnknown.Error())
 			return
 		}

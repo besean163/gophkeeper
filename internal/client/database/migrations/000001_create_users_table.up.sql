@@ -1,7 +1,7 @@
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
-    login VARCHAR(20),
+    login VARCHAR(20) UNIQUE,
     password VARCHAR(100),
     token VARCHAR(100),
-    create_at TIMESTAMP
+    created_at INTEGER
 );

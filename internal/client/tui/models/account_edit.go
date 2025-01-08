@@ -3,8 +3,8 @@ package models
 import (
 	"strings"
 
-	"github.com/besean163/gophkeeper/internal/client/core"
 	coremodels "github.com/besean163/gophkeeper/internal/client/core/models"
+	"github.com/besean163/gophkeeper/internal/client/interfaces"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/components"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/styles"
@@ -29,21 +29,23 @@ const (
 	AccountEditButtonBack
 )
 
+// AccountEditModel модель окна редактирования аккаунта
 type AccountEditModel struct {
+	logger  logger.Logger
+	core    interfaces.Core
 	account coremodels.Account
 	fc      *components.GroupFocusCursor
 	inputs  []components.TextInputModel
 	buttons []components.ButtonModel
 }
 
-func NewAccountEditModel(account coremodels.Account) *AccountEditModel {
+func NewAccountEditModel(core interfaces.Core, account coremodels.Account, logger logger.Logger) *AccountEditModel {
 	item := &AccountEditModel{
+		logger:  logger,
+		core:    core,
 		fc:      components.NewGroupFocusCursor(AccountEditGroupInput, 0),
 		account: account,
 	}
-
-	logger.Debug("here")
-	logger.Debug(account)
 
 	item.setInputs()
 	item.setButtons()
@@ -51,12 +53,10 @@ func NewAccountEditModel(account coremodels.Account) *AccountEditModel {
 }
 
 func (m *AccountEditModel) Init() tea.Cmd {
-	logger.Get().Println("init")
 	return nil
 }
 
 func (m *AccountEditModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	logger.Get().Println("update")
 	m.activateButtons()
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -67,14 +67,14 @@ func (m *AccountEditModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if cmd != nil {
 				return m, cmd
 			}
-			logger.Get().Println("update")
+			m.logger.Info("update")
 			m.moveFocus(msg)
 		}
 	case messages.ButtonSubmitMsg:
-		logger.Get().Println("save msg")
+		m.logger.Info("save msg")
 		return m, m.save()
 	case messages.ButtonBackMsg:
-		logger.Get().Println("back msg")
+		m.logger.Info("back msg")
 		return m, func() tea.Msg { return messages.AccountListBackMsg{} }
 	}
 	m.updateInputs(msg)
@@ -184,7 +184,6 @@ func (m *AccountEditModel) isValid() bool {
 }
 
 func (m *AccountEditModel) updateInputs(msg tea.Msg) tea.Cmd {
-	// logger.Get().Println("updates")
 	cmds := make([]tea.Cmd, len(m.inputs))
 
 	for i := range m.inputs {
@@ -225,8 +224,6 @@ func (m *AccountEditModel) setInputs() {
 }
 
 func (m *AccountEditModel) setButtons() {
-	logger.Get().Println("view")
-
 	var button components.ButtonModel
 	items := make([]components.ButtonModel, 2)
 
@@ -256,12 +253,12 @@ func (m *AccountEditModel) save() tea.Cmd {
 	account.Login = m.inputs[AccountEditInputLogin].Value()
 	account.Password = m.inputs[AccountEditInputPassword].Value()
 
-	err := core.SaveAccount(account)
+	err := m.core.SaveAccount(account)
 
 	if err != nil {
-		logger.Get().Println("error")
+		m.logger.Info("error")
 	} else {
-		logger.Get().Println("save success continue")
+		m.logger.Info("save success continue")
 	}
 
 	return func() tea.Msg { return messages.AccountListBackMsg{} }

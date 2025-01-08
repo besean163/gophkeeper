@@ -16,13 +16,15 @@ const (
 	SignOptionRegistration
 )
 
+// SignModel модель окна приветствия
 type SignModel struct {
+	logger         logger.Logger
 	OptionSelected int
 	OptionOrder    []int
 	Options        []*components.OptionModel
 }
 
-func NewSignModel() *SignModel {
+func NewSignModel(logger logger.Logger) *SignModel {
 	options := []*components.OptionModel{
 		components.NewOption("Вход").
 			WithSelectedName("Вход \u279C").
@@ -37,6 +39,7 @@ func NewSignModel() *SignModel {
 			WithSelectStyle(lipgloss.NewStyle().PaddingLeft(4).Foreground(styles.ColorGreen)),
 	}
 	return &SignModel{
+		logger:      logger,
 		OptionOrder: []int{SignOptionLogin, SignOptionRegistration},
 		Options:     options,
 	}
@@ -47,13 +50,12 @@ func (m *SignModel) Init() tea.Cmd {
 }
 
 func (m *SignModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	logger.Get().Println("update")
 	switch msg.(type) {
 	case messages.SignLoginMsg:
-		logger.Get().Println("login")
+		m.logger.Debug("login")
 		return m, nil
 	case messages.SignRegistrationMsg:
-		logger.Get().Println("registration")
+		m.logger.Debug("registration")
 		return m, nil
 	}
 
@@ -71,6 +73,7 @@ func (m *SignModel) View() string {
 		b.WriteByte('\n')
 	}
 
+	m.logger.Debug(b.String())
 	return b.String()
 }
 
