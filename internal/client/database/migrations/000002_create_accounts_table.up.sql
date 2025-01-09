@@ -1,6 +1,5 @@
 CREATE TABLE accounts (
-    id INTEGER PRIMARY KEY,
-    uuid UUID UNIQUE,
+    uuid UUID PRIMARY KEY,
     user_id INTEGER,
     name VARCHAR(100),
     login VARCHAR(20),

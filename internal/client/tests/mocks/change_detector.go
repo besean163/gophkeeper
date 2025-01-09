@@ -7,7 +7,8 @@ package mock
 import (
 	reflect "reflect"
 
-	models "github.com/besean163/gophkeeper/internal/client/core/models"
+	client "github.com/besean163/gophkeeper/internal/models/client"
+	server "github.com/besean163/gophkeeper/internal/models/server"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -35,12 +36,12 @@ func (m *MockChangeDetector) EXPECT() *MockChangeDetectorMockRecorder {
 }
 
 // GetAccountChanges mocks base method.
-func (m *MockChangeDetector) GetAccountChanges(user models.User, items []models.Account, externalItems []models.ExternalAccount) ([]models.Account, []models.Account, []models.Account) {
+func (m *MockChangeDetector) GetAccountChanges(user client.User, items []client.Account, externalItems []server.Account) ([]client.Account, []client.Account, []client.Account) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountChanges", user, items, externalItems)
-	ret0, _ := ret[0].([]models.Account)
-	ret1, _ := ret[1].([]models.Account)
-	ret2, _ := ret[2].([]models.Account)
+	ret0, _ := ret[0].([]client.Account)
+	ret1, _ := ret[1].([]client.Account)
+	ret2, _ := ret[2].([]client.Account)
 	return ret0, ret1, ret2
 }
 
@@ -51,12 +52,12 @@ func (mr *MockChangeDetectorMockRecorder) GetAccountChanges(user, items, externa
 }
 
 // GetCardChanges mocks base method.
-func (m *MockChangeDetector) GetCardChanges(user models.User, items []models.Card, externalItems []models.ExternalCard) ([]models.Card, []models.Card, []models.Card) {
+func (m *MockChangeDetector) GetCardChanges(user client.User, items []client.Card, externalItems []server.Card) ([]client.Card, []client.Card, []client.Card) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCardChanges", user, items, externalItems)
-	ret0, _ := ret[0].([]models.Card)
-	ret1, _ := ret[1].([]models.Card)
-	ret2, _ := ret[2].([]models.Card)
+	ret0, _ := ret[0].([]client.Card)
+	ret1, _ := ret[1].([]client.Card)
+	ret2, _ := ret[2].([]client.Card)
 	return ret0, ret1, ret2
 }
 
@@ -67,12 +68,12 @@ func (mr *MockChangeDetectorMockRecorder) GetCardChanges(user, items, externalIt
 }
 
 // GetNoteChanges mocks base method.
-func (m *MockChangeDetector) GetNoteChanges(user models.User, items []models.Note, externalItems []models.ExternalNote) ([]models.Note, []models.Note, []models.Note) {
+func (m *MockChangeDetector) GetNoteChanges(user client.User, items []client.Note, externalItems []server.Note) ([]client.Note, []client.Note, []client.Note) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetNoteChanges", user, items, externalItems)
-	ret0, _ := ret[0].([]models.Note)
-	ret1, _ := ret[1].([]models.Note)
-	ret2, _ := ret[2].([]models.Note)
+	ret0, _ := ret[0].([]client.Note)
+	ret1, _ := ret[1].([]client.Note)
+	ret2, _ := ret[2].([]client.Note)
 	return ret0, ret1, ret2
 }
 

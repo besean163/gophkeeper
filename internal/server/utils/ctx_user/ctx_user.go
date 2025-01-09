@@ -3,8 +3,8 @@ package ctxuser
 import (
 	"context"
 
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	"github.com/besean163/gophkeeper/internal/server/api/entities"
-	"github.com/besean163/gophkeeper/internal/server/models"
 )
 
 func GetUserFromContext(ctx context.Context) (*models.User, bool) {

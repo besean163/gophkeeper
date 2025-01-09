@@ -7,7 +7,8 @@ package mock
 import (
 	reflect "reflect"
 
-	models "github.com/besean163/gophkeeper/internal/server/models"
+	client "github.com/besean163/gophkeeper/internal/models/client"
+	server "github.com/besean163/gophkeeper/internal/models/server"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -77,10 +78,10 @@ func (mr *MockRepositoryMockRecorder) DeleteNote(uuid interface{}) *gomock.Call 
 }
 
 // GetAccount mocks base method.
-func (m *MockRepository) GetAccount(uuid string) (*models.Account, error) {
+func (m *MockRepository) GetAccount(uuid string) (*server.Account, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccount", uuid)
-	ret0, _ := ret[0].(*models.Account)
+	ret0, _ := ret[0].(*server.Account)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -92,10 +93,10 @@ func (mr *MockRepositoryMockRecorder) GetAccount(uuid interface{}) *gomock.Call 
 }
 
 // GetAccounts mocks base method.
-func (m *MockRepository) GetAccounts(user models.User) ([]*models.Account, error) {
+func (m *MockRepository) GetAccounts(user server.User) ([]*server.Account, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccounts", user)
-	ret0, _ := ret[0].([]*models.Account)
+	ret0, _ := ret[0].([]*server.Account)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -107,10 +108,10 @@ func (mr *MockRepositoryMockRecorder) GetAccounts(user interface{}) *gomock.Call
 }
 
 // GetCard mocks base method.
-func (m *MockRepository) GetCard(uuid string) (*models.Card, error) {
+func (m *MockRepository) GetCard(uuid string) (*server.Card, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCard", uuid)
-	ret0, _ := ret[0].(*models.Card)
+	ret0, _ := ret[0].(*server.Card)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -122,10 +123,10 @@ func (mr *MockRepositoryMockRecorder) GetCard(uuid interface{}) *gomock.Call {
 }
 
 // GetCards mocks base method.
-func (m *MockRepository) GetCards(user models.User) ([]*models.Card, error) {
+func (m *MockRepository) GetCards(user server.User) ([]*server.Card, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCards", user)
-	ret0, _ := ret[0].([]*models.Card)
+	ret0, _ := ret[0].([]*server.Card)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -137,10 +138,10 @@ func (mr *MockRepositoryMockRecorder) GetCards(user interface{}) *gomock.Call {
 }
 
 // GetNote mocks base method.
-func (m *MockRepository) GetNote(uuid string) (*models.Note, error) {
+func (m *MockRepository) GetNote(uuid string) (*server.Note, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetNote", uuid)
-	ret0, _ := ret[0].(*models.Note)
+	ret0, _ := ret[0].(*server.Note)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -152,10 +153,10 @@ func (mr *MockRepositoryMockRecorder) GetNote(uuid interface{}) *gomock.Call {
 }
 
 // GetNotes mocks base method.
-func (m *MockRepository) GetNotes(user models.User) ([]*models.Note, error) {
+func (m *MockRepository) GetNotes(user server.User) ([]*server.Note, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetNotes", user)
-	ret0, _ := ret[0].([]*models.Note)
+	ret0, _ := ret[0].([]*server.Note)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -167,7 +168,7 @@ func (mr *MockRepositoryMockRecorder) GetNotes(user interface{}) *gomock.Call {
 }
 
 // SaveAccount mocks base method.
-func (m *MockRepository) SaveAccount(account *models.Account) error {
+func (m *MockRepository) SaveAccount(account *server.Account) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SaveAccount", account)
 	ret0, _ := ret[0].(error)
@@ -181,7 +182,7 @@ func (mr *MockRepositoryMockRecorder) SaveAccount(account interface{}) *gomock.C
 }
 
 // SaveCard mocks base method.
-func (m *MockRepository) SaveCard(card *models.Card) error {
+func (m *MockRepository) SaveCard(card *server.Card) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SaveCard", card)
 	ret0, _ := ret[0].(error)
@@ -195,7 +196,7 @@ func (mr *MockRepositoryMockRecorder) SaveCard(card interface{}) *gomock.Call {
 }
 
 // SaveNote mocks base method.
-func (m *MockRepository) SaveNote(note *models.Note) error {
+func (m *MockRepository) SaveNote(note *server.Note) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SaveNote", note)
 	ret0, _ := ret[0].(error)
@@ -232,11 +233,11 @@ func (m *MockChangeDetector) EXPECT() *MockChangeDetectorMockRecorder {
 }
 
 // GetAccountChanges mocks base method.
-func (m *MockChangeDetector) GetAccountChanges(user models.User, items []*models.Account, externalItems []models.ExternalAccount) ([]*models.Account, []*models.Account, []string) {
+func (m *MockChangeDetector) GetAccountChanges(user server.User, items []*server.Account, externalItems []client.Account) ([]*server.Account, []*server.Account, []string) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountChanges", user, items, externalItems)
-	ret0, _ := ret[0].([]*models.Account)
-	ret1, _ := ret[1].([]*models.Account)
+	ret0, _ := ret[0].([]*server.Account)
+	ret1, _ := ret[1].([]*server.Account)
 	ret2, _ := ret[2].([]string)
 	return ret0, ret1, ret2
 }
@@ -248,11 +249,11 @@ func (mr *MockChangeDetectorMockRecorder) GetAccountChanges(user, items, externa
 }
 
 // GetCardsChanges mocks base method.
-func (m *MockChangeDetector) GetCardsChanges(user models.User, items []*models.Card, externalItems []models.ExternalCard) ([]*models.Card, []*models.Card, []string) {
+func (m *MockChangeDetector) GetCardsChanges(user server.User, items []*server.Card, externalItems []client.Card) ([]*server.Card, []*server.Card, []string) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCardsChanges", user, items, externalItems)
-	ret0, _ := ret[0].([]*models.Card)
-	ret1, _ := ret[1].([]*models.Card)
+	ret0, _ := ret[0].([]*server.Card)
+	ret1, _ := ret[1].([]*server.Card)
 	ret2, _ := ret[2].([]string)
 	return ret0, ret1, ret2
 }
@@ -264,11 +265,11 @@ func (mr *MockChangeDetectorMockRecorder) GetCardsChanges(user, items, externalI
 }
 
 // GetNotesChanges mocks base method.
-func (m *MockChangeDetector) GetNotesChanges(user models.User, items []*models.Note, externalItems []models.ExternalNote) ([]*models.Note, []*models.Note, []string) {
+func (m *MockChangeDetector) GetNotesChanges(user server.User, items []*server.Note, externalItems []client.Note) ([]*server.Note, []*server.Note, []string) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetNotesChanges", user, items, externalItems)
-	ret0, _ := ret[0].([]*models.Note)
-	ret1, _ := ret[1].([]*models.Note)
+	ret0, _ := ret[0].([]*server.Note)
+	ret1, _ := ret[1].([]*server.Note)
 	ret2, _ := ret[2].([]string)
 	return ret0, ret1, ret2
 }

@@ -3,7 +3,8 @@ package bucket
 import (
 	"testing"
 
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
+
 	"github.com/besean163/gophkeeper/internal/client/core/services/data_service/database"
 	repositorymock "github.com/besean163/gophkeeper/internal/client/tests/mocks"
 	defaultlogger "github.com/besean163/gophkeeper/internal/logger/default_logger"
@@ -19,7 +20,15 @@ func TestCreateNote(t *testing.T) {
 	timecontroller := utilmock.NewMockTimeController(ctrl)
 	uuidController := utilmock.NewMockUUIDController(ctrl)
 
-	service := database.NewService(repository, encrypter, defaultlogger.NewDefaultLogger(), timecontroller, uuidController)
+	options := database.ServiceOptions{
+		Repository:     repository,
+		Encrypter:      encrypter,
+		Logger:         defaultlogger.NewDefaultLogger(),
+		TimeController: timecontroller,
+		UUIDController: uuidController,
+	}
+
+	service := database.NewService(options)
 	user := models.User{ID: 1}
 	item_1 := models.Note{
 		Name:    "name_1",
@@ -41,10 +50,8 @@ func TestCreateNote(t *testing.T) {
 			name: "success",
 			item: item_1,
 			mockSetup: func() {
-				uuidController.EXPECT().GetUUID().Return("new_uuid").Times(1)
 				timecontroller.EXPECT().Now().Return(int64(1)).Times(2)
 				repository.EXPECT().SaveNote(models.Note{
-					UUID:      "new_uuid",
 					UserID:    user.ID,
 					Name:      item_1.Name,
 					Content:   item_1.Content,

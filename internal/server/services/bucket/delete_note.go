@@ -1,6 +1,6 @@
 package bucket
 
-import "github.com/besean163/gophkeeper/internal/server/models"
+import models "github.com/besean163/gophkeeper/internal/models/server"
 
 // DeleteNote удаление заметки
 func (s Service) DeleteNote(user models.User, uuid string) error {

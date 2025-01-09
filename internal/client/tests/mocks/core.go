@@ -7,7 +7,7 @@ package mock
 import (
 	reflect "reflect"
 
-	models "github.com/besean163/gophkeeper/internal/client/core/models"
+	client "github.com/besean163/gophkeeper/internal/models/client"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -35,7 +35,7 @@ func (m *MockCore) EXPECT() *MockCoreMockRecorder {
 }
 
 // DeleteAccount mocks base method.
-func (m *MockCore) DeleteAccount(item models.Account) error {
+func (m *MockCore) DeleteAccount(item client.Account) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAccount", item)
 	ret0, _ := ret[0].(error)
@@ -49,7 +49,7 @@ func (mr *MockCoreMockRecorder) DeleteAccount(item interface{}) *gomock.Call {
 }
 
 // DeleteCard mocks base method.
-func (m *MockCore) DeleteCard(item models.Card) error {
+func (m *MockCore) DeleteCard(item client.Card) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteCard", item)
 	ret0, _ := ret[0].(error)
@@ -63,7 +63,7 @@ func (mr *MockCoreMockRecorder) DeleteCard(item interface{}) *gomock.Call {
 }
 
 // DeleteNote mocks base method.
-func (m *MockCore) DeleteNote(item models.Note) error {
+func (m *MockCore) DeleteNote(item client.Note) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteNote", item)
 	ret0, _ := ret[0].(error)
@@ -77,10 +77,10 @@ func (mr *MockCoreMockRecorder) DeleteNote(item interface{}) *gomock.Call {
 }
 
 // GetAccounts mocks base method.
-func (m *MockCore) GetAccounts() ([]models.Account, error) {
+func (m *MockCore) GetAccounts() ([]client.Account, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccounts")
-	ret0, _ := ret[0].([]models.Account)
+	ret0, _ := ret[0].([]client.Account)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -92,10 +92,10 @@ func (mr *MockCoreMockRecorder) GetAccounts() *gomock.Call {
 }
 
 // GetCards mocks base method.
-func (m *MockCore) GetCards() ([]models.Card, error) {
+func (m *MockCore) GetCards() ([]client.Card, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCards")
-	ret0, _ := ret[0].([]models.Card)
+	ret0, _ := ret[0].([]client.Card)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -107,10 +107,10 @@ func (mr *MockCoreMockRecorder) GetCards() *gomock.Call {
 }
 
 // GetNotes mocks base method.
-func (m *MockCore) GetNotes() ([]models.Note, error) {
+func (m *MockCore) GetNotes() ([]client.Note, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetNotes")
-	ret0, _ := ret[0].([]models.Note)
+	ret0, _ := ret[0].([]client.Note)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -150,7 +150,7 @@ func (mr *MockCoreMockRecorder) Register(login, password interface{}) *gomock.Ca
 }
 
 // SaveAccount mocks base method.
-func (m *MockCore) SaveAccount(item models.Account) error {
+func (m *MockCore) SaveAccount(item client.Account) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SaveAccount", item)
 	ret0, _ := ret[0].(error)
@@ -164,7 +164,7 @@ func (mr *MockCoreMockRecorder) SaveAccount(item interface{}) *gomock.Call {
 }
 
 // SaveCard mocks base method.
-func (m *MockCore) SaveCard(item models.Card) error {
+func (m *MockCore) SaveCard(item client.Card) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SaveCard", item)
 	ret0, _ := ret[0].(error)
@@ -178,7 +178,7 @@ func (mr *MockCoreMockRecorder) SaveCard(item interface{}) *gomock.Call {
 }
 
 // SaveNote mocks base method.
-func (m *MockCore) SaveNote(item models.Note) error {
+func (m *MockCore) SaveNote(item client.Note) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SaveNote", item)
 	ret0, _ := ret[0].(error)

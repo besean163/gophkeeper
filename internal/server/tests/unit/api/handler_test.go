@@ -7,7 +7,7 @@ import (
 
 	defaultlogger "github.com/besean163/gophkeeper/internal/logger/default_logger"
 	"github.com/besean163/gophkeeper/internal/server/api"
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
 )
 
 func TestHadler(t *testing.T) {

@@ -2,22 +2,25 @@
 package bucket
 
 import (
+	uuidcontroller "github.com/besean163/gophkeeper/internal/utils/uuid_controller"
 	"gorm.io/gorm"
 )
 
 // Repository структура репозитория
 type Repository struct {
 	db *gorm.DB
+	uuidcontroller.UUIDController
 }
 
 // NewRepository создание структуры репозитория
-func NewRepository(db *gorm.DB) Repository {
+func NewRepository(db *gorm.DB, uuidController uuidcontroller.UUIDController) Repository {
 	return Repository{
-		db: db,
+		db:             db,
+		UUIDController: uuidController,
 	}
 }
 
-func (r Repository) insertItem(item interface{}) error {
+func (r Repository) createItem(item interface{}) error {
 	result := r.db.Create(item)
 	err := result.Error
 	if err != nil {

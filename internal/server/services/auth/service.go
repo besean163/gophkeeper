@@ -2,7 +2,7 @@
 package auth
 
 import (
-	"github.com/besean163/gophkeeper/internal/server/models"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	apitoken "github.com/besean163/gophkeeper/internal/utils/api_token"
 	pencrypt "github.com/besean163/gophkeeper/internal/utils/password_encrypter"
 	timecontroller "github.com/besean163/gophkeeper/internal/utils/time_controller"
@@ -16,6 +16,14 @@ type Repository interface {
 	SaveUser(user *models.User) error
 }
 
+type ServiceOptions struct {
+	Repository
+	pencrypt.Encrypter
+	apitoken.Tokener
+	timecontroller.TimeController
+	uuidcontroller.UUIDController
+}
+
 // Service структура сервиса
 type Service struct {
 	repository     Repository
@@ -26,12 +34,12 @@ type Service struct {
 }
 
 // NewService создание структуры сервиса
-func NewService(repository Repository, encrypter pencrypt.Encrypter, tokener apitoken.Tokener, timeController timecontroller.TimeController, uuidController uuidcontroller.UUIDController) Service {
+func NewService(options ServiceOptions) Service {
 	return Service{
-		repository:     repository,
-		encrypter:      encrypter,
-		tokener:        tokener,
-		timeController: timeController,
-		uuidController: uuidController,
+		repository:     options.Repository,
+		encrypter:      options.Encrypter,
+		tokener:        options.Tokener,
+		timeController: options.TimeController,
+		uuidController: options.UUIDController,
 	}
 }

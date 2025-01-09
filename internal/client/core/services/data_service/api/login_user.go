@@ -3,12 +3,13 @@ package api
 import (
 	"errors"
 
-	"github.com/besean163/gophkeeper/internal/client/core/models"
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	models "github.com/besean163/gophkeeper/internal/models/client"
+
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
 )
 
 func (s Service) LoginUser(login, password string) (*models.User, error) {
-	input := entities.LoginInput{
+	input := input.Login{
 		Login:    login,
 		Password: password,
 	}
@@ -42,7 +43,7 @@ func (s Service) LoginUser(login, password string) (*models.User, error) {
 		}
 
 		// синхронизируем все данные пользователя на клиент
-		err = s.syncer.SyncAll(*user)
+		err = s.syncer.Sync(*user, SyncNodeAccount, SyncNodeNote, SyncNodeCard)
 		if err != nil {
 			return nil, err
 		}

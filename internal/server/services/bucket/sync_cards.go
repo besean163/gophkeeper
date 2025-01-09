@@ -1,12 +1,13 @@
 package bucket
 
 import (
+	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	"github.com/besean163/gophkeeper/internal/server/interfaces"
-	"github.com/besean163/gophkeeper/internal/server/models"
 )
 
 // SyncCards синхронизация карт
-func (s Service) SyncCards(service interfaces.BucketService, user models.User, externalItems []models.ExternalCard) error {
+func (s Service) SyncCards(service interfaces.BucketService, user models.User, externalItems []clientmodels.Card) error {
 	items, err := s.repository.GetCards(user)
 	if err != nil {
 		return err

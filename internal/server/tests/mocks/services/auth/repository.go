@@ -7,7 +7,7 @@ package mock
 import (
 	reflect "reflect"
 
-	models "github.com/besean163/gophkeeper/internal/server/models"
+	server "github.com/besean163/gophkeeper/internal/models/server"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -35,10 +35,10 @@ func (m *MockRepository) EXPECT() *MockRepositoryMockRecorder {
 }
 
 // GetUser mocks base method.
-func (m *MockRepository) GetUser(id int) (*models.User, error) {
+func (m *MockRepository) GetUser(id int) (*server.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUser", id)
-	ret0, _ := ret[0].(*models.User)
+	ret0, _ := ret[0].(*server.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -50,10 +50,10 @@ func (mr *MockRepositoryMockRecorder) GetUser(id interface{}) *gomock.Call {
 }
 
 // GetUserByLogin mocks base method.
-func (m *MockRepository) GetUserByLogin(login string) *models.User {
+func (m *MockRepository) GetUserByLogin(login string) *server.User {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByLogin", login)
-	ret0, _ := ret[0].(*models.User)
+	ret0, _ := ret[0].(*server.User)
 	return ret0
 }
 
@@ -64,7 +64,7 @@ func (mr *MockRepositoryMockRecorder) GetUserByLogin(login interface{}) *gomock.
 }
 
 // SaveUser mocks base method.
-func (m *MockRepository) SaveUser(user *models.User) error {
+func (m *MockRepository) SaveUser(user *server.User) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SaveUser", user)
 	ret0, _ := ret[0].(error)

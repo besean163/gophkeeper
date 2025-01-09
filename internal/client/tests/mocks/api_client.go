@@ -7,7 +7,8 @@ package mock
 import (
 	reflect "reflect"
 
-	entities "github.com/besean163/gophkeeper/internal/server/api/entities"
+	input "github.com/besean163/gophkeeper/internal/server/api/entities/input"
+	output "github.com/besean163/gophkeeper/internal/server/api/entities/output"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -35,10 +36,10 @@ func (m *MockApiClient) EXPECT() *MockApiClientMockRecorder {
 }
 
 // GetAccounts mocks base method.
-func (m *MockApiClient) GetAccounts() (*entities.GetAccountsOutput, error) {
+func (m *MockApiClient) GetAccounts() (*output.GetAccounts, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccounts")
-	ret0, _ := ret[0].(*entities.GetAccountsOutput)
+	ret0, _ := ret[0].(*output.GetAccounts)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -50,10 +51,10 @@ func (mr *MockApiClientMockRecorder) GetAccounts() *gomock.Call {
 }
 
 // GetCards mocks base method.
-func (m *MockApiClient) GetCards() (*entities.GetCardsOutput, error) {
+func (m *MockApiClient) GetCards() (*output.GetCards, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCards")
-	ret0, _ := ret[0].(*entities.GetCardsOutput)
+	ret0, _ := ret[0].(*output.GetCards)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -65,10 +66,10 @@ func (mr *MockApiClientMockRecorder) GetCards() *gomock.Call {
 }
 
 // GetNotes mocks base method.
-func (m *MockApiClient) GetNotes() (*entities.GetNotesOutput, error) {
+func (m *MockApiClient) GetNotes() (*output.GetNotes, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetNotes")
-	ret0, _ := ret[0].(*entities.GetNotesOutput)
+	ret0, _ := ret[0].(*output.GetNotes)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -94,10 +95,10 @@ func (mr *MockApiClientMockRecorder) HasConnection() *gomock.Call {
 }
 
 // Login mocks base method.
-func (m *MockApiClient) Login(input entities.LoginInput) (entities.TokenOutput, error) {
+func (m *MockApiClient) Login(input input.Login) (output.Token, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Login", input)
-	ret0, _ := ret[0].(entities.TokenOutput)
+	ret0, _ := ret[0].(output.Token)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -109,10 +110,10 @@ func (mr *MockApiClientMockRecorder) Login(input interface{}) *gomock.Call {
 }
 
 // Register mocks base method.
-func (m *MockApiClient) Register(input entities.RegisterInput) (entities.TokenOutput, error) {
+func (m *MockApiClient) Register(input input.Register) (output.Token, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Register", input)
-	ret0, _ := ret[0].(entities.TokenOutput)
+	ret0, _ := ret[0].(output.Token)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -136,7 +137,7 @@ func (mr *MockApiClientMockRecorder) SetToken(token interface{}) *gomock.Call {
 }
 
 // SyncAccounts mocks base method.
-func (m *MockApiClient) SyncAccounts(input entities.AccountsSyncInput) error {
+func (m *MockApiClient) SyncAccounts(input input.AccountsSync) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SyncAccounts", input)
 	ret0, _ := ret[0].(error)
@@ -150,7 +151,7 @@ func (mr *MockApiClientMockRecorder) SyncAccounts(input interface{}) *gomock.Cal
 }
 
 // SyncCards mocks base method.
-func (m *MockApiClient) SyncCards(input entities.CardsSyncInput) error {
+func (m *MockApiClient) SyncCards(input input.CardsSync) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SyncCards", input)
 	ret0, _ := ret[0].(error)
@@ -164,7 +165,7 @@ func (mr *MockApiClientMockRecorder) SyncCards(input interface{}) *gomock.Call {
 }
 
 // SyncNotes mocks base method.
-func (m *MockApiClient) SyncNotes(input entities.NotesSyncInput) error {
+func (m *MockApiClient) SyncNotes(input input.NotesSync) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SyncNotes", input)
 	ret0, _ := ret[0].(error)

@@ -3,7 +3,8 @@ package models
 import (
 	"testing"
 
-	coremodels "github.com/besean163/gophkeeper/internal/client/core/models"
+	coremodels "github.com/besean163/gophkeeper/internal/models/client"
+
 	mock "github.com/besean163/gophkeeper/internal/client/tests/mocks"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	"github.com/besean163/gophkeeper/internal/client/tui/models"

@@ -10,10 +10,12 @@ import (
 	"testing"
 
 	defaultlogger "github.com/besean163/gophkeeper/internal/logger/default_logger"
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
+	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
+
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	"github.com/besean163/gophkeeper/internal/server/api/entities"
 	"github.com/besean163/gophkeeper/internal/server/api/route"
-	"github.com/besean163/gophkeeper/internal/server/models"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
 	mock "github.com/besean163/gophkeeper/internal/server/tests/mocks"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -46,7 +48,7 @@ func TestCardsSyncRoute(t *testing.T) {
 			exceptCode:  http.StatusOK,
 			user:        &user,
 			mockSetup: func() {
-				bucketService.EXPECT().SyncCards(gomock.Any(), gomock.Any(), []models.ExternalCard{
+				bucketService.EXPECT().SyncCards(gomock.Any(), gomock.Any(), []clientmodels.Card{
 					{
 						UUID:      "uuid_1",
 						Name:      "name_1",

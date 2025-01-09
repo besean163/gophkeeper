@@ -1,6 +1,8 @@
 package interfaces
 
-import "github.com/besean163/gophkeeper/internal/client/core/models"
+import (
+	models "github.com/besean163/gophkeeper/internal/models/client"
+)
 
 // DataService интерфейс сервиса для работы с данными
 type DataService interface {

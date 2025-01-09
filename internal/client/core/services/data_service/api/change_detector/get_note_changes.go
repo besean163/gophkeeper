@@ -1,10 +1,11 @@
 package changedetector
 
 import (
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
+	servermodels "github.com/besean163/gophkeeper/internal/models/server"
 )
 
-func (d ChangeDetector) GetNoteChanges(user models.User, items []models.Note, externalItems []models.ExternalNote) (created []models.Note, updated []models.Note, deleted []models.Note) {
+func (d ChangeDetector) GetNoteChanges(user models.User, items []models.Note, externalItems []servermodels.Note) (created []models.Note, updated []models.Note, deleted []models.Note) {
 	created = make([]models.Note, 0)
 	updated = make([]models.Note, 0)
 	deleted = make([]models.Note, 0)
@@ -14,7 +15,7 @@ func (d ChangeDetector) GetNoteChanges(user models.User, items []models.Note, ex
 		mapItems[item.UUID] = item
 	}
 
-	mapExternalItems := map[string]models.ExternalNote{}
+	mapExternalItems := map[string]servermodels.Note{}
 	for _, externalItem := range externalItems {
 		mapExternalItems[externalItem.UUID] = externalItem
 	}

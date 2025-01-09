@@ -1,10 +1,11 @@
 package changedetector
 
 import (
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
+	servermodels "github.com/besean163/gophkeeper/internal/models/server"
 )
 
-func (d ChangeDetector) GetAccountChanges(user models.User, items []models.Account, externalItems []models.ExternalAccount) (created []models.Account, updated []models.Account, deleted []models.Account) {
+func (d ChangeDetector) GetAccountChanges(user models.User, items []models.Account, externalItems []servermodels.Account) (created []models.Account, updated []models.Account, deleted []models.Account) {
 	created = make([]models.Account, 0)
 	updated = make([]models.Account, 0)
 	deleted = make([]models.Account, 0)
@@ -14,7 +15,7 @@ func (d ChangeDetector) GetAccountChanges(user models.User, items []models.Accou
 		mapItems[item.UUID] = item
 	}
 
-	mapExternalItems := map[string]models.ExternalAccount{}
+	mapExternalItems := map[string]servermodels.Account{}
 	for _, externalItem := range externalItems {
 		mapExternalItems[externalItem.UUID] = externalItem
 	}

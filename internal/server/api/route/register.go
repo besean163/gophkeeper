@@ -8,9 +8,10 @@ import (
 	"net/http"
 
 	"github.com/besean163/gophkeeper/internal/logger"
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/output"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
 )
 
 func RegisterRoute(dep dependencies.Dependencies) http.HandlerFunc {
@@ -22,7 +23,7 @@ func RegisterRoute(dep dependencies.Dependencies) http.HandlerFunc {
 			return
 		}
 
-		input := entities.RegisterInput{}
+		input := input.Register{}
 		err = json.Unmarshal(body, &input)
 		if err != nil {
 			apierrors.SendError(w, http.StatusBadRequest, apierrors.ErrorInvalidJSONData.Error())
@@ -46,7 +47,7 @@ func RegisterRoute(dep dependencies.Dependencies) http.HandlerFunc {
 			return
 		}
 
-		token := entities.TokenOutput{
+		token := output.Token{
 			Token: tokenString,
 		}
 

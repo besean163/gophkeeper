@@ -3,7 +3,7 @@ package database
 import (
 	"errors"
 
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
 )
 
 func (s Service) RegisterUser(login, password string) (*models.User, error) {

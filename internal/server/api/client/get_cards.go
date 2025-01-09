@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/output"
 )
 
 // GetCards запрос на получение списка карт.
-func (c Client) GetCards() (*entities.GetCardsOutput, error) {
-	var output *entities.GetCardsOutput
+func (c Client) GetCards() (*output.GetCards, error) {
+	var output *output.GetCards
 	response, err := c.Get(c.Host + "/api/cards")
 
 	if err != nil {

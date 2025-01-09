@@ -7,7 +7,7 @@ package mock
 import (
 	reflect "reflect"
 
-	models "github.com/besean163/gophkeeper/internal/client/core/models"
+	client "github.com/besean163/gophkeeper/internal/models/client"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -77,10 +77,10 @@ func (mr *MockRepositoryMockRecorder) DeleteNote(uuid interface{}) *gomock.Call 
 }
 
 // GetAccounts mocks base method.
-func (m *MockRepository) GetAccounts(user models.User) ([]models.Account, error) {
+func (m *MockRepository) GetAccounts(user client.User) ([]client.Account, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccounts", user)
-	ret0, _ := ret[0].([]models.Account)
+	ret0, _ := ret[0].([]client.Account)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -92,10 +92,10 @@ func (mr *MockRepositoryMockRecorder) GetAccounts(user interface{}) *gomock.Call
 }
 
 // GetCards mocks base method.
-func (m *MockRepository) GetCards(user models.User) ([]models.Card, error) {
+func (m *MockRepository) GetCards(user client.User) ([]client.Card, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCards", user)
-	ret0, _ := ret[0].([]models.Card)
+	ret0, _ := ret[0].([]client.Card)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -107,10 +107,10 @@ func (mr *MockRepositoryMockRecorder) GetCards(user interface{}) *gomock.Call {
 }
 
 // GetNotes mocks base method.
-func (m *MockRepository) GetNotes(user models.User) ([]models.Note, error) {
+func (m *MockRepository) GetNotes(user client.User) ([]client.Note, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetNotes", user)
-	ret0, _ := ret[0].([]models.Note)
+	ret0, _ := ret[0].([]client.Note)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -122,10 +122,10 @@ func (mr *MockRepositoryMockRecorder) GetNotes(user interface{}) *gomock.Call {
 }
 
 // GetUserByLogin mocks base method.
-func (m *MockRepository) GetUserByLogin(login string) *models.User {
+func (m *MockRepository) GetUserByLogin(login string) *client.User {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByLogin", login)
-	ret0, _ := ret[0].(*models.User)
+	ret0, _ := ret[0].(*client.User)
 	return ret0
 }
 
@@ -136,7 +136,7 @@ func (mr *MockRepositoryMockRecorder) GetUserByLogin(login interface{}) *gomock.
 }
 
 // SaveAccount mocks base method.
-func (m *MockRepository) SaveAccount(item models.Account) error {
+func (m *MockRepository) SaveAccount(item client.Account) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SaveAccount", item)
 	ret0, _ := ret[0].(error)
@@ -150,7 +150,7 @@ func (mr *MockRepositoryMockRecorder) SaveAccount(item interface{}) *gomock.Call
 }
 
 // SaveCard mocks base method.
-func (m *MockRepository) SaveCard(item models.Card) error {
+func (m *MockRepository) SaveCard(item client.Card) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SaveCard", item)
 	ret0, _ := ret[0].(error)
@@ -164,7 +164,7 @@ func (mr *MockRepositoryMockRecorder) SaveCard(item interface{}) *gomock.Call {
 }
 
 // SaveNote mocks base method.
-func (m *MockRepository) SaveNote(item models.Note) error {
+func (m *MockRepository) SaveNote(item client.Note) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SaveNote", item)
 	ret0, _ := ret[0].(error)
@@ -178,7 +178,7 @@ func (mr *MockRepositoryMockRecorder) SaveNote(item interface{}) *gomock.Call {
 }
 
 // SaveUser mocks base method.
-func (m *MockRepository) SaveUser(user models.User) error {
+func (m *MockRepository) SaveUser(user client.User) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SaveUser", user)
 	ret0, _ := ret[0].(error)

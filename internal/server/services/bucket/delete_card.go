@@ -1,6 +1,6 @@
 package bucket
 
-import "github.com/besean163/gophkeeper/internal/server/models"
+import models "github.com/besean163/gophkeeper/internal/models/server"
 
 // DeleteCard удаление карты
 func (s Service) DeleteCard(user models.User, uuid string) error {

@@ -1,11 +1,14 @@
 package database
 
-import "github.com/besean163/gophkeeper/internal/client/core/models"
+import (
+	models "github.com/besean163/gophkeeper/internal/models/client"
+)
 
 // SaveAccount сохранение аккаунта
 func (r Repository) SaveAccount(item models.Account) error {
-	if item.ID == 0 {
-		return r.insertItem(&item)
+	if item.UUID == "" {
+		item.UUID = r.UUIDController.GetUUID()
+		return r.createItem(&item)
 	}
 
 	return r.updateItem(&item)

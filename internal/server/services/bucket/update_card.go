@@ -1,8 +1,8 @@
 package bucket
 
 import (
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
-	"github.com/besean163/gophkeeper/internal/server/models"
 )
 
 // UpdateCard обновление карты

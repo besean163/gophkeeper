@@ -1,6 +1,6 @@
 package bucket
 
-import "github.com/besean163/gophkeeper/internal/server/models"
+import models "github.com/besean163/gophkeeper/internal/models/server"
 
 // GetNotes получение заметок
 func (s Service) GetNotes(user models.User) ([]*models.Note, error) {

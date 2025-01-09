@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/besean163/gophkeeper/internal/logger"
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
 )
 
 // LogMiddleware запись в жернал данных о запросе.

@@ -1,12 +1,14 @@
 package bucket
 
 import (
+	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
+	models "github.com/besean163/gophkeeper/internal/models/server"
+
 	"github.com/besean163/gophkeeper/internal/server/interfaces"
-	"github.com/besean163/gophkeeper/internal/server/models"
 )
 
 // SyncNotes синхронизация заметок
-func (s Service) SyncNotes(service interfaces.BucketService, user models.User, externalItems []models.ExternalNote) error {
+func (s Service) SyncNotes(service interfaces.BucketService, user models.User, externalItems []clientmodels.Note) error {
 	items, err := s.repository.GetNotes(user)
 	if err != nil {
 		return err

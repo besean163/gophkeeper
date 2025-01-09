@@ -1,6 +1,6 @@
 package bucket
 
-import "github.com/besean163/gophkeeper/internal/server/models"
+import models "github.com/besean163/gophkeeper/internal/models/server"
 
 // GetCards получение списка карт
 func (r Repository) GetCards(user models.User) ([]*models.Card, error) {

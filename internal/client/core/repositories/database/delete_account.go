@@ -1,6 +1,8 @@
 package database
 
-import "github.com/besean163/gophkeeper/internal/client/core/models"
+import (
+	models "github.com/besean163/gophkeeper/internal/models/client"
+)
 
 // DeleteAccount удаление аккаунта
 func (r Repository) DeleteAccount(uuid string) error {

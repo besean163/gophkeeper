@@ -1,10 +1,11 @@
 package changedetector
 
 import (
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
+	servermodels "github.com/besean163/gophkeeper/internal/models/server"
 )
 
-func (d ChangeDetector) GetCardChanges(user models.User, items []models.Card, externalItems []models.ExternalCard) (created []models.Card, updated []models.Card, deleted []models.Card) {
+func (d ChangeDetector) GetCardChanges(user models.User, items []models.Card, externalItems []servermodels.Card) (created []models.Card, updated []models.Card, deleted []models.Card) {
 	created = make([]models.Card, 0)
 	updated = make([]models.Card, 0)
 	deleted = make([]models.Card, 0)
@@ -14,7 +15,7 @@ func (d ChangeDetector) GetCardChanges(user models.User, items []models.Card, ex
 		mapItems[item.UUID] = item
 	}
 
-	mapExternalItems := map[string]models.ExternalCard{}
+	mapExternalItems := map[string]servermodels.Card{}
 	for _, externalItem := range externalItems {
 		mapExternalItems[externalItem.UUID] = externalItem
 	}

@@ -7,7 +7,7 @@ package mock
 import (
 	reflect "reflect"
 
-	models "github.com/besean163/gophkeeper/internal/client/core/models"
+	client "github.com/besean163/gophkeeper/internal/models/client"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -35,7 +35,7 @@ func (m *MockDataService) EXPECT() *MockDataServiceMockRecorder {
 }
 
 // CreateAccount mocks base method.
-func (m *MockDataService) CreateAccount(user models.User, item models.Account) error {
+func (m *MockDataService) CreateAccount(user client.User, item client.Account) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateAccount", user, item)
 	ret0, _ := ret[0].(error)
@@ -49,7 +49,7 @@ func (mr *MockDataServiceMockRecorder) CreateAccount(user, item interface{}) *go
 }
 
 // CreateCard mocks base method.
-func (m *MockDataService) CreateCard(user models.User, item models.Card) error {
+func (m *MockDataService) CreateCard(user client.User, item client.Card) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCard", user, item)
 	ret0, _ := ret[0].(error)
@@ -63,7 +63,7 @@ func (mr *MockDataServiceMockRecorder) CreateCard(user, item interface{}) *gomoc
 }
 
 // CreateNote mocks base method.
-func (m *MockDataService) CreateNote(user models.User, item models.Note) error {
+func (m *MockDataService) CreateNote(user client.User, item client.Note) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateNote", user, item)
 	ret0, _ := ret[0].(error)
@@ -77,7 +77,7 @@ func (mr *MockDataServiceMockRecorder) CreateNote(user, item interface{}) *gomoc
 }
 
 // DeleteAccount mocks base method.
-func (m *MockDataService) DeleteAccount(user models.User, item models.Account, soft bool) error {
+func (m *MockDataService) DeleteAccount(user client.User, item client.Account, soft bool) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAccount", user, item, soft)
 	ret0, _ := ret[0].(error)
@@ -91,7 +91,7 @@ func (mr *MockDataServiceMockRecorder) DeleteAccount(user, item, soft interface{
 }
 
 // DeleteCard mocks base method.
-func (m *MockDataService) DeleteCard(user models.User, item models.Card, soft bool) error {
+func (m *MockDataService) DeleteCard(user client.User, item client.Card, soft bool) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteCard", user, item, soft)
 	ret0, _ := ret[0].(error)
@@ -105,7 +105,7 @@ func (mr *MockDataServiceMockRecorder) DeleteCard(user, item, soft interface{}) 
 }
 
 // DeleteNote mocks base method.
-func (m *MockDataService) DeleteNote(user models.User, item models.Note, soft bool) error {
+func (m *MockDataService) DeleteNote(user client.User, item client.Note, soft bool) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteNote", user, item, soft)
 	ret0, _ := ret[0].(error)
@@ -119,10 +119,10 @@ func (mr *MockDataServiceMockRecorder) DeleteNote(user, item, soft interface{}) 
 }
 
 // GetAccounts mocks base method.
-func (m *MockDataService) GetAccounts(user models.User) ([]models.Account, error) {
+func (m *MockDataService) GetAccounts(user client.User) ([]client.Account, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccounts", user)
-	ret0, _ := ret[0].([]models.Account)
+	ret0, _ := ret[0].([]client.Account)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -134,10 +134,10 @@ func (mr *MockDataServiceMockRecorder) GetAccounts(user interface{}) *gomock.Cal
 }
 
 // GetCards mocks base method.
-func (m *MockDataService) GetCards(user models.User) ([]models.Card, error) {
+func (m *MockDataService) GetCards(user client.User) ([]client.Card, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCards", user)
-	ret0, _ := ret[0].([]models.Card)
+	ret0, _ := ret[0].([]client.Card)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -149,10 +149,10 @@ func (mr *MockDataServiceMockRecorder) GetCards(user interface{}) *gomock.Call {
 }
 
 // GetNotes mocks base method.
-func (m *MockDataService) GetNotes(user models.User) ([]models.Note, error) {
+func (m *MockDataService) GetNotes(user client.User) ([]client.Note, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetNotes", user)
-	ret0, _ := ret[0].([]models.Note)
+	ret0, _ := ret[0].([]client.Note)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -164,10 +164,10 @@ func (mr *MockDataServiceMockRecorder) GetNotes(user interface{}) *gomock.Call {
 }
 
 // GetUserByLogin mocks base method.
-func (m *MockDataService) GetUserByLogin(login string) *models.User {
+func (m *MockDataService) GetUserByLogin(login string) *client.User {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByLogin", login)
-	ret0, _ := ret[0].(*models.User)
+	ret0, _ := ret[0].(*client.User)
 	return ret0
 }
 
@@ -178,10 +178,10 @@ func (mr *MockDataServiceMockRecorder) GetUserByLogin(login interface{}) *gomock
 }
 
 // LoginUser mocks base method.
-func (m *MockDataService) LoginUser(login, password string) (*models.User, error) {
+func (m *MockDataService) LoginUser(login, password string) (*client.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "LoginUser", login, password)
-	ret0, _ := ret[0].(*models.User)
+	ret0, _ := ret[0].(*client.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -193,10 +193,10 @@ func (mr *MockDataServiceMockRecorder) LoginUser(login, password interface{}) *g
 }
 
 // RegisterUser mocks base method.
-func (m *MockDataService) RegisterUser(login, password string) (*models.User, error) {
+func (m *MockDataService) RegisterUser(login, password string) (*client.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RegisterUser", login, password)
-	ret0, _ := ret[0].(*models.User)
+	ret0, _ := ret[0].(*client.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -208,7 +208,7 @@ func (mr *MockDataServiceMockRecorder) RegisterUser(login, password interface{})
 }
 
 // SaveUser mocks base method.
-func (m *MockDataService) SaveUser(user models.User) error {
+func (m *MockDataService) SaveUser(user client.User) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SaveUser", user)
 	ret0, _ := ret[0].(error)
@@ -222,7 +222,7 @@ func (mr *MockDataServiceMockRecorder) SaveUser(user interface{}) *gomock.Call {
 }
 
 // UpdateAccount mocks base method.
-func (m *MockDataService) UpdateAccount(user models.User, item models.Account) error {
+func (m *MockDataService) UpdateAccount(user client.User, item client.Account) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateAccount", user, item)
 	ret0, _ := ret[0].(error)
@@ -236,7 +236,7 @@ func (mr *MockDataServiceMockRecorder) UpdateAccount(user, item interface{}) *go
 }
 
 // UpdateCard mocks base method.
-func (m *MockDataService) UpdateCard(user models.User, item models.Card) error {
+func (m *MockDataService) UpdateCard(user client.User, item client.Card) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateCard", user, item)
 	ret0, _ := ret[0].(error)
@@ -250,7 +250,7 @@ func (mr *MockDataServiceMockRecorder) UpdateCard(user, item interface{}) *gomoc
 }
 
 // UpdateNote mocks base method.
-func (m *MockDataService) UpdateNote(user models.User, item models.Note) error {
+func (m *MockDataService) UpdateNote(user client.User, item client.Note) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateNote", user, item)
 	ret0, _ := ret[0].(error)

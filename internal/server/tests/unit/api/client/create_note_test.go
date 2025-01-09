@@ -7,7 +7,7 @@ import (
 
 	defaultlogger "github.com/besean163/gophkeeper/internal/logger/default_logger"
 	"github.com/besean163/gophkeeper/internal/server/api/client"
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
 	mock "github.com/besean163/gophkeeper/internal/server/tests/mocks/api/client"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -29,7 +29,7 @@ func TestCreateNote(t *testing.T) {
 			name: "success",
 			mockSetup: func() {
 				response.EXPECT().StatusCode().Return(http.StatusOK).Times(1)
-				httpClient.EXPECT().Post("/api/note", entities.NoteCreateInput{}, map[string]string{
+				httpClient.EXPECT().Post("/api/note", input.NoteCreate{}, map[string]string{
 					"Content-Type": "application/json",
 				}).Return(response, nil).Times(1)
 			},
@@ -38,7 +38,7 @@ func TestCreateNote(t *testing.T) {
 			name: "success_with_token",
 			mockSetup: func() {
 				response.EXPECT().StatusCode().Return(http.StatusOK).Times(1)
-				httpClient.EXPECT().Post("/api/note", entities.NoteCreateInput{}, map[string]string{
+				httpClient.EXPECT().Post("/api/note", input.NoteCreate{}, map[string]string{
 					"Content-Type":  "application/json",
 					"Authorization": "Bearer token",
 				}).Return(response, nil).Times(1)
@@ -66,7 +66,7 @@ func TestCreateNote(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			test.mockSetup()
 			client.SetToken(test.token)
-			err := client.CreateNote(entities.NoteCreateInput{})
+			err := client.CreateNote(input.NoteCreate{})
 			assert.Equal(t, test.result, err)
 		})
 	}

@@ -11,10 +11,10 @@ import (
 	"time"
 
 	defaultlogger "github.com/besean163/gophkeeper/internal/logger/default_logger"
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	"github.com/besean163/gophkeeper/internal/server/api/entities"
 	"github.com/besean163/gophkeeper/internal/server/api/route"
-	"github.com/besean163/gophkeeper/internal/server/models"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
 	mock "github.com/besean163/gophkeeper/internal/server/tests/mocks"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"

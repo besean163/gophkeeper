@@ -6,10 +6,11 @@ import (
 	"net/http"
 
 	"github.com/besean163/gophkeeper/internal/logger"
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	models "github.com/besean163/gophkeeper/internal/models/server"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
-	"github.com/besean163/gophkeeper/internal/server/models"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
+
 	ctxuser "github.com/besean163/gophkeeper/internal/server/utils/ctx_user"
 )
 
@@ -29,7 +30,7 @@ func CardUpdateRoute(dep dependencies.Dependencies) http.HandlerFunc {
 			return
 		}
 
-		input := entities.CardUpdateInput{}
+		input := input.CardUpdate{}
 		err = json.Unmarshal(body, &input)
 		if err != nil {
 			dep.Logger.Error("put make json", logger.NewField("error", err.Error()))

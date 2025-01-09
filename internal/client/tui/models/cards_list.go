@@ -4,7 +4,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
+
 	"github.com/besean163/gophkeeper/internal/client/interfaces"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/styles"

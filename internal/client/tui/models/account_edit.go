@@ -3,7 +3,8 @@ package models
 import (
 	"strings"
 
-	coremodels "github.com/besean163/gophkeeper/internal/client/core/models"
+	coremodels "github.com/besean163/gophkeeper/internal/models/client"
+
 	"github.com/besean163/gophkeeper/internal/client/interfaces"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/components"
@@ -248,7 +249,6 @@ func (m *AccountEditModel) setButtons() {
 
 func (m *AccountEditModel) save() tea.Cmd {
 	account := m.account
-	account.ID = m.account.ID
 	account.Name = m.inputs[AccountEditInputName].Value()
 	account.Login = m.inputs[AccountEditInputLogin].Value()
 	account.Password = m.inputs[AccountEditInputPassword].Value()

@@ -8,16 +8,17 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/output"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
 )
 
 // Register запрос на регистрацию пользователя.
 // Параметры:
 //   - input: структура запроса.
-func (c Client) Register(input entities.RegisterInput) (entities.TokenOutput, error) {
+func (c Client) Register(input input.Register) (output.Token, error) {
 
-	var token entities.TokenOutput
+	var token output.Token
 	b, err := json.Marshal(input)
 	if err != nil {
 		return token, errors.New("ошибка зашифровки запроса")
@@ -53,7 +54,7 @@ func (c Client) Register(input entities.RegisterInput) (entities.TokenOutput, er
 		return token, fmt.Errorf("ошибка сервера %d: %s", apiError.Error.Code, apiError.Error.Description)
 	}
 
-	t := entities.TokenOutput{}
+	t := output.Token{}
 	rBody, err := io.ReadAll(response.Body)
 	if err != nil {
 		return token, errors.New("ошибка чтения ответа")

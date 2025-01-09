@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	defaultlogger "github.com/besean163/gophkeeper/internal/logger/default_logger"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	"github.com/besean163/gophkeeper/internal/server/api/client"
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
-	"github.com/besean163/gophkeeper/internal/server/models"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/output"
 	mock "github.com/besean163/gophkeeper/internal/server/tests/mocks/api/client"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -24,7 +24,7 @@ func TestGetAccounts(t *testing.T) {
 		token     string
 		mockSetup func()
 		result    struct {
-			item *entities.GetAccountsOutput
+			item *output.GetAccounts
 			err  error
 		}
 	}{
@@ -35,10 +35,10 @@ func TestGetAccounts(t *testing.T) {
 				httpClient.EXPECT().Get("/api/accounts", map[string]string{}).Return(response, nil).Times(1)
 			},
 			result: struct {
-				item *entities.GetAccountsOutput
+				item *output.GetAccounts
 				err  error
 			}{
-				item: &entities.GetAccountsOutput{
+				item: &output.GetAccounts{
 					Accounts: []*models.Account{},
 				},
 				err: nil,
@@ -54,10 +54,10 @@ func TestGetAccounts(t *testing.T) {
 			},
 			token: "token",
 			result: struct {
-				item *entities.GetAccountsOutput
+				item *output.GetAccounts
 				err  error
 			}{
-				item: &entities.GetAccountsOutput{
+				item: &output.GetAccounts{
 					Accounts: []*models.Account{},
 				},
 				err: nil,
@@ -69,7 +69,7 @@ func TestGetAccounts(t *testing.T) {
 				httpClient.EXPECT().Get(gomock.Any(), gomock.Any()).Return(response, errors.New("test error")).Times(1)
 			},
 			result: struct {
-				item *entities.GetAccountsOutput
+				item *output.GetAccounts
 				err  error
 			}{
 				item: nil,

@@ -1,6 +1,8 @@
 package messages
 
-import "github.com/besean163/gophkeeper/internal/client/core/models"
+import (
+	models "github.com/besean163/gophkeeper/internal/models/client"
+)
 
 type SignLoginMsg struct{}
 type SignRegistrationMsg struct{}

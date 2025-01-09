@@ -1,6 +1,8 @@
 package interfaces
 
-import "github.com/besean163/gophkeeper/internal/server/models"
+import (
+	models "github.com/besean163/gophkeeper/internal/models/server"
+)
 
 // AuthService интерфейс сервиса авторизации
 type AuthService interface {

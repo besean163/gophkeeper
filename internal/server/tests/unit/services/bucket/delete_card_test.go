@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/besean163/gophkeeper/internal/server/models"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	"github.com/besean163/gophkeeper/internal/server/services/bucket"
 	repositorymock "github.com/besean163/gophkeeper/internal/server/tests/mocks/services/bucket"
 	utilmock "github.com/besean163/gophkeeper/internal/tests/mocks/utils"
@@ -18,7 +18,12 @@ func TestDeleteCard(t *testing.T) {
 	timecontroller := utilmock.NewMockTimeController(ctrl)
 	uuidController := utilmock.NewMockUUIDController(ctrl)
 
-	service := bucket.NewService(repository, timecontroller, uuidController, nil)
+	options := bucket.ServiceOptions{
+		Repository:     repository,
+		TimeController: timecontroller,
+		UUIDController: uuidController,
+	}
+	service := bucket.NewService(options)
 	user := models.User{ID: 1}
 
 	tests := []struct {

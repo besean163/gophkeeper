@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
 )
 
 func (s Service) UpdateNote(user models.User, item models.Note) error {
@@ -10,7 +10,7 @@ func (s Service) UpdateNote(user models.User, item models.Note) error {
 	if err != nil {
 		return err
 	}
-	err = s.syncer.SyncNotes(user)
+	err = s.syncer.Sync(user, SyncNodeNote)
 	if err != nil {
 		return err
 	}

@@ -1,6 +1,8 @@
 package database
 
-import "github.com/besean163/gophkeeper/internal/client/core/models"
+import (
+	models "github.com/besean163/gophkeeper/internal/models/client"
+)
 
 // GetNotes получение списка заметок
 func (r Repository) GetNotes(user models.User) ([]models.Note, error) {

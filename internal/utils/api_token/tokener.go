@@ -1,7 +1,7 @@
 package apitoken
 
 import (
-	"github.com/besean163/gophkeeper/internal/server/models"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 )
 
 type Tokener interface {

@@ -4,13 +4,13 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
 )
 
 // CreateCard запрос на создание карты.
 // Параметры:
 //   - input: структура запроса.
-func (c Client) CreateCard(input entities.CardCreateInput) error {
+func (c Client) CreateCard(input input.CardCreate) error {
 	response, err := c.Post(c.Host+"/api/card", input)
 
 	if err != nil {

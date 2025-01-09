@@ -8,6 +8,7 @@ import (
 
 	dbinit "github.com/besean163/gophkeeper/internal/client/database"
 	defaultlogger "github.com/besean163/gophkeeper/internal/logger/default_logger"
+	models "github.com/besean163/gophkeeper/internal/models/client"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -61,4 +62,76 @@ func cleanup() {
 		log.Fatalln("failed cleanup db", err)
 	}
 	fmt.Println("database file deleted.")
+}
+
+func loadFixtureUsers(t *testing.T, users []*models.User) {
+	t.Helper()
+	for _, user := range users {
+		err := db.Create(&user).Error
+		if err != nil {
+			t.Fatalf("failed to load fixture: %s", err)
+		}
+	}
+}
+
+func cleanUpFixtureUser(t *testing.T) {
+	t.Helper()
+	err := db.Exec("DELETE FROM users").Error
+	if err != nil {
+		t.Fatalf("failed to clean up fixture: %s", err)
+	}
+}
+
+func loadFixtureNotes(t *testing.T, items []*models.Note) {
+	t.Helper()
+	for _, item := range items {
+		err := db.Create(&item).Error
+		if err != nil {
+			t.Fatalf("failed to load fixture: %s", err)
+		}
+	}
+}
+
+func cleanUpFixtureNotes(t *testing.T) {
+	t.Helper()
+	err := db.Exec("DELETE FROM notes").Error
+	if err != nil {
+		t.Fatalf("failed to clean up fixture: %s", err)
+	}
+}
+
+func loadFixtureCards(t *testing.T, items []*models.Card) {
+	t.Helper()
+	for _, item := range items {
+		err := db.Create(&item).Error
+		if err != nil {
+			t.Fatalf("failed to load fixture: %s", err)
+		}
+	}
+}
+
+func cleanUpFixtureCards(t *testing.T) {
+	t.Helper()
+	err := db.Exec("DELETE FROM cards").Error
+	if err != nil {
+		t.Fatalf("failed to clean up fixture: %s", err)
+	}
+}
+
+func loadFixtureAccounts(t *testing.T, accounts []*models.Account) {
+	t.Helper()
+	for _, account := range accounts {
+		err := db.Create(&account).Error
+		if err != nil {
+			t.Fatalf("failed to load fixture: %s", err)
+		}
+	}
+}
+
+func cleanUpFixtureAccounts(t *testing.T) {
+	t.Helper()
+	err := db.Exec("DELETE FROM accounts").Error
+	if err != nil {
+		t.Fatalf("failed to clean up fixture: %s", err)
+	}
 }

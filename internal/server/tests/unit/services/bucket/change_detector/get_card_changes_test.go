@@ -2,8 +2,9 @@ package changedetector
 
 import (
 	"testing"
+	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
 
-	"github.com/besean163/gophkeeper/internal/server/models"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	changedetector "github.com/besean163/gophkeeper/internal/server/services/bucket/change_detector"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,7 +16,7 @@ func TestGetCardChanges(t *testing.T) {
 	tests := []struct {
 		name          string
 		items         []*models.Card
-		externalItems []models.ExternalCard
+		externalItems []clientmodels.Card
 		created       []*models.Card
 		updated       []*models.Card
 		deleted       []string
@@ -23,7 +24,7 @@ func TestGetCardChanges(t *testing.T) {
 		{
 			name:  "created",
 			items: make([]*models.Card, 0),
-			externalItems: []models.ExternalCard{
+			externalItems: []clientmodels.Card{
 				{
 					UUID:      "uuid_1",
 					Name:      "name_1",
@@ -65,7 +66,7 @@ func TestGetCardChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalItems: []models.ExternalCard{
+			externalItems: []clientmodels.Card{
 				{
 					UUID:      "uuid_1",
 					Name:      "name_1",
@@ -96,7 +97,7 @@ func TestGetCardChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalItems: []models.ExternalCard{
+			externalItems: []clientmodels.Card{
 				{
 					UUID:      "uuid_1",
 					Name:      "new_name_1",
@@ -138,7 +139,7 @@ func TestGetCardChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalItems: []models.ExternalCard{
+			externalItems: []clientmodels.Card{
 				{
 					UUID:      "uuid_1",
 					Name:      "new_name_1",
@@ -169,7 +170,7 @@ func TestGetCardChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalItems: make([]models.ExternalCard, 0),
+			externalItems: make([]clientmodels.Card, 0),
 			created:       make([]*models.Card, 0),
 			updated:       make([]*models.Card, 0),
 			deleted:       make([]string, 0),

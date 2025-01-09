@@ -3,7 +3,8 @@ package api
 import (
 	"testing"
 
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
+
 	"github.com/besean163/gophkeeper/internal/client/core/services/data_service/api"
 	mock "github.com/besean163/gophkeeper/internal/client/tests/mocks"
 	utilmock "github.com/besean163/gophkeeper/internal/tests/mocks/utils"
@@ -19,7 +20,14 @@ func TestGetNotes(t *testing.T) {
 	timeController := utilmock.NewMockTimeController(ctrl)
 	syncController := mock.NewMockSyncer(ctrl)
 
-	service := api.NewService(storeService, apiClient, encrypter, timeController, nil, syncController, nil)
+	options := api.ServiceOptions{
+		DataService:    storeService,
+		ApiClient:      apiClient,
+		Encrypter:      encrypter,
+		TimeController: timeController,
+		Syncer:         syncController,
+	}
+	service := api.NewService(options)
 
 	tests := []struct {
 		name      string

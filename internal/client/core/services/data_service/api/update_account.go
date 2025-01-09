@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
 )
 
 func (s Service) UpdateAccount(user models.User, item models.Account) error {
@@ -10,7 +10,7 @@ func (s Service) UpdateAccount(user models.User, item models.Account) error {
 	if err != nil {
 		return err
 	}
-	err = s.syncer.SyncAccounts(user)
+	err = s.syncer.Sync(user, SyncNodeAccount)
 	if err != nil {
 		return err
 	}

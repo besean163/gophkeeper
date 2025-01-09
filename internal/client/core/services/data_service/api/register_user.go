@@ -1,8 +1,9 @@
 package api
 
 import (
-	"github.com/besean163/gophkeeper/internal/client/core/models"
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	models "github.com/besean163/gophkeeper/internal/models/client"
+
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
 )
 
 func (s Service) RegisterUser(login, password string) (*models.User, error) {
@@ -10,7 +11,7 @@ func (s Service) RegisterUser(login, password string) (*models.User, error) {
 	var err error
 
 	if s.apiClient.HasConnection() {
-		input := entities.RegisterInput{
+		input := input.Register{
 			Login:    login,
 			Password: password,
 		}
@@ -38,7 +39,7 @@ func (s Service) RegisterUser(login, password string) (*models.User, error) {
 		}
 
 		// синхронизируем все данные пользователя на клиент
-		err = s.syncer.SyncAll(*user)
+		err = s.syncer.Sync(*user, SyncNodeAccount, SyncNodeNote, SyncNodeCard)
 		if err != nil {
 			return nil, err
 		}

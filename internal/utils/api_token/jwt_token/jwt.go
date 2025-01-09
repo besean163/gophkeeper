@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/besean163/gophkeeper/internal/server/models"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	"github.com/golang-jwt/jwt/v5"
 )
 

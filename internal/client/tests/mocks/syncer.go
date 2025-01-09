@@ -7,7 +7,7 @@ package mock
 import (
 	reflect "reflect"
 
-	models "github.com/besean163/gophkeeper/internal/client/core/models"
+	client "github.com/besean163/gophkeeper/internal/models/client"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -34,58 +34,21 @@ func (m *MockSyncer) EXPECT() *MockSyncerMockRecorder {
 	return m.recorder
 }
 
-// SyncAccounts mocks base method.
-func (m *MockSyncer) SyncAccounts(user models.User) error {
+// Sync mocks base method.
+func (m *MockSyncer) Sync(user client.User, entities ...int) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SyncAccounts", user)
+	varargs := []interface{}{user}
+	for _, a := range entities {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Sync", varargs...)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SyncAccounts indicates an expected call of SyncAccounts.
-func (mr *MockSyncerMockRecorder) SyncAccounts(user interface{}) *gomock.Call {
+// Sync indicates an expected call of Sync.
+func (mr *MockSyncerMockRecorder) Sync(user interface{}, entities ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SyncAccounts", reflect.TypeOf((*MockSyncer)(nil).SyncAccounts), user)
-}
-
-// SyncAll mocks base method.
-func (m *MockSyncer) SyncAll(user models.User) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SyncAll", user)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// SyncAll indicates an expected call of SyncAll.
-func (mr *MockSyncerMockRecorder) SyncAll(user interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SyncAll", reflect.TypeOf((*MockSyncer)(nil).SyncAll), user)
-}
-
-// SyncCards mocks base method.
-func (m *MockSyncer) SyncCards(user models.User) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SyncCards", user)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// SyncCards indicates an expected call of SyncCards.
-func (mr *MockSyncerMockRecorder) SyncCards(user interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SyncCards", reflect.TypeOf((*MockSyncer)(nil).SyncCards), user)
-}
-
-// SyncNotes mocks base method.
-func (m *MockSyncer) SyncNotes(user models.User) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SyncNotes", user)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// SyncNotes indicates an expected call of SyncNotes.
-func (mr *MockSyncerMockRecorder) SyncNotes(user interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SyncNotes", reflect.TypeOf((*MockSyncer)(nil).SyncNotes), user)
+	varargs := append([]interface{}{user}, entities...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Sync", reflect.TypeOf((*MockSyncer)(nil).Sync), varargs...)
 }

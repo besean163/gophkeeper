@@ -8,15 +8,16 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/output"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
 )
 
 // Login запрос на авторизацию пользователя.
 // Параметры:
 //   - input: структура запроса.
-func (c Client) Login(input entities.LoginInput) (entities.TokenOutput, error) {
-	var token entities.TokenOutput
+func (c Client) Login(input input.Login) (output.Token, error) {
+	var token output.Token
 	b, err := json.Marshal(input)
 	if err != nil {
 		return token, errors.New("ошибка зашифровки запроса")
@@ -52,7 +53,7 @@ func (c Client) Login(input entities.LoginInput) (entities.TokenOutput, error) {
 		return token, fmt.Errorf("ошибка сервера %d: %s", apiError.Error.Code, apiError.Error.Description)
 	}
 
-	t := entities.TokenOutput{}
+	t := output.Token{}
 	rBody, err := io.ReadAll(response.Body)
 	if err != nil {
 		return token, errors.New("ошибка чтения ответа")

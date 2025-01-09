@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/output"
 )
 
 // GetNotes запрос на получение списка заметок.
-func (c Client) GetNotes() (*entities.GetNotesOutput, error) {
-	var output *entities.GetNotesOutput
+func (c Client) GetNotes() (*output.GetNotes, error) {
+	var output *output.GetNotes
 	response, err := c.Get(c.Host + "/api/notes")
 
 	if err != nil {

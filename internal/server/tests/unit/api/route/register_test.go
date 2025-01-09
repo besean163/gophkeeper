@@ -9,9 +9,9 @@ import (
 	"testing"
 
 	defaultlogger "github.com/besean163/gophkeeper/internal/logger/default_logger"
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
 	"github.com/besean163/gophkeeper/internal/server/api/route"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
 	mock "github.com/besean163/gophkeeper/internal/server/tests/mocks"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"

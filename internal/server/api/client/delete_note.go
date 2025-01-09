@@ -4,13 +4,13 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
 )
 
 // DeleteNote запрос на удаление заметки.
 // Параметры:
 //   - input: структура запроса.
-func (c Client) DeleteNote(input entities.NoteDeleteInput) error {
+func (c Client) DeleteNote(input input.NoteDelete) error {
 	response, err := c.Delete(c.Host+"/api/note", input)
 
 	if err != nil {

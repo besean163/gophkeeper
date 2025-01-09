@@ -12,7 +12,7 @@ import (
 	"github.com/besean163/gophkeeper/internal/logger"
 	zaplogger "github.com/besean163/gophkeeper/internal/logger/zap_logger"
 	"github.com/besean163/gophkeeper/internal/server/api"
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
 	"github.com/besean163/gophkeeper/internal/server/interfaces"
 	"github.com/besean163/gophkeeper/internal/server/repositories/database/bucket"
 	"github.com/besean163/gophkeeper/internal/server/repositories/database/user"
@@ -100,7 +100,16 @@ func (app *App) initAuthService() error {
 		return err
 	}
 	r := user.NewRepository(db)
-	s := auth.NewService(r, encrypter, app.Tokener, timeController, uuidController)
+
+	options := auth.ServiceOptions{
+		Repository:     r,
+		Encrypter:      encrypter,
+		Tokener:        app.Tokener,
+		TimeController: timeController,
+		UUIDController: uuidController,
+	}
+
+	s := auth.NewService(options)
 	app.AuthService = s
 	return nil
 }
@@ -112,8 +121,15 @@ func (app *App) initBucketService() error {
 	if err != nil {
 		return err
 	}
-	r := bucket.NewRepository(db)
-	s := bucketservice.NewService(r, timeController, uuidController, nil)
+	r := bucket.NewRepository(db, uuidController)
+
+	options := bucketservice.ServiceOptions{
+		Repository:     r,
+		TimeController: timeController,
+		UUIDController: uuidController,
+	}
+
+	s := bucketservice.NewService(options)
 	app.BucketService = s
 	return nil
 }

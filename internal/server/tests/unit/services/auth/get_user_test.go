@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/besean163/gophkeeper/internal/server/models"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	"github.com/besean163/gophkeeper/internal/server/services/auth"
 	repositorymock "github.com/besean163/gophkeeper/internal/server/tests/mocks/services/auth"
 	"github.com/golang/mock/gomock"
@@ -15,7 +15,10 @@ func TestGetUser(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	repository := repositorymock.NewMockRepository(ctrl)
 
-	service := auth.NewService(repository, nil, nil, nil, nil)
+	options := auth.ServiceOptions{
+		Repository: repository,
+	}
+	service := auth.NewService(options)
 
 	tests := []struct {
 		name      string

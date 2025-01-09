@@ -4,7 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/besean163/gophkeeper/internal/server/models"
+	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	"github.com/besean163/gophkeeper/internal/server/services/bucket"
 	bucketmock "github.com/besean163/gophkeeper/internal/server/tests/mocks"
 	servicemock "github.com/besean163/gophkeeper/internal/server/tests/mocks/services/bucket"
@@ -21,7 +22,13 @@ func TestSyncNotes(t *testing.T) {
 	uuidController := utilmock.NewMockUUIDController(ctrl)
 	selfService := bucketmock.NewMockBucketService(ctrl)
 
-	service := bucket.NewService(repository, timecontroller, uuidController, changeDetector)
+	options := bucket.ServiceOptions{
+		Repository:     repository,
+		TimeController: timecontroller,
+		UUIDController: uuidController,
+		ChangeDetector: changeDetector,
+	}
+	service := bucket.NewService(options)
 	user := models.User{ID: 1}
 
 	tests := []struct {
@@ -127,7 +134,7 @@ func TestSyncNotes(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			test.mockSetup()
-			err := service.SyncNotes(selfService, user, []models.ExternalNote{})
+			err := service.SyncNotes(selfService, user, []clientmodels.Note{})
 			assert.Equal(t, test.result, err)
 		})
 	}

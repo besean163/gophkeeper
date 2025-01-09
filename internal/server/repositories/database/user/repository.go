@@ -2,7 +2,7 @@
 package user
 
 import (
-	"github.com/besean163/gophkeeper/internal/server/models"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	"gorm.io/gorm"
 )
 

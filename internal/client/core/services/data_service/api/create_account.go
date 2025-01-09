@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
 )
 
 func (s Service) CreateAccount(user models.User, item models.Account) error {
@@ -11,7 +11,7 @@ func (s Service) CreateAccount(user models.User, item models.Account) error {
 		return err
 	}
 
-	err = s.syncer.SyncAccounts(user)
+	err = s.syncer.Sync(user, SyncNodeAccount)
 	if err != nil {
 		return err
 	}

@@ -1,6 +1,8 @@
 package database
 
-import "github.com/besean163/gophkeeper/internal/client/core/models"
+import (
+	models "github.com/besean163/gophkeeper/internal/models/client"
+)
 
 func (s Service) DeleteCard(user models.User, item models.Card, soft bool) error {
 	if soft {

@@ -1,14 +1,17 @@
 package changedetector
 
-import "github.com/besean163/gophkeeper/internal/server/models"
+import (
+	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
+	models "github.com/besean163/gophkeeper/internal/models/server"
+)
 
 // GetNotesChanges определение изменений в заметках
-func (d ChangeDetector) GetNotesChanges(user models.User, items []*models.Note, externalItems []models.ExternalNote) (created []*models.Note, updated []*models.Note, deleted []string) {
+func (d ChangeDetector) GetNotesChanges(user models.User, items []*models.Note, externalItems []clientmodels.Note) (created []*models.Note, updated []*models.Note, deleted []string) {
 	created = make([]*models.Note, 0)
 	updated = make([]*models.Note, 0)
 	deleted = make([]string, 0)
 
-	mapExternalItems := map[string]*models.ExternalNote{}
+	mapExternalItems := map[string]*clientmodels.Note{}
 	for _, externalItem := range externalItems {
 		mapExternalItems[externalItem.UUID] = &externalItem
 	}

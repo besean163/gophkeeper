@@ -4,13 +4,13 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
 )
 
 // UpdateAccount запрос на обновление аккаунта.
 // Параметры:
 //   - input: структура запроса.
-func (c Client) UpdateAccount(input entities.AccountPutInput) error {
+func (c Client) UpdateAccount(input input.AccountUpdate) error {
 	response, err := c.Put(c.Host+"/api/account", input)
 
 	if err != nil {

@@ -3,7 +3,8 @@ package changedetector
 import (
 	"testing"
 
-	"github.com/besean163/gophkeeper/internal/server/models"
+	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	changedetector "github.com/besean163/gophkeeper/internal/server/services/bucket/change_detector"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,7 +16,7 @@ func TestGetNoteChanges(t *testing.T) {
 	tests := []struct {
 		name          string
 		items         []*models.Note
-		externalItems []models.ExternalNote
+		externalItems []clientmodels.Note
 		created       []*models.Note
 		updated       []*models.Note
 		deleted       []string
@@ -23,7 +24,7 @@ func TestGetNoteChanges(t *testing.T) {
 		{
 			name:  "created",
 			items: make([]*models.Note, 0),
-			externalItems: []models.ExternalNote{
+			externalItems: []clientmodels.Note{
 				{
 					UUID:      "uuid_1",
 					Name:      "name_1",
@@ -59,7 +60,7 @@ func TestGetNoteChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalItems: []models.ExternalNote{
+			externalItems: []clientmodels.Note{
 				{
 					UUID:      "uuid_1",
 					Name:      "name_1",
@@ -86,7 +87,7 @@ func TestGetNoteChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalItems: []models.ExternalNote{
+			externalItems: []clientmodels.Note{
 				{
 					UUID:      "uuid_1",
 					Name:      "new_name_1",
@@ -122,7 +123,7 @@ func TestGetNoteChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalItems: []models.ExternalNote{
+			externalItems: []clientmodels.Note{
 				{
 					UUID:      "uuid_1",
 					Name:      "new_name_1",
@@ -149,7 +150,7 @@ func TestGetNoteChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalItems: make([]models.ExternalNote, 0),
+			externalItems: make([]clientmodels.Note, 0),
 			created:       make([]*models.Note, 0),
 			updated:       make([]*models.Note, 0),
 			deleted:       make([]string, 0),

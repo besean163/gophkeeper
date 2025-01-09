@@ -1,6 +1,8 @@
 package database
 
-import "github.com/besean163/gophkeeper/internal/client/core/models"
+import (
+	models "github.com/besean163/gophkeeper/internal/models/client"
+)
 
 // GetCards получение списка карт
 func (r Repository) GetCards(user models.User) ([]models.Card, error) {

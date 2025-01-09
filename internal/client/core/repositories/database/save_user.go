@@ -1,12 +1,14 @@
 package database
 
-import "github.com/besean163/gophkeeper/internal/client/core/models"
+import (
+	models "github.com/besean163/gophkeeper/internal/models/client"
+)
 
 // SaveUser сохранение пользователя
-func (r Repository) SaveUser(user models.User) error {
-	if user.ID == 0 {
-		return r.insertItem(&user)
+func (r Repository) SaveUser(item models.User) error {
+	if item.ID == 0 {
+		return r.createItem(&item)
 	}
 
-	return r.updateItem(&user)
+	return r.updateItem(&item)
 }

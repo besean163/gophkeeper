@@ -3,7 +3,9 @@ package changedetector
 import (
 	"testing"
 
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
+	servermodels "github.com/besean163/gophkeeper/internal/models/server"
+
 	changedetector "github.com/besean163/gophkeeper/internal/client/core/services/data_service/api/change_detector"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,7 +17,7 @@ func TestGetAccountChanges(t *testing.T) {
 	tests := []struct {
 		name          string
 		items         []models.Account
-		externalItems []models.ExternalAccount
+		externalItems []servermodels.Account
 		created       []models.Account
 		updated       []models.Account
 		deleted       []models.Account
@@ -23,7 +25,7 @@ func TestGetAccountChanges(t *testing.T) {
 		{
 			name:  "created",
 			items: make([]models.Account, 0),
-			externalItems: []models.ExternalAccount{
+			externalItems: []servermodels.Account{
 				{
 					UUID:      "uuid_1",
 					Name:      "name_1",
@@ -60,7 +62,7 @@ func TestGetAccountChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalItems: []models.ExternalAccount{
+			externalItems: []servermodels.Account{
 				{
 					UUID:      "uuid_1",
 					Name:      "name_1",
@@ -87,7 +89,7 @@ func TestGetAccountChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalItems: []models.ExternalAccount{
+			externalItems: []servermodels.Account{
 				{
 					UUID:      "uuid_1",
 					Name:      "new_name_1",
@@ -124,7 +126,7 @@ func TestGetAccountChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalItems: []models.ExternalAccount{},
+			externalItems: []servermodels.Account{},
 			created:       make([]models.Account, 0),
 			updated:       make([]models.Account, 0),
 			deleted: []models.Account{

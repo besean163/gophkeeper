@@ -1,7 +1,7 @@
 package bucket
 
 import (
-	"github.com/besean163/gophkeeper/internal/server/models"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 )
 
 // CreateAccount создание аккаунта

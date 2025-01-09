@@ -7,7 +7,7 @@ package mock
 import (
 	reflect "reflect"
 
-	models "github.com/besean163/gophkeeper/internal/server/models"
+	server "github.com/besean163/gophkeeper/internal/models/server"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -35,7 +35,7 @@ func (m *MockTokener) EXPECT() *MockTokenerMockRecorder {
 }
 
 // GetToken mocks base method.
-func (m *MockTokener) GetToken(user *models.User) (string, error) {
+func (m *MockTokener) GetToken(user *server.User) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetToken", user)
 	ret0, _ := ret[0].(string)

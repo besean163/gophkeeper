@@ -1,6 +1,8 @@
 package database
 
-import "github.com/besean163/gophkeeper/internal/client/core/models"
+import (
+	models "github.com/besean163/gophkeeper/internal/models/client"
+)
 
 // GetAccounts получение списка аккаунтов
 func (r Repository) GetAccounts(user models.User) ([]models.Account, error) {

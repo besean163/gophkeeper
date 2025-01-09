@@ -1,6 +1,5 @@
 CREATE TABLE cards (
-    id INTEGER PRIMARY KEY,
-    uuid UUID UNIQUE,
+    uuid UUID PRIMARY KEY,
     user_id INTEGER,
     name VARCHAR(100),
     number INTEGER,

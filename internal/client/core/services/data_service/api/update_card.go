@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
 )
 
 func (s Service) UpdateCard(user models.User, item models.Card) error {
@@ -10,7 +10,7 @@ func (s Service) UpdateCard(user models.User, item models.Card) error {
 	if err != nil {
 		return err
 	}
-	err = s.syncer.SyncCards(user)
+	err = s.syncer.Sync(user, SyncNodeCard)
 	if err != nil {
 		return err
 	}

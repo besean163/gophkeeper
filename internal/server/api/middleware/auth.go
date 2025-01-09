@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/besean163/gophkeeper/internal/logger"
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
 	"github.com/besean163/gophkeeper/internal/server/api/entities"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
 )
 
 // AuthMiddleware авторизации пользователя.

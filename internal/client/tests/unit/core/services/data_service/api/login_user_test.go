@@ -4,10 +4,11 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
+
 	"github.com/besean163/gophkeeper/internal/client/core/services/data_service/api"
 	mock "github.com/besean163/gophkeeper/internal/client/tests/mocks"
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/output"
 	utilmock "github.com/besean163/gophkeeper/internal/tests/mocks/utils"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -21,7 +22,14 @@ func TestLoginUser(t *testing.T) {
 	timeController := utilmock.NewMockTimeController(ctrl)
 	syncController := mock.NewMockSyncer(ctrl)
 
-	service := api.NewService(storeService, apiClient, encrypter, timeController, nil, syncController, nil)
+	options := api.ServiceOptions{
+		DataService:    storeService,
+		ApiClient:      apiClient,
+		Encrypter:      encrypter,
+		TimeController: timeController,
+		Syncer:         syncController,
+	}
+	service := api.NewService(options)
 
 	tests := []struct {
 		name      string
@@ -39,7 +47,7 @@ func TestLoginUser(t *testing.T) {
 			password: "password",
 			mockSetup: func() {
 				apiClient.EXPECT().HasConnection().Return(true).Times(1)
-				apiClient.EXPECT().Login(gomock.Any()).Return(entities.TokenOutput{Token: "token"}, nil).Times(1)
+				apiClient.EXPECT().Login(gomock.Any()).Return(output.Token{Token: "token"}, nil).Times(1)
 				encrypter.EXPECT().Encrypt(gomock.Any()).Return("encrypted_password", nil)
 				storeService.EXPECT().SaveUser(models.User{
 					Login:    "login",
@@ -47,7 +55,7 @@ func TestLoginUser(t *testing.T) {
 					Token:    "token",
 				}).Return(nil).Times(1)
 				storeService.EXPECT().GetUserByLogin(gomock.Any()).Return(&models.User{}).Times(1)
-				syncController.EXPECT().SyncAll(gomock.Any()).Return(nil).Times(1)
+				syncController.EXPECT().Sync(gomock.Any(), gomock.Any()).Return(nil).Times(1)
 				storeService.EXPECT().LoginUser(gomock.Any(), gomock.Any()).Return(&models.User{}, nil).Times(1)
 			},
 			result: struct {
@@ -64,7 +72,7 @@ func TestLoginUser(t *testing.T) {
 			password: "password",
 			mockSetup: func() {
 				apiClient.EXPECT().HasConnection().Return(true).Times(1)
-				apiClient.EXPECT().Login(gomock.Any()).Return(entities.TokenOutput{}, errors.New("test_error")).Times(1)
+				apiClient.EXPECT().Login(gomock.Any()).Return(output.Token{}, errors.New("test_error")).Times(1)
 			},
 			result: struct {
 				user *models.User

@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/besean163/gophkeeper/internal/logger"
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/output"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
 	ctxuser "github.com/besean163/gophkeeper/internal/server/utils/ctx_user"
 )
 
@@ -27,7 +27,7 @@ func NotesRoute(dep dependencies.Dependencies) http.HandlerFunc {
 			return
 		}
 
-		output := entities.GetNotesOutput{
+		output := output.GetNotes{
 			Notes: notes,
 		}
 

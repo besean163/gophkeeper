@@ -4,9 +4,9 @@ package api
 import (
 	"net/http"
 
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
 	"github.com/besean163/gophkeeper/internal/server/api/middleware"
 	"github.com/besean163/gophkeeper/internal/server/api/route"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
 	"github.com/go-chi/chi/v5"
 )
 

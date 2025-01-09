@@ -10,10 +10,11 @@ import (
 	"testing"
 
 	defaultlogger "github.com/besean163/gophkeeper/internal/logger/default_logger"
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
+	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	"github.com/besean163/gophkeeper/internal/server/api/entities"
 	"github.com/besean163/gophkeeper/internal/server/api/route"
-	"github.com/besean163/gophkeeper/internal/server/models"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
 	mock "github.com/besean163/gophkeeper/internal/server/tests/mocks"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -46,7 +47,7 @@ func TestAccountsSyncRoute(t *testing.T) {
 			exceptCode:  http.StatusOK,
 			user:        &user,
 			mockSetup: func() {
-				bucketService.EXPECT().SyncAccounts(gomock.Any(), gomock.Any(), []models.ExternalAccount{
+				bucketService.EXPECT().SyncAccounts(gomock.Any(), gomock.Any(), []clientmodels.Account{
 					{
 						UUID:      "uuid_1",
 						Name:      "name_1",

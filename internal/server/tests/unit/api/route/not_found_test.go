@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	defaultlogger "github.com/besean163/gophkeeper/internal/logger/default_logger"
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
 	"github.com/besean163/gophkeeper/internal/server/api/route"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
 	"github.com/stretchr/testify/assert"
 )
 

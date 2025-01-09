@@ -1,6 +1,6 @@
 package bucket
 
-import "github.com/besean163/gophkeeper/internal/server/models"
+import models "github.com/besean163/gophkeeper/internal/models/server"
 
 // GetAccounts получение аккаунтов
 func (s Service) GetAccounts(user models.User) ([]*models.Account, error) {

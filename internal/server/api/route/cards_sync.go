@@ -6,10 +6,12 @@ import (
 	"net/http"
 
 	"github.com/besean163/gophkeeper/internal/logger"
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
+
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
-	"github.com/besean163/gophkeeper/internal/server/models"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
+
 	ctxuser "github.com/besean163/gophkeeper/internal/server/utils/ctx_user"
 )
 
@@ -29,7 +31,7 @@ func CardsSyncRoute(dep dependencies.Dependencies) http.HandlerFunc {
 			return
 		}
 
-		input := entities.CardsSyncInput{}
+		input := input.CardsSync{}
 		err = json.Unmarshal(body, &input)
 		if err != nil {
 			dep.Logger.Error("sync make json", logger.NewField("error", err.Error()))
@@ -37,9 +39,9 @@ func CardsSyncRoute(dep dependencies.Dependencies) http.HandlerFunc {
 			return
 		}
 
-		externalCards := make([]models.ExternalCard, 0)
+		externalCards := make([]clientmodels.Card, 0)
 		for _, card := range input.Cards {
-			externalCard := models.ExternalCard{
+			externalCard := clientmodels.Card{
 				UUID:      card.UUID,
 				Name:      card.Name,
 				Number:    card.Number,

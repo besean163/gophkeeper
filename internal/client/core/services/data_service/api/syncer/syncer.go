@@ -1,10 +1,9 @@
 package syncer
 
-import "github.com/besean163/gophkeeper/internal/client/core/models"
+import (
+	models "github.com/besean163/gophkeeper/internal/models/client"
+)
 
 type Syncer interface {
-	SyncAll(user models.User) error
-	SyncAccounts(user models.User) error
-	SyncNotes(user models.User) error
-	SyncCards(user models.User) error
+	Sync(user models.User, entities ...int) error
 }

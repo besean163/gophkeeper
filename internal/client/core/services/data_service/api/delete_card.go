@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
 )
 
 func (s Service) DeleteCard(user models.User, item models.Card, soft bool) error {
@@ -11,7 +11,7 @@ func (s Service) DeleteCard(user models.User, item models.Card, soft bool) error
 		return err
 	}
 
-	err = s.syncer.SyncCards(user)
+	err = s.syncer.Sync(user, SyncNodeCard)
 	if err != nil {
 		return err
 	}

@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	"github.com/besean163/gophkeeper/internal/server/database"
-	"github.com/besean163/gophkeeper/internal/server/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

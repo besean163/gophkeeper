@@ -1,6 +1,8 @@
 package database
 
-import "github.com/besean163/gophkeeper/internal/client/core/models"
+import (
+	models "github.com/besean163/gophkeeper/internal/models/client"
+)
 
 // GetUserByLogin получение пользователя по логину
 func (r Repository) GetUserByLogin(login string) *models.User {

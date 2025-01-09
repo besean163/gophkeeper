@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
-	"github.com/besean163/gophkeeper/internal/server/models"
 	"github.com/besean163/gophkeeper/internal/server/services/auth"
 	repositorymock "github.com/besean163/gophkeeper/internal/server/tests/mocks/services/auth"
 	utilmock "github.com/besean163/gophkeeper/internal/tests/mocks/utils"
@@ -21,7 +21,14 @@ func TestRegisterUser(t *testing.T) {
 	timeController := utilmock.NewMockTimeController(ctrl)
 	uuidController := utilmock.NewMockUUIDController(ctrl)
 
-	service := auth.NewService(repository, encrypter, tokener, timeController, uuidController)
+	options := auth.ServiceOptions{
+		Repository:     repository,
+		Encrypter:      encrypter,
+		Tokener:        tokener,
+		TimeController: timeController,
+		UUIDController: uuidController,
+	}
+	service := auth.NewService(options)
 
 	tests := []struct {
 		name      string

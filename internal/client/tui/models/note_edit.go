@@ -3,7 +3,8 @@ package models
 import (
 	"strings"
 
-	coremodels "github.com/besean163/gophkeeper/internal/client/core/models"
+	coremodels "github.com/besean163/gophkeeper/internal/models/client"
+
 	"github.com/besean163/gophkeeper/internal/client/interfaces"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/components"
@@ -260,7 +261,6 @@ func (m *NoteEditModel) setButtons() {
 
 func (m *NoteEditModel) save() tea.Cmd {
 	item := m.item
-	item.ID = m.item.ID
 	item.Name = m.input.Value()
 	item.Content = m.textarea.Value()
 

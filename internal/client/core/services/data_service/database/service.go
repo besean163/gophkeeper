@@ -1,7 +1,8 @@
 package database
 
 import (
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
+
 	"github.com/besean163/gophkeeper/internal/logger"
 	pencrypt "github.com/besean163/gophkeeper/internal/utils/password_encrypter"
 	timecontroller "github.com/besean163/gophkeeper/internal/utils/time_controller"
@@ -25,20 +26,28 @@ type Repository interface {
 	DeleteCard(uuid string) error
 }
 
+type ServiceOptions struct {
+	Repository
+	logger.Logger
+	pencrypt.Encrypter
+	timecontroller.TimeController
+	uuidcontroller.UUIDController
+}
+
 type Service struct {
+	repository     Repository
 	logger         logger.Logger
 	encrypter      pencrypt.Encrypter
-	repository     Repository
 	uuidController uuidcontroller.UUIDController
 	timeController timecontroller.TimeController
 }
 
-func NewService(repository Repository, encrypter pencrypt.Encrypter, logger logger.Logger, timeController timecontroller.TimeController, uuidController uuidcontroller.UUIDController) Service {
+func NewService(options ServiceOptions) Service {
 	return Service{
-		repository:     repository,
-		encrypter:      encrypter,
-		logger:         logger,
-		timeController: timeController,
-		uuidController: uuidController,
+		repository:     options.Repository,
+		encrypter:      options.Encrypter,
+		logger:         options.Logger,
+		timeController: options.TimeController,
+		uuidController: options.UUIDController,
 	}
 }

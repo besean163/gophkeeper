@@ -3,8 +3,8 @@ package route
 import (
 	"net/http"
 
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
 )
 
 func NotFoundRoute(dep dependencies.Dependencies) http.HandlerFunc {

@@ -3,7 +3,7 @@ package user
 import (
 	"testing"
 
-	"github.com/besean163/gophkeeper/internal/server/models"
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	"github.com/besean163/gophkeeper/internal/server/repositories/database/user"
 	"github.com/stretchr/testify/assert"
 )

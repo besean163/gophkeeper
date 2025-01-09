@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
-	"github.com/besean163/gophkeeper/internal/server/models"
 	"github.com/besean163/gophkeeper/internal/server/services/bucket"
 	repositorymock "github.com/besean163/gophkeeper/internal/server/tests/mocks/services/bucket"
 	utilmock "github.com/besean163/gophkeeper/internal/tests/mocks/utils"
@@ -19,7 +19,12 @@ func TestUpdateAccount(t *testing.T) {
 	timecontroller := utilmock.NewMockTimeController(ctrl)
 	uuidController := utilmock.NewMockUUIDController(ctrl)
 
-	service := bucket.NewService(repository, timecontroller, uuidController, nil)
+	options := bucket.ServiceOptions{
+		Repository:     repository,
+		TimeController: timecontroller,
+		UUIDController: uuidController,
+	}
+	service := bucket.NewService(options)
 	user := models.User{ID: 1}
 
 	tests := []struct {

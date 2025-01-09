@@ -5,7 +5,8 @@ import (
 	"testing"
 
 	"github.com/besean163/gophkeeper/internal/client/core"
-	"github.com/besean163/gophkeeper/internal/client/core/models"
+	models "github.com/besean163/gophkeeper/internal/models/client"
+
 	mock "github.com/besean163/gophkeeper/internal/client/tests/mocks"
 	defaultlogger "github.com/besean163/gophkeeper/internal/logger/default_logger"
 	"github.com/golang/mock/gomock"

@@ -7,8 +7,9 @@ package mock
 import (
 	reflect "reflect"
 
+	client "github.com/besean163/gophkeeper/internal/models/client"
+	server "github.com/besean163/gophkeeper/internal/models/server"
 	interfaces "github.com/besean163/gophkeeper/internal/server/interfaces"
-	models "github.com/besean163/gophkeeper/internal/server/models"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -36,7 +37,7 @@ func (m *MockBucketService) EXPECT() *MockBucketServiceMockRecorder {
 }
 
 // CreateAccount mocks base method.
-func (m *MockBucketService) CreateAccount(user models.User, account *models.Account) error {
+func (m *MockBucketService) CreateAccount(user server.User, account *server.Account) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateAccount", user, account)
 	ret0, _ := ret[0].(error)
@@ -50,7 +51,7 @@ func (mr *MockBucketServiceMockRecorder) CreateAccount(user, account interface{}
 }
 
 // CreateCard mocks base method.
-func (m *MockBucketService) CreateCard(user models.User, account *models.Card) error {
+func (m *MockBucketService) CreateCard(user server.User, account *server.Card) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCard", user, account)
 	ret0, _ := ret[0].(error)
@@ -64,7 +65,7 @@ func (mr *MockBucketServiceMockRecorder) CreateCard(user, account interface{}) *
 }
 
 // CreateNote mocks base method.
-func (m *MockBucketService) CreateNote(user models.User, account *models.Note) error {
+func (m *MockBucketService) CreateNote(user server.User, account *server.Note) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateNote", user, account)
 	ret0, _ := ret[0].(error)
@@ -78,7 +79,7 @@ func (mr *MockBucketServiceMockRecorder) CreateNote(user, account interface{}) *
 }
 
 // DeleteAccount mocks base method.
-func (m *MockBucketService) DeleteAccount(user models.User, uuid string) error {
+func (m *MockBucketService) DeleteAccount(user server.User, uuid string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAccount", user, uuid)
 	ret0, _ := ret[0].(error)
@@ -92,7 +93,7 @@ func (mr *MockBucketServiceMockRecorder) DeleteAccount(user, uuid interface{}) *
 }
 
 // DeleteCard mocks base method.
-func (m *MockBucketService) DeleteCard(user models.User, uuid string) error {
+func (m *MockBucketService) DeleteCard(user server.User, uuid string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteCard", user, uuid)
 	ret0, _ := ret[0].(error)
@@ -106,7 +107,7 @@ func (mr *MockBucketServiceMockRecorder) DeleteCard(user, uuid interface{}) *gom
 }
 
 // DeleteNote mocks base method.
-func (m *MockBucketService) DeleteNote(user models.User, uuid string) error {
+func (m *MockBucketService) DeleteNote(user server.User, uuid string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteNote", user, uuid)
 	ret0, _ := ret[0].(error)
@@ -120,10 +121,10 @@ func (mr *MockBucketServiceMockRecorder) DeleteNote(user, uuid interface{}) *gom
 }
 
 // GetAccounts mocks base method.
-func (m *MockBucketService) GetAccounts(user models.User) ([]*models.Account, error) {
+func (m *MockBucketService) GetAccounts(user server.User) ([]*server.Account, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccounts", user)
-	ret0, _ := ret[0].([]*models.Account)
+	ret0, _ := ret[0].([]*server.Account)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -135,10 +136,10 @@ func (mr *MockBucketServiceMockRecorder) GetAccounts(user interface{}) *gomock.C
 }
 
 // GetCards mocks base method.
-func (m *MockBucketService) GetCards(user models.User) ([]*models.Card, error) {
+func (m *MockBucketService) GetCards(user server.User) ([]*server.Card, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCards", user)
-	ret0, _ := ret[0].([]*models.Card)
+	ret0, _ := ret[0].([]*server.Card)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -150,10 +151,10 @@ func (mr *MockBucketServiceMockRecorder) GetCards(user interface{}) *gomock.Call
 }
 
 // GetNotes mocks base method.
-func (m *MockBucketService) GetNotes(user models.User) ([]*models.Note, error) {
+func (m *MockBucketService) GetNotes(user server.User) ([]*server.Note, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetNotes", user)
-	ret0, _ := ret[0].([]*models.Note)
+	ret0, _ := ret[0].([]*server.Note)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -165,7 +166,7 @@ func (mr *MockBucketServiceMockRecorder) GetNotes(user interface{}) *gomock.Call
 }
 
 // SyncAccounts mocks base method.
-func (m *MockBucketService) SyncAccounts(service interfaces.BucketService, user models.User, accounts []models.ExternalAccount) error {
+func (m *MockBucketService) SyncAccounts(service interfaces.BucketService, user server.User, accounts []client.Account) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SyncAccounts", service, user, accounts)
 	ret0, _ := ret[0].(error)
@@ -179,7 +180,7 @@ func (mr *MockBucketServiceMockRecorder) SyncAccounts(service, user, accounts in
 }
 
 // SyncCards mocks base method.
-func (m *MockBucketService) SyncCards(service interfaces.BucketService, user models.User, accounts []models.ExternalCard) error {
+func (m *MockBucketService) SyncCards(service interfaces.BucketService, user server.User, accounts []client.Card) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SyncCards", service, user, accounts)
 	ret0, _ := ret[0].(error)
@@ -193,7 +194,7 @@ func (mr *MockBucketServiceMockRecorder) SyncCards(service, user, accounts inter
 }
 
 // SyncNotes mocks base method.
-func (m *MockBucketService) SyncNotes(service interfaces.BucketService, user models.User, accounts []models.ExternalNote) error {
+func (m *MockBucketService) SyncNotes(service interfaces.BucketService, user server.User, accounts []client.Note) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SyncNotes", service, user, accounts)
 	ret0, _ := ret[0].(error)
@@ -207,7 +208,7 @@ func (mr *MockBucketServiceMockRecorder) SyncNotes(service, user, accounts inter
 }
 
 // UpdateAccount mocks base method.
-func (m *MockBucketService) UpdateAccount(user models.User, account *models.Account) error {
+func (m *MockBucketService) UpdateAccount(user server.User, account *server.Account) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateAccount", user, account)
 	ret0, _ := ret[0].(error)
@@ -221,7 +222,7 @@ func (mr *MockBucketServiceMockRecorder) UpdateAccount(user, account interface{}
 }
 
 // UpdateCard mocks base method.
-func (m *MockBucketService) UpdateCard(user models.User, account *models.Card) error {
+func (m *MockBucketService) UpdateCard(user server.User, account *server.Card) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateCard", user, account)
 	ret0, _ := ret[0].(error)
@@ -235,7 +236,7 @@ func (mr *MockBucketServiceMockRecorder) UpdateCard(user, account interface{}) *
 }
 
 // UpdateNote mocks base method.
-func (m *MockBucketService) UpdateNote(user models.User, account *models.Note) error {
+func (m *MockBucketService) UpdateNote(user server.User, account *server.Note) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateNote", user, account)
 	ret0, _ := ret[0].(error)

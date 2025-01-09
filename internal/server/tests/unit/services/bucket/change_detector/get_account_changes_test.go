@@ -3,7 +3,9 @@ package changedetector
 import (
 	"testing"
 
-	"github.com/besean163/gophkeeper/internal/server/models"
+	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
+	models "github.com/besean163/gophkeeper/internal/models/server"
+
 	changedetector "github.com/besean163/gophkeeper/internal/server/services/bucket/change_detector"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,7 +17,7 @@ func TestGetAccountChanges(t *testing.T) {
 	tests := []struct {
 		name             string
 		accounts         []*models.Account
-		externalAccounts []models.ExternalAccount
+		externalAccounts []clientmodels.Account
 		created          []*models.Account
 		updated          []*models.Account
 		deleted          []string
@@ -23,7 +25,7 @@ func TestGetAccountChanges(t *testing.T) {
 		{
 			name:     "created",
 			accounts: make([]*models.Account, 0),
-			externalAccounts: []models.ExternalAccount{
+			externalAccounts: []clientmodels.Account{
 				{
 					UUID:      "uuid_1",
 					Name:      "name_1",
@@ -62,7 +64,7 @@ func TestGetAccountChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalAccounts: []models.ExternalAccount{
+			externalAccounts: []clientmodels.Account{
 				{
 					UUID:      "uuid_1",
 					Name:      "name_1",
@@ -91,7 +93,7 @@ func TestGetAccountChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalAccounts: []models.ExternalAccount{
+			externalAccounts: []clientmodels.Account{
 				{
 					UUID:      "uuid_1",
 					Name:      "new_name_1",
@@ -130,7 +132,7 @@ func TestGetAccountChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalAccounts: []models.ExternalAccount{
+			externalAccounts: []clientmodels.Account{
 				{
 					UUID:      "uuid_1",
 					Name:      "new_name_1",
@@ -159,7 +161,7 @@ func TestGetAccountChanges(t *testing.T) {
 					UpdatedAt: 1,
 				},
 			},
-			externalAccounts: make([]models.ExternalAccount, 0),
+			externalAccounts: make([]clientmodels.Account, 0),
 			created:          make([]*models.Account, 0),
 			updated:          make([]*models.Account, 0),
 			deleted:          make([]string, 0),

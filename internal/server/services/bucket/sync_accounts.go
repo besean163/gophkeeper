@@ -1,12 +1,15 @@
 package bucket
 
 import (
+	models "github.com/besean163/gophkeeper/internal/models/server"
+
+	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
+
 	"github.com/besean163/gophkeeper/internal/server/interfaces"
-	"github.com/besean163/gophkeeper/internal/server/models"
 )
 
 // SyncAccounts синхронизация аккаутнов
-func (s Service) SyncAccounts(service interfaces.BucketService, user models.User, externalItems []models.ExternalAccount) error {
+func (s Service) SyncAccounts(service interfaces.BucketService, user models.User, externalItems []clientmodels.Account) error {
 	items, err := s.repository.GetAccounts(user)
 	if err != nil {
 		return err

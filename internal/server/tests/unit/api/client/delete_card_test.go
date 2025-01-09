@@ -7,7 +7,7 @@ import (
 
 	defaultlogger "github.com/besean163/gophkeeper/internal/logger/default_logger"
 	"github.com/besean163/gophkeeper/internal/server/api/client"
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
 	mock "github.com/besean163/gophkeeper/internal/server/tests/mocks/api/client"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -29,7 +29,7 @@ func TestDeleteCard(t *testing.T) {
 			name: "success",
 			mockSetup: func() {
 				response.EXPECT().StatusCode().Return(http.StatusOK).Times(1)
-				httpClient.EXPECT().Delete("/api/card", entities.CardDeleteInput{}, map[string]string{
+				httpClient.EXPECT().Delete("/api/card", input.CardDelete{}, map[string]string{
 					"Content-Type": "application/json",
 				}).Return(response, nil).Times(1)
 			},
@@ -38,7 +38,7 @@ func TestDeleteCard(t *testing.T) {
 			name: "success_with_token",
 			mockSetup: func() {
 				response.EXPECT().StatusCode().Return(http.StatusOK).Times(1)
-				httpClient.EXPECT().Delete("/api/card", entities.CardDeleteInput{}, map[string]string{
+				httpClient.EXPECT().Delete("/api/card", input.CardDelete{}, map[string]string{
 					"Content-Type":  "application/json",
 					"Authorization": "Bearer token",
 				}).Return(response, nil).Times(1)
@@ -66,7 +66,7 @@ func TestDeleteCard(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			test.mockSetup()
 			client.SetToken(test.token)
-			err := client.DeleteCard(entities.CardDeleteInput{})
+			err := client.DeleteCard(input.CardDelete{})
 			assert.Equal(t, test.result, err)
 		})
 	}

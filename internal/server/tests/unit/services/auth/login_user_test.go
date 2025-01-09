@@ -3,8 +3,8 @@ package auth
 import (
 	"testing"
 
+	models "github.com/besean163/gophkeeper/internal/models/server"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
-	"github.com/besean163/gophkeeper/internal/server/models"
 	"github.com/besean163/gophkeeper/internal/server/services/auth"
 	repositorymock "github.com/besean163/gophkeeper/internal/server/tests/mocks/services/auth"
 	utilmock "github.com/besean163/gophkeeper/internal/tests/mocks/utils"
@@ -18,7 +18,12 @@ func TestLoginUser(t *testing.T) {
 	tokener := utilmock.NewMockTokener(ctrl)
 	repository := repositorymock.NewMockRepository(ctrl)
 
-	service := auth.NewService(repository, encrypter, tokener, nil, nil)
+	options := auth.ServiceOptions{
+		Repository: repository,
+		Encrypter:  encrypter,
+		Tokener:    tokener,
+	}
+	service := auth.NewService(options)
 
 	tests := []struct {
 		name      string

@@ -2,7 +2,9 @@
 package bucket
 
 import (
-	"github.com/besean163/gophkeeper/internal/server/models"
+	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
+	models "github.com/besean163/gophkeeper/internal/models/server"
+
 	changedetector "github.com/besean163/gophkeeper/internal/server/services/bucket/change_detector"
 	timecontroller "github.com/besean163/gophkeeper/internal/utils/time_controller"
 	uuidcontroller "github.com/besean163/gophkeeper/internal/utils/uuid_controller"
@@ -28,9 +30,16 @@ type Repository interface {
 
 // ChangeDetector интерфейс работы с определителем изменений
 type ChangeDetector interface {
-	GetAccountChanges(user models.User, items []*models.Account, externalItems []models.ExternalAccount) (created []*models.Account, updated []*models.Account, deleted []string)
-	GetNotesChanges(user models.User, items []*models.Note, externalItems []models.ExternalNote) (created []*models.Note, updated []*models.Note, deleted []string)
-	GetCardsChanges(user models.User, items []*models.Card, externalItems []models.ExternalCard) (created []*models.Card, updated []*models.Card, deleted []string)
+	GetAccountChanges(user models.User, items []*models.Account, externalItems []clientmodels.Account) (created []*models.Account, updated []*models.Account, deleted []string)
+	GetNotesChanges(user models.User, items []*models.Note, externalItems []clientmodels.Note) (created []*models.Note, updated []*models.Note, deleted []string)
+	GetCardsChanges(user models.User, items []*models.Card, externalItems []clientmodels.Card) (created []*models.Card, updated []*models.Card, deleted []string)
+}
+
+type ServiceOptions struct {
+	Repository
+	timecontroller.TimeController
+	uuidcontroller.UUIDController
+	ChangeDetector
 }
 
 // Service структура сервиса
@@ -42,12 +51,12 @@ type Service struct {
 }
 
 // NewService создание структуры сервиса
-func NewService(repository Repository, timeController timecontroller.TimeController, uuidController uuidcontroller.UUIDController, changeDetector ChangeDetector) Service {
+func NewService(options ServiceOptions) Service {
 	item := Service{
-		repository:     repository,
-		changeDetector: changeDetector,
-		timeController: timeController,
-		uuidController: uuidController,
+		repository:     options.Repository,
+		changeDetector: options.ChangeDetector,
+		timeController: options.TimeController,
+		uuidController: options.UUIDController,
 	}
 
 	if item.changeDetector == nil {

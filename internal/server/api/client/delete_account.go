@@ -4,13 +4,13 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
 )
 
 // DeleteAccount запрос на удаление аккаунта.
 // Параметры:
 //   - input: структура запроса.
-func (c Client) DeleteAccount(input entities.AccountDeleteInput) error {
+func (c Client) DeleteAccount(input input.AccountDelete) error {
 	response, err := c.Delete(c.Host+"/api/account", input)
 
 	if err != nil {

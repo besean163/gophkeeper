@@ -86,11 +86,29 @@ func (app *App) setCore() error {
 	}
 
 	encrypter := bcryptencrypter.NewEncrypter()
-	databaseRepository := store.NewRepository(db)
-	databaseService := database.NewService(databaseRepository, encrypter, app.logger, standarttimecontroller.NewTimeController(), standartuuidcontroller.NewUUIDController())
+	databaseRepository := store.NewRepository(db, standartuuidcontroller.NewUUIDController())
+
+	options := database.ServiceOptions{
+		Repository:     databaseRepository,
+		Encrypter:      encrypter,
+		Logger:         app.logger,
+		TimeController: standarttimecontroller.NewTimeController(),
+		UUIDController: standartuuidcontroller.NewUUIDController(),
+	}
+
+	databaseService := database.NewService(options)
 
 	apiClient := client.NewClient("http://localhost:8080", restyclient.NewHTTPClient(), app.logger)
-	apiService := api.NewService(databaseService, apiClient, encrypter, standarttimecontroller.NewTimeController(), app.logger, nil, nil)
+
+	apiServiceOptions := api.ServiceOptions{
+		DataService:    databaseService,
+		ApiClient:      apiClient,
+		Encrypter:      encrypter,
+		TimeController: standarttimecontroller.NewTimeController(),
+		Logger:         app.logger,
+	}
+
+	apiService := api.NewService(apiServiceOptions)
 
 	core := core.NewCore(apiService, app.logger)
 	app.core = &core

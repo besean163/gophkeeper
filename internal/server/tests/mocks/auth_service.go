@@ -7,7 +7,7 @@ package mock
 import (
 	reflect "reflect"
 
-	models "github.com/besean163/gophkeeper/internal/server/models"
+	server "github.com/besean163/gophkeeper/internal/models/server"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -35,10 +35,10 @@ func (m *MockAuthService) EXPECT() *MockAuthServiceMockRecorder {
 }
 
 // GetUser mocks base method.
-func (m *MockAuthService) GetUser(id int) (*models.User, error) {
+func (m *MockAuthService) GetUser(id int) (*server.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUser", id)
-	ret0, _ := ret[0].(*models.User)
+	ret0, _ := ret[0].(*server.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

@@ -6,10 +6,12 @@ import (
 	"net/http"
 
 	"github.com/besean163/gophkeeper/internal/logger"
-	"github.com/besean163/gophkeeper/internal/server/api/dependencies"
-	"github.com/besean163/gophkeeper/internal/server/api/entities"
+	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
+
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
 	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
-	"github.com/besean163/gophkeeper/internal/server/models"
+	"github.com/besean163/gophkeeper/internal/server/dependencies"
+
 	ctxuser "github.com/besean163/gophkeeper/internal/server/utils/ctx_user"
 )
 
@@ -29,7 +31,7 @@ func NotesSyncRoute(dep dependencies.Dependencies) http.HandlerFunc {
 			return
 		}
 
-		input := entities.NotesSyncInput{}
+		input := input.NotesSync{}
 		err = json.Unmarshal(body, &input)
 		if err != nil {
 			dep.Logger.Error("sync make json", logger.NewField("error", err.Error()))
@@ -37,9 +39,9 @@ func NotesSyncRoute(dep dependencies.Dependencies) http.HandlerFunc {
 			return
 		}
 
-		externalNotes := make([]models.ExternalNote, 0)
+		externalNotes := make([]clientmodels.Note, 0)
 		for _, note := range input.Notes {
-			externalNote := models.ExternalNote{
+			externalNote := clientmodels.Note{
 				UUID:      note.UUID,
 				Name:      note.Name,
 				Content:   note.Content,

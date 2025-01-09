@@ -1,20 +1,23 @@
 package interfaces
 
-import "github.com/besean163/gophkeeper/internal/server/api/entities"
+import (
+	"github.com/besean163/gophkeeper/internal/server/api/entities/input"
+	"github.com/besean163/gophkeeper/internal/server/api/entities/output"
+)
 
 // ApiClient интерфейс сервиса для работы с сервером
 type ApiClient interface {
 	HasConnection() bool
-	Register(input entities.RegisterInput) (entities.TokenOutput, error)
-	Login(input entities.LoginInput) (entities.TokenOutput, error)
+	Register(input input.Register) (output.Token, error)
+	Login(input input.Login) (output.Token, error)
 	SetToken(token string)
 
-	SyncAccounts(input entities.AccountsSyncInput) error
-	GetAccounts() (*entities.GetAccountsOutput, error)
+	SyncAccounts(input input.AccountsSync) error
+	GetAccounts() (*output.GetAccounts, error)
 
-	SyncNotes(input entities.NotesSyncInput) error
-	GetNotes() (*entities.GetNotesOutput, error)
+	SyncNotes(input input.NotesSync) error
+	GetNotes() (*output.GetNotes, error)
 
-	SyncCards(input entities.CardsSyncInput) error
-	GetCards() (*entities.GetCardsOutput, error)
+	SyncCards(input input.CardsSync) error
+	GetCards() (*output.GetCards, error)
 }
