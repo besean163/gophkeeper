@@ -56,7 +56,6 @@ func TestLoginUser(t *testing.T) {
 				}).Return(nil).Times(1)
 				storeService.EXPECT().GetUserByLogin(gomock.Any()).Return(&models.User{}).Times(1)
 				syncController.EXPECT().Sync(gomock.Any(), gomock.Any()).Return(nil).Times(1)
-				storeService.EXPECT().LoginUser(gomock.Any(), gomock.Any()).Return(&models.User{}, nil).Times(1)
 			},
 			result: struct {
 				user *models.User

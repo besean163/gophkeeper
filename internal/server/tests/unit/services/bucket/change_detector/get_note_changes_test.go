@@ -6,6 +6,7 @@ import (
 	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
 	models "github.com/besean163/gophkeeper/internal/models/server"
 	changedetector "github.com/besean163/gophkeeper/internal/server/services/bucket/change_detector"
+	"github.com/besean163/gophkeeper/internal/server/services/bucket/changes"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -159,10 +160,14 @@ func TestGetNoteChanges(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			created, updated, deleted := d.GetNotesChanges(user, test.items, test.externalItems)
-			assert.Equal(t, test.created, created)
-			assert.Equal(t, test.updated, updated)
-			assert.Equal(t, test.deleted, deleted)
+			compare := changes.NoteCompare{
+				Items:        test.items,
+				CompareItems: test.externalItems,
+			}
+			changes := d.GetNotesChanges(user, compare)
+			assert.Equal(t, test.created, changes.Created)
+			assert.Equal(t, test.updated, changes.Updated)
+			assert.Equal(t, test.deleted, changes.Deleted)
 		})
 	}
 }

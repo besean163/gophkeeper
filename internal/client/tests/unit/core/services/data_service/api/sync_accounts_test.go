@@ -6,6 +6,7 @@ import (
 	models "github.com/besean163/gophkeeper/internal/models/client"
 
 	"github.com/besean163/gophkeeper/internal/client/core/services/data_service/api"
+	"github.com/besean163/gophkeeper/internal/client/core/services/data_service/api/changes"
 	mock "github.com/besean163/gophkeeper/internal/client/tests/mocks"
 	"github.com/besean163/gophkeeper/internal/server/api/entities/output"
 	utilmock "github.com/besean163/gophkeeper/internal/tests/mocks/utils"
@@ -47,10 +48,12 @@ func TestSyncAccounts(t *testing.T) {
 				apiClient.EXPECT().SyncAccounts(gomock.Any()).Return(nil).Times(1)
 				apiClient.EXPECT().GetAccounts().Return(&output.GetAccounts{}, nil).Times(1)
 				storeService.EXPECT().GetAccounts(gomock.Any()).Return([]models.Account{}, nil).Times(2)
-				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]models.Account{{UUID: "uuid"}},
-					[]models.Account{},
-					[]models.Account{},
+				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any()).Return(
+					changes.AccountChanges{
+						Created: []models.Account{{UUID: "uuid"}},
+						Updated: []models.Account{},
+						Deleted: []models.Account{},
+					},
 				).Times(1)
 				storeService.EXPECT().CreateAccount(gomock.Any(), gomock.Any()).Return(nil).Times(1)
 			},
@@ -64,10 +67,12 @@ func TestSyncAccounts(t *testing.T) {
 				apiClient.EXPECT().SyncAccounts(gomock.Any()).Return(nil).Times(1)
 				apiClient.EXPECT().GetAccounts().Return(&output.GetAccounts{}, nil).Times(1)
 				storeService.EXPECT().GetAccounts(gomock.Any()).Return([]models.Account{}, nil).Times(2)
-				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]models.Account{},
-					[]models.Account{{UUID: "uuid"}},
-					[]models.Account{},
+				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any()).Return(
+					changes.AccountChanges{
+						Created: []models.Account{},
+						Updated: []models.Account{{UUID: "uuid"}},
+						Deleted: []models.Account{},
+					},
 				).Times(1)
 				storeService.EXPECT().UpdateAccount(gomock.Any(), gomock.Any()).Return(nil).Times(1)
 			},
@@ -81,10 +86,12 @@ func TestSyncAccounts(t *testing.T) {
 				apiClient.EXPECT().SyncAccounts(gomock.Any()).Return(nil).Times(1)
 				apiClient.EXPECT().GetAccounts().Return(&output.GetAccounts{}, nil).Times(1)
 				storeService.EXPECT().GetAccounts(gomock.Any()).Return([]models.Account{}, nil).Times(2)
-				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]models.Account{},
-					[]models.Account{},
-					[]models.Account{{UUID: "uuid"}},
+				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any()).Return(
+					changes.AccountChanges{
+						Created: []models.Account{},
+						Updated: []models.Account{},
+						Deleted: []models.Account{{UUID: "uuid"}},
+					},
 				).Times(1)
 				storeService.EXPECT().DeleteAccount(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil).Times(1)
 			},

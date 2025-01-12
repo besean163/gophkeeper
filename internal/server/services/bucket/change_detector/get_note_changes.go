@@ -3,21 +3,20 @@ package changedetector
 import (
 	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
 	models "github.com/besean163/gophkeeper/internal/models/server"
+	"github.com/besean163/gophkeeper/internal/server/services/bucket/changes"
 )
 
 // GetNotesChanges определение изменений в заметках
-func (d ChangeDetector) GetNotesChanges(user models.User, items []*models.Note, externalItems []clientmodels.Note) (created []*models.Note, updated []*models.Note, deleted []string) {
-	created = make([]*models.Note, 0)
-	updated = make([]*models.Note, 0)
-	deleted = make([]string, 0)
+func (d ChangeDetector) GetNotesChanges(user models.User, compare changes.NoteCompare) changes.NoteChanges {
+	changes := changes.NewNoteChanges()
 
 	mapExternalItems := map[string]*clientmodels.Note{}
-	for _, externalItem := range externalItems {
+	for _, externalItem := range compare.CompareItems {
 		mapExternalItems[externalItem.UUID] = &externalItem
 	}
 
 	mapItems := map[string]*models.Note{}
-	for _, item := range items {
+	for _, item := range compare.Items {
 		mapItems[item.UUID] = item
 	}
 
@@ -33,7 +32,7 @@ func (d ChangeDetector) GetNotesChanges(user models.User, items []*models.Note, 
 				UpdatedAt: externalItem.UpdatedAt,
 			}
 			mapItems[uuid] = item
-			created = append(created, item)
+			changes.Created = append(changes.Created, item)
 			continue
 		}
 	}
@@ -45,7 +44,7 @@ func (d ChangeDetector) GetNotesChanges(user models.User, items []*models.Note, 
 		}
 
 		if externalItem.DeletedAt != 0 && externalItem.DeletedAt > item.UpdatedAt {
-			deleted = append(deleted, item.UUID)
+			changes.Deleted = append(changes.Deleted, item.UUID)
 			continue
 		}
 
@@ -53,8 +52,8 @@ func (d ChangeDetector) GetNotesChanges(user models.User, items []*models.Note, 
 			item.Name = externalItem.Name
 			item.Content = externalItem.Content
 			item.UpdatedAt = externalItem.UpdatedAt
-			updated = append(updated, item)
+			changes.Updated = append(changes.Updated, item)
 		}
 	}
-	return created, updated, deleted
+	return changes
 }

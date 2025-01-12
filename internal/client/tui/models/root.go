@@ -6,6 +6,7 @@ import (
 
 	"github.com/besean163/gophkeeper/internal/client/interfaces"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
+	keybinding "github.com/besean163/gophkeeper/internal/client/tui/models/key_binding"
 	"github.com/besean163/gophkeeper/internal/logger"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -62,7 +63,7 @@ func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		if msg.String() == "ctrl+c" {
+		if msg.String() == keybinding.Ctrlc {
 			m.Quit = true
 			return m, tea.Quit
 		}

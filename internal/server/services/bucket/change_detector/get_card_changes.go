@@ -3,21 +3,20 @@ package changedetector
 import (
 	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
 	models "github.com/besean163/gophkeeper/internal/models/server"
+	"github.com/besean163/gophkeeper/internal/server/services/bucket/changes"
 )
 
 // GetCardsChanges определение изменений в картах
-func (d ChangeDetector) GetCardsChanges(user models.User, items []*models.Card, externalItems []clientmodels.Card) (created []*models.Card, updated []*models.Card, deleted []string) {
-	created = make([]*models.Card, 0)
-	updated = make([]*models.Card, 0)
-	deleted = make([]string, 0)
+func (d ChangeDetector) GetCardsChanges(user models.User, compare changes.CardCompare) changes.CardChanges {
+	changes := changes.NewCardChanges()
 
 	mapExternalItems := map[string]*clientmodels.Card{}
-	for _, externalItem := range externalItems {
+	for _, externalItem := range compare.CompareItems {
 		mapExternalItems[externalItem.UUID] = &externalItem
 	}
 
 	mapItems := map[string]*models.Card{}
-	for _, item := range items {
+	for _, item := range compare.Items {
 		mapItems[item.UUID] = item
 	}
 
@@ -35,7 +34,7 @@ func (d ChangeDetector) GetCardsChanges(user models.User, items []*models.Card, 
 				UpdatedAt: externalItem.UpdatedAt,
 			}
 			mapItems[uuid] = item
-			created = append(created, item)
+			changes.Created = append(changes.Created, item)
 			continue
 		}
 	}
@@ -47,7 +46,7 @@ func (d ChangeDetector) GetCardsChanges(user models.User, items []*models.Card, 
 		}
 
 		if externalItem.DeletedAt != 0 && externalItem.DeletedAt > item.UpdatedAt {
-			deleted = append(deleted, item.UUID)
+			changes.Deleted = append(changes.Deleted, item.UUID)
 			continue
 		}
 
@@ -57,8 +56,8 @@ func (d ChangeDetector) GetCardsChanges(user models.User, items []*models.Card, 
 			item.Exp = externalItem.Exp
 			item.CVV = externalItem.CVV
 			item.UpdatedAt = externalItem.UpdatedAt
-			updated = append(updated, item)
+			changes.Updated = append(changes.Updated, item)
 		}
 	}
-	return created, updated, deleted
+	return changes
 }

@@ -3,21 +3,20 @@ package changedetector
 import (
 	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
 	models "github.com/besean163/gophkeeper/internal/models/server"
+	"github.com/besean163/gophkeeper/internal/server/services/bucket/changes"
 )
 
 // GetAccountChanges определение изменений в аккаунтах
-func (d ChangeDetector) GetAccountChanges(user models.User, items []*models.Account, externalItems []clientmodels.Account) (created []*models.Account, updated []*models.Account, deleted []string) {
-	created = make([]*models.Account, 0)
-	updated = make([]*models.Account, 0)
-	deleted = make([]string, 0)
+func (d ChangeDetector) GetAccountChanges(user models.User, compare changes.AccountCompare) changes.AccountChanges {
+	changes := changes.NewAccountChanges()
 
 	mapExternalItems := map[string]*clientmodels.Account{}
-	for _, externalItem := range externalItems {
+	for _, externalItem := range compare.CompareItems {
 		mapExternalItems[externalItem.UUID] = &externalItem
 	}
 
 	mapItems := map[string]*models.Account{}
-	for _, item := range items {
+	for _, item := range compare.Items {
 		mapItems[item.UUID] = item
 	}
 
@@ -34,7 +33,7 @@ func (d ChangeDetector) GetAccountChanges(user models.User, items []*models.Acco
 				UpdatedAt: externalItem.UpdatedAt,
 			}
 			mapItems[uuid] = item
-			created = append(created, item)
+			changes.Created = append(changes.Created, item)
 			continue
 		}
 	}
@@ -46,7 +45,7 @@ func (d ChangeDetector) GetAccountChanges(user models.User, items []*models.Acco
 		}
 
 		if externalItem.DeletedAt != 0 && externalItem.DeletedAt > item.UpdatedAt {
-			deleted = append(deleted, item.UUID)
+			changes.Deleted = append(changes.Deleted, item.UUID)
 			continue
 		}
 
@@ -55,8 +54,8 @@ func (d ChangeDetector) GetAccountChanges(user models.User, items []*models.Acco
 			item.Login = externalItem.Login
 			item.Password = externalItem.Password
 			item.UpdatedAt = externalItem.UpdatedAt
-			updated = append(updated, item)
+			changes.Updated = append(changes.Updated, item)
 		}
 	}
-	return created, updated, deleted
+	return changes
 }

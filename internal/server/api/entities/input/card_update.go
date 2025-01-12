@@ -1,6 +1,9 @@
 package input
 
-import apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
+import (
+	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
+	"github.com/google/uuid"
+)
 
 // CardUpdate структура для обновления карты.
 type CardUpdate struct {
@@ -12,7 +15,8 @@ type CardUpdate struct {
 }
 
 func (i CardUpdate) Validate(failCode int) *apierrors.Error {
-	if i.UUID == "" {
+	err := uuid.Validate(i.UUID)
+	if err != nil {
 		return apierrors.NewError(failCode, apierrors.ErrorEmptyUUID.Error())
 	}
 

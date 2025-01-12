@@ -2,10 +2,10 @@
 package bucket
 
 import (
-	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
 	models "github.com/besean163/gophkeeper/internal/models/server"
 
 	changedetector "github.com/besean163/gophkeeper/internal/server/services/bucket/change_detector"
+	"github.com/besean163/gophkeeper/internal/server/services/bucket/changes"
 	timecontroller "github.com/besean163/gophkeeper/internal/utils/time_controller"
 	uuidcontroller "github.com/besean163/gophkeeper/internal/utils/uuid_controller"
 )
@@ -30,9 +30,9 @@ type Repository interface {
 
 // ChangeDetector интерфейс работы с определителем изменений
 type ChangeDetector interface {
-	GetAccountChanges(user models.User, items []*models.Account, externalItems []clientmodels.Account) (created []*models.Account, updated []*models.Account, deleted []string)
-	GetNotesChanges(user models.User, items []*models.Note, externalItems []clientmodels.Note) (created []*models.Note, updated []*models.Note, deleted []string)
-	GetCardsChanges(user models.User, items []*models.Card, externalItems []clientmodels.Card) (created []*models.Card, updated []*models.Card, deleted []string)
+	GetAccountChanges(user models.User, compare changes.AccountCompare) changes.AccountChanges
+	GetNotesChanges(user models.User, compare changes.NoteCompare) changes.NoteChanges
+	GetCardsChanges(user models.User, compare changes.CardCompare) changes.CardChanges
 }
 
 type ServiceOptions struct {

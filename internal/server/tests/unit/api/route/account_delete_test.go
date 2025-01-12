@@ -25,8 +25,8 @@ func TestAccountDeleteRoute(t *testing.T) {
 	user := models.User{Login: "user", Password: "password"}
 
 	bucketService := mock.NewMockBucketService(ctrl)
-	bucketService.EXPECT().DeleteAccount(user, "test_uuid").Return(nil).Times(1)
-	bucketService.EXPECT().DeleteAccount(user, "not_found_uuid").Return(apierrors.ErrorNotFoundByUUID).Times(1)
+	bucketService.EXPECT().DeleteAccount(user, "00000000-0000-0000-0000-000000000000").Return(nil).Times(1)
+	bucketService.EXPECT().DeleteAccount(user, "00000000-0000-0000-0000-000000000000").Return(apierrors.ErrorNotFoundByUUID).Times(1)
 	bucketService.EXPECT().DeleteAccount(gomock.Any(), gomock.Any()).Return(errors.New("test")).Times(1)
 
 	debs := dependencies.Dependencies{
@@ -49,7 +49,7 @@ func TestAccountDeleteRoute(t *testing.T) {
 			name:        "success_delete",
 			method:      http.MethodDelete,
 			exceptCode:  http.StatusOK,
-			requestBody: `{"uuid":"test_uuid"}`,
+			requestBody: `{"uuid":"00000000-0000-0000-0000-000000000000"}`,
 			user:        &user,
 		},
 		{
@@ -64,7 +64,7 @@ func TestAccountDeleteRoute(t *testing.T) {
 			name:         "not_found_uuid",
 			method:       http.MethodDelete,
 			exceptCode:   http.StatusBadRequest,
-			requestBody:  `{"uuid":"not_found_uuid"}`,
+			requestBody:  `{"uuid":"00000000-0000-0000-0000-000000000000"}`,
 			responseBody: `{"error":{"code":400,"description":"not found by uuid"}}`,
 			user:         &user,
 		},
@@ -88,7 +88,7 @@ func TestAccountDeleteRoute(t *testing.T) {
 		{
 			name:        "unknown_error",
 			method:      http.MethodDelete,
-			requestBody: `{"uuid":"uuid"}`,
+			requestBody: `{"uuid":"00000000-0000-0000-0000-000000000000"}`,
 			responseHeaders: map[string]string{
 				"Content-Type": "application/json",
 			},

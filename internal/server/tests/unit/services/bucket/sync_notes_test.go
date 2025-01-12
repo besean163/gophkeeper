@@ -7,6 +7,7 @@ import (
 	clientmodels "github.com/besean163/gophkeeper/internal/models/client"
 	models "github.com/besean163/gophkeeper/internal/models/server"
 	"github.com/besean163/gophkeeper/internal/server/services/bucket"
+	"github.com/besean163/gophkeeper/internal/server/services/bucket/changes"
 	bucketmock "github.com/besean163/gophkeeper/internal/server/tests/mocks"
 	servicemock "github.com/besean163/gophkeeper/internal/server/tests/mocks/services/bucket"
 	utilmock "github.com/besean163/gophkeeper/internal/tests/mocks/utils"
@@ -40,10 +41,12 @@ func TestSyncNotes(t *testing.T) {
 			name: "create",
 			mockSetup: func() {
 				repository.EXPECT().GetNotes(user).Return([]*models.Note{}, nil).Times(1)
-				changeDetector.EXPECT().GetNotesChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]*models.Note{{UUID: "uuid_1"}},
-					[]*models.Note{},
-					[]string{},
+				changeDetector.EXPECT().GetNotesChanges(gomock.Any(), gomock.Any()).Return(
+					changes.NoteChanges{
+						Created: []*models.Note{{UUID: "uuid_1"}},
+						Updated: []*models.Note{},
+						Deleted: []string{},
+					},
 				).Times(1)
 				selfService.EXPECT().CreateNote(user, &models.Note{UUID: "uuid_1"}).Return(nil).Times(1)
 			},
@@ -52,10 +55,12 @@ func TestSyncNotes(t *testing.T) {
 			name: "create_fail",
 			mockSetup: func() {
 				repository.EXPECT().GetNotes(user).Return([]*models.Note{}, nil).Times(1)
-				changeDetector.EXPECT().GetNotesChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]*models.Note{{UUID: "uuid_1"}},
-					[]*models.Note{},
-					[]string{},
+				changeDetector.EXPECT().GetNotesChanges(gomock.Any(), gomock.Any()).Return(
+					changes.NoteChanges{
+						Created: []*models.Note{{UUID: "uuid_1"}},
+						Updated: []*models.Note{},
+						Deleted: []string{},
+					},
 				).Times(1)
 				selfService.EXPECT().CreateNote(user, &models.Note{UUID: "uuid_1"}).Return(errors.New("test_error")).Times(1)
 			},
@@ -65,10 +70,12 @@ func TestSyncNotes(t *testing.T) {
 			name: "update",
 			mockSetup: func() {
 				repository.EXPECT().GetNotes(user).Return([]*models.Note{}, nil).Times(1)
-				changeDetector.EXPECT().GetNotesChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]*models.Note{},
-					[]*models.Note{{UUID: "uuid_1"}},
-					[]string{},
+				changeDetector.EXPECT().GetNotesChanges(gomock.Any(), gomock.Any()).Return(
+					changes.NoteChanges{
+						Created: []*models.Note{},
+						Updated: []*models.Note{{UUID: "uuid_1"}},
+						Deleted: []string{},
+					},
 				).Times(1)
 				selfService.EXPECT().UpdateNote(user, &models.Note{UUID: "uuid_1"}).Return(nil).Times(1)
 			},
@@ -77,10 +84,12 @@ func TestSyncNotes(t *testing.T) {
 			name: "update_fail",
 			mockSetup: func() {
 				repository.EXPECT().GetNotes(user).Return([]*models.Note{}, nil).Times(1)
-				changeDetector.EXPECT().GetNotesChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]*models.Note{},
-					[]*models.Note{{UUID: "uuid_1"}},
-					[]string{},
+				changeDetector.EXPECT().GetNotesChanges(gomock.Any(), gomock.Any()).Return(
+					changes.NoteChanges{
+						Created: []*models.Note{},
+						Updated: []*models.Note{{UUID: "uuid_1"}},
+						Deleted: []string{},
+					},
 				).Times(1)
 				selfService.EXPECT().UpdateNote(user, &models.Note{UUID: "uuid_1"}).Return(errors.New("test_error")).Times(1)
 			},
@@ -90,10 +99,12 @@ func TestSyncNotes(t *testing.T) {
 			name: "delete",
 			mockSetup: func() {
 				repository.EXPECT().GetNotes(user).Return([]*models.Note{}, nil).Times(1)
-				changeDetector.EXPECT().GetNotesChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]*models.Note{},
-					[]*models.Note{},
-					[]string{"uuid_1"},
+				changeDetector.EXPECT().GetNotesChanges(gomock.Any(), gomock.Any()).Return(
+					changes.NoteChanges{
+						Created: []*models.Note{},
+						Updated: []*models.Note{},
+						Deleted: []string{"uuid_1"},
+					},
 				).Times(1)
 				selfService.EXPECT().DeleteNote(user, "uuid_1").Return(nil).Times(1)
 			},
@@ -102,10 +113,12 @@ func TestSyncNotes(t *testing.T) {
 			name: "delete_fail",
 			mockSetup: func() {
 				repository.EXPECT().GetNotes(user).Return([]*models.Note{}, nil).Times(1)
-				changeDetector.EXPECT().GetNotesChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]*models.Note{},
-					[]*models.Note{},
-					[]string{"uuid_1"},
+				changeDetector.EXPECT().GetNotesChanges(gomock.Any(), gomock.Any()).Return(
+					changes.NoteChanges{
+						Created: []*models.Note{},
+						Updated: []*models.Note{},
+						Deleted: []string{"uuid_1"},
+					},
 				).Times(1)
 				selfService.EXPECT().DeleteNote(user, "uuid_1").Return(errors.New("test_error")).Times(1)
 			},
@@ -115,10 +128,12 @@ func TestSyncNotes(t *testing.T) {
 			name: "ignore",
 			mockSetup: func() {
 				repository.EXPECT().GetNotes(user).Return([]*models.Note{}, nil).Times(1)
-				changeDetector.EXPECT().GetNotesChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]*models.Note{},
-					[]*models.Note{},
-					[]string{},
+				changeDetector.EXPECT().GetNotesChanges(gomock.Any(), gomock.Any()).Return(
+					changes.NoteChanges{
+						Created: []*models.Note{},
+						Updated: []*models.Note{},
+						Deleted: []string{},
+					},
 				).Times(1)
 			},
 		},

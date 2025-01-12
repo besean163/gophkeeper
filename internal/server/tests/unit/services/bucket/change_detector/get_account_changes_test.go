@@ -7,6 +7,7 @@ import (
 	models "github.com/besean163/gophkeeper/internal/models/server"
 
 	changedetector "github.com/besean163/gophkeeper/internal/server/services/bucket/change_detector"
+	"github.com/besean163/gophkeeper/internal/server/services/bucket/changes"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -170,10 +171,14 @@ func TestGetAccountChanges(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			created, updated, deleted := d.GetAccountChanges(user, test.accounts, test.externalAccounts)
-			assert.Equal(t, test.created, created)
-			assert.Equal(t, test.updated, updated)
-			assert.Equal(t, test.deleted, deleted)
+			compare := changes.AccountCompare{
+				Items:        test.accounts,
+				CompareItems: test.externalAccounts,
+			}
+			changes := d.GetAccountChanges(user, compare)
+			assert.Equal(t, test.created, changes.Created)
+			assert.Equal(t, test.updated, changes.Updated)
+			assert.Equal(t, test.deleted, changes.Deleted)
 		})
 	}
 }

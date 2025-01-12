@@ -1,6 +1,9 @@
 package input
 
-import apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
+import (
+	apierrors "github.com/besean163/gophkeeper/internal/server/api/errors"
+	"github.com/google/uuid"
+)
 
 // NoteUpdate структура обновления заметки.
 type NoteUpdate struct {
@@ -10,7 +13,8 @@ type NoteUpdate struct {
 }
 
 func (i NoteUpdate) Validate(failCode int) *apierrors.Error {
-	if i.UUID == "" {
+	err := uuid.Validate(i.UUID)
+	if err != nil {
 		return apierrors.NewError(failCode, apierrors.ErrorEmptyUUID.Error())
 	}
 

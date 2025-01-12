@@ -47,10 +47,10 @@ func TestCardUpdateRoute(t *testing.T) {
 			name:        "success",
 			method:      http.MethodPut,
 			exceptCode:  http.StatusOK,
-			requestBody: `{"uuid":"test_uuid","name":"test_name","number":1111,"exp":"00|00","cvv":111}`,
+			requestBody: `{"uuid":"00000000-0000-0000-0000-000000000000","name":"test_name","number":1111,"exp":"00|00","cvv":111}`,
 			user:        &user,
 			mockSetup: func() {
-				bucketService.EXPECT().UpdateCard(user, &models.Card{UUID: "test_uuid", Name: "test_name", Number: 1111, Exp: "00|00", CVV: 111}).Return(nil).Times(1)
+				bucketService.EXPECT().UpdateCard(user, &models.Card{UUID: "00000000-0000-0000-0000-000000000000", Name: "test_name", Number: 1111, Exp: "00|00", CVV: 111}).Return(nil).Times(1)
 			},
 		},
 		{
@@ -66,11 +66,11 @@ func TestCardUpdateRoute(t *testing.T) {
 			name:         "not_found_uuid",
 			method:       http.MethodPut,
 			exceptCode:   http.StatusBadRequest,
-			requestBody:  `{"uuid":"not_found_uuid","name":"test_name","number":1111,"exp":"00|00","cvv":111}`,
+			requestBody:  `{"uuid":"00000000-0000-0000-0000-000000000000","name":"test_name","number":1111,"exp":"00|00","cvv":111}`,
 			responseBody: `{"error":{"code":400,"description":"not found by uuid"}}`,
 			user:         &user,
 			mockSetup: func() {
-				bucketService.EXPECT().UpdateCard(user, &models.Card{UUID: "not_found_uuid", Name: "test_name", Number: 1111, Exp: "00|00", CVV: 111}).Return(apierrors.ErrorNotFoundByUUID).Times(1)
+				bucketService.EXPECT().UpdateCard(user, &models.Card{UUID: "00000000-0000-0000-0000-000000000000", Name: "test_name", Number: 1111, Exp: "00|00", CVV: 111}).Return(apierrors.ErrorNotFoundByUUID).Times(1)
 			},
 		},
 		{
@@ -95,7 +95,7 @@ func TestCardUpdateRoute(t *testing.T) {
 		{
 			name:        "unknown_error",
 			method:      http.MethodPut,
-			requestBody: `{"uuid":"test_uuid","name":"test_name","number":1111,"exp":"00|00","cvv":111}`,
+			requestBody: `{"uuid":"00000000-0000-0000-0000-000000000000","name":"test_name","number":1111,"exp":"00|00","cvv":111}`,
 			responseHeaders: map[string]string{
 				"Content-Type": "application/json",
 			},

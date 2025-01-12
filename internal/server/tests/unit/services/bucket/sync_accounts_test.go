@@ -8,6 +8,7 @@ import (
 
 	models "github.com/besean163/gophkeeper/internal/models/server"
 	"github.com/besean163/gophkeeper/internal/server/services/bucket"
+	"github.com/besean163/gophkeeper/internal/server/services/bucket/changes"
 	bucketmock "github.com/besean163/gophkeeper/internal/server/tests/mocks"
 	servicemock "github.com/besean163/gophkeeper/internal/server/tests/mocks/services/bucket"
 	utilmock "github.com/besean163/gophkeeper/internal/tests/mocks/utils"
@@ -41,10 +42,12 @@ func TestSyncAccounts(t *testing.T) {
 			name: "create",
 			mockSetup: func() {
 				repository.EXPECT().GetAccounts(user).Return([]*models.Account{}, nil).Times(1)
-				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]*models.Account{{UUID: "uuid_1"}},
-					[]*models.Account{},
-					[]string{},
+				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any()).Return(
+					changes.AccountChanges{
+						Created: []*models.Account{{UUID: "uuid_1"}},
+						Updated: []*models.Account{},
+						Deleted: []string{},
+					},
 				).Times(1)
 				selfService.EXPECT().CreateAccount(user, &models.Account{UUID: "uuid_1"}).Return(nil).Times(1)
 			},
@@ -53,10 +56,12 @@ func TestSyncAccounts(t *testing.T) {
 			name: "create_fail",
 			mockSetup: func() {
 				repository.EXPECT().GetAccounts(user).Return([]*models.Account{}, nil).Times(1)
-				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]*models.Account{{UUID: "uuid_1"}},
-					[]*models.Account{},
-					[]string{},
+				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any()).Return(
+					changes.AccountChanges{
+						Created: []*models.Account{{UUID: "uuid_1"}},
+						Updated: []*models.Account{},
+						Deleted: []string{},
+					},
 				).Times(1)
 				selfService.EXPECT().CreateAccount(user, &models.Account{UUID: "uuid_1"}).Return(errors.New("test_error")).Times(1)
 			},
@@ -66,10 +71,12 @@ func TestSyncAccounts(t *testing.T) {
 			name: "update",
 			mockSetup: func() {
 				repository.EXPECT().GetAccounts(user).Return([]*models.Account{}, nil).Times(1)
-				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]*models.Account{},
-					[]*models.Account{{UUID: "uuid_1"}},
-					[]string{},
+				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any()).Return(
+					changes.AccountChanges{
+						Created: []*models.Account{},
+						Updated: []*models.Account{{UUID: "uuid_1"}},
+						Deleted: []string{},
+					},
 				).Times(1)
 				selfService.EXPECT().UpdateAccount(user, &models.Account{UUID: "uuid_1"}).Return(nil).Times(1)
 			},
@@ -78,10 +85,12 @@ func TestSyncAccounts(t *testing.T) {
 			name: "update_fail",
 			mockSetup: func() {
 				repository.EXPECT().GetAccounts(user).Return([]*models.Account{}, nil).Times(1)
-				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]*models.Account{},
-					[]*models.Account{{UUID: "uuid_1"}},
-					[]string{},
+				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any()).Return(
+					changes.AccountChanges{
+						Created: []*models.Account{},
+						Updated: []*models.Account{{UUID: "uuid_1"}},
+						Deleted: []string{},
+					},
 				).Times(1)
 				selfService.EXPECT().UpdateAccount(user, &models.Account{UUID: "uuid_1"}).Return(errors.New("test_error")).Times(1)
 			},
@@ -91,10 +100,12 @@ func TestSyncAccounts(t *testing.T) {
 			name: "delete",
 			mockSetup: func() {
 				repository.EXPECT().GetAccounts(user).Return([]*models.Account{}, nil).Times(1)
-				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]*models.Account{},
-					[]*models.Account{},
-					[]string{"uuid_1"},
+				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any()).Return(
+					changes.AccountChanges{
+						Created: []*models.Account{},
+						Updated: []*models.Account{},
+						Deleted: []string{"uuid_1"},
+					},
 				).Times(1)
 				selfService.EXPECT().DeleteAccount(user, "uuid_1").Return(nil).Times(1)
 			},
@@ -103,10 +114,12 @@ func TestSyncAccounts(t *testing.T) {
 			name: "delete_fail",
 			mockSetup: func() {
 				repository.EXPECT().GetAccounts(user).Return([]*models.Account{}, nil).Times(1)
-				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]*models.Account{},
-					[]*models.Account{},
-					[]string{"uuid_1"},
+				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any()).Return(
+					changes.AccountChanges{
+						Created: []*models.Account{},
+						Updated: []*models.Account{},
+						Deleted: []string{"uuid_1"},
+					},
 				).Times(1)
 				selfService.EXPECT().DeleteAccount(user, "uuid_1").Return(errors.New("test_error")).Times(1)
 			},
@@ -116,10 +129,12 @@ func TestSyncAccounts(t *testing.T) {
 			name: "ignore",
 			mockSetup: func() {
 				repository.EXPECT().GetAccounts(user).Return([]*models.Account{}, nil).Times(1)
-				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]*models.Account{},
-					[]*models.Account{},
-					[]string{},
+				changeDetector.EXPECT().GetAccountChanges(gomock.Any(), gomock.Any()).Return(
+					changes.AccountChanges{
+						Created: []*models.Account{},
+						Updated: []*models.Account{},
+						Deleted: []string{},
+					},
 				).Times(1)
 			},
 		},

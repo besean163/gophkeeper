@@ -6,6 +6,7 @@ import (
 	"github.com/besean163/gophkeeper/internal/client/interfaces"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/components"
+	keybinding "github.com/besean163/gophkeeper/internal/client/tui/models/key_binding"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/styles"
 	"github.com/besean163/gophkeeper/internal/logger"
 	tea "github.com/charmbracelet/bubbletea"
@@ -58,7 +59,7 @@ func (m *RegistrationModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "tab", "shift+tab", "enter", "up", "down":
+		case keybinding.Tab, keybinding.ShiftTab, keybinding.Enter, keybinding.Up, keybinding.Down:
 			var cmd tea.Cmd
 			cmd = m.pressButtons(msg)
 			if cmd != nil {
@@ -107,7 +108,7 @@ func (m *RegistrationModel) moveFocus(msg tea.KeyMsg) tea.Cmd {
 
 	for {
 		key := msg.String()
-		if key == "up" || key == "shift+tab" {
+		if key == keybinding.Up || key == keybinding.ShiftTab {
 			m.fc.Index--
 		} else {
 			m.fc.Index++
@@ -163,7 +164,7 @@ func (m *RegistrationModel) pressButtons(msg tea.Msg) tea.Cmd {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "enter":
+		case keybinding.Enter:
 			var cmd tea.Cmd
 			for _, button := range m.buttons {
 				cmd = button.Press()

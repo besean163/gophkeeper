@@ -7,6 +7,7 @@ import (
 	"github.com/besean163/gophkeeper/internal/server/api/entities/output"
 
 	"github.com/besean163/gophkeeper/internal/client/core/services/data_service/api"
+	"github.com/besean163/gophkeeper/internal/client/core/services/data_service/api/changes"
 	mock "github.com/besean163/gophkeeper/internal/client/tests/mocks"
 	utilmock "github.com/besean163/gophkeeper/internal/tests/mocks/utils"
 	"github.com/golang/mock/gomock"
@@ -47,10 +48,12 @@ func TestSyncNotes(t *testing.T) {
 				apiClient.EXPECT().SyncNotes(gomock.Any()).Return(nil).Times(1)
 				apiClient.EXPECT().GetNotes().Return(&output.GetNotes{}, nil).Times(1)
 				storeService.EXPECT().GetNotes(gomock.Any()).Return([]models.Note{}, nil).Times(2)
-				changeDetector.EXPECT().GetNoteChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]models.Note{{UUID: "uuid"}},
-					[]models.Note{},
-					[]models.Note{},
+				changeDetector.EXPECT().GetNoteChanges(gomock.Any(), gomock.Any()).Return(
+					changes.NoteChanges{
+						Created: []models.Note{{UUID: "uuid"}},
+						Updated: []models.Note{},
+						Deleted: []models.Note{},
+					},
 				).Times(1)
 				storeService.EXPECT().CreateNote(gomock.Any(), gomock.Any()).Return(nil).Times(1)
 			},
@@ -64,10 +67,12 @@ func TestSyncNotes(t *testing.T) {
 				apiClient.EXPECT().SyncNotes(gomock.Any()).Return(nil).Times(1)
 				apiClient.EXPECT().GetNotes().Return(&output.GetNotes{}, nil).Times(1)
 				storeService.EXPECT().GetNotes(gomock.Any()).Return([]models.Note{}, nil).Times(2)
-				changeDetector.EXPECT().GetNoteChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]models.Note{},
-					[]models.Note{{UUID: "uuid"}},
-					[]models.Note{},
+				changeDetector.EXPECT().GetNoteChanges(gomock.Any(), gomock.Any()).Return(
+					changes.NoteChanges{
+						Created: []models.Note{},
+						Updated: []models.Note{{UUID: "uuid"}},
+						Deleted: []models.Note{},
+					},
 				).Times(1)
 				storeService.EXPECT().UpdateNote(gomock.Any(), gomock.Any()).Return(nil).Times(1)
 			},
@@ -81,10 +86,12 @@ func TestSyncNotes(t *testing.T) {
 				apiClient.EXPECT().SyncNotes(gomock.Any()).Return(nil).Times(1)
 				apiClient.EXPECT().GetNotes().Return(&output.GetNotes{}, nil).Times(1)
 				storeService.EXPECT().GetNotes(gomock.Any()).Return([]models.Note{}, nil).Times(2)
-				changeDetector.EXPECT().GetNoteChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]models.Note{},
-					[]models.Note{},
-					[]models.Note{{UUID: "uuid"}},
+				changeDetector.EXPECT().GetNoteChanges(gomock.Any(), gomock.Any()).Return(
+					changes.NoteChanges{
+						Created: []models.Note{},
+						Updated: []models.Note{},
+						Deleted: []models.Note{{UUID: "uuid"}},
+					},
 				).Times(1)
 				storeService.EXPECT().DeleteNote(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil).Times(1)
 			},

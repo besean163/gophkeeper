@@ -7,6 +7,7 @@ import (
 	"github.com/besean163/gophkeeper/internal/server/api/entities/output"
 
 	"github.com/besean163/gophkeeper/internal/client/core/services/data_service/api"
+	"github.com/besean163/gophkeeper/internal/client/core/services/data_service/api/changes"
 	mock "github.com/besean163/gophkeeper/internal/client/tests/mocks"
 	utilmock "github.com/besean163/gophkeeper/internal/tests/mocks/utils"
 	"github.com/golang/mock/gomock"
@@ -47,10 +48,12 @@ func TestSyncCards(t *testing.T) {
 				apiClient.EXPECT().SyncCards(gomock.Any()).Return(nil).Times(1)
 				apiClient.EXPECT().GetCards().Return(&output.GetCards{}, nil).Times(1)
 				storeService.EXPECT().GetCards(gomock.Any()).Return([]models.Card{}, nil).Times(2)
-				changeDetector.EXPECT().GetCardChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]models.Card{{UUID: "uuid"}},
-					[]models.Card{},
-					[]models.Card{},
+				changeDetector.EXPECT().GetCardChanges(gomock.Any(), gomock.Any()).Return(
+					changes.CardChanges{
+						Created: []models.Card{{UUID: "uuid"}},
+						Updated: []models.Card{},
+						Deleted: []models.Card{},
+					},
 				).Times(1)
 				storeService.EXPECT().CreateCard(gomock.Any(), gomock.Any()).Return(nil).Times(1)
 			},
@@ -64,10 +67,12 @@ func TestSyncCards(t *testing.T) {
 				apiClient.EXPECT().SyncCards(gomock.Any()).Return(nil).Times(1)
 				apiClient.EXPECT().GetCards().Return(&output.GetCards{}, nil).Times(1)
 				storeService.EXPECT().GetCards(gomock.Any()).Return([]models.Card{}, nil).Times(2)
-				changeDetector.EXPECT().GetCardChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]models.Card{},
-					[]models.Card{{UUID: "uuid"}},
-					[]models.Card{},
+				changeDetector.EXPECT().GetCardChanges(gomock.Any(), gomock.Any()).Return(
+					changes.CardChanges{
+						Created: []models.Card{},
+						Updated: []models.Card{{UUID: "uuid"}},
+						Deleted: []models.Card{},
+					},
 				).Times(1)
 				storeService.EXPECT().UpdateCard(gomock.Any(), gomock.Any()).Return(nil).Times(1)
 			},
@@ -81,10 +86,12 @@ func TestSyncCards(t *testing.T) {
 				apiClient.EXPECT().SyncCards(gomock.Any()).Return(nil).Times(1)
 				apiClient.EXPECT().GetCards().Return(&output.GetCards{}, nil).Times(1)
 				storeService.EXPECT().GetCards(gomock.Any()).Return([]models.Card{}, nil).Times(2)
-				changeDetector.EXPECT().GetCardChanges(gomock.Any(), gomock.Any(), gomock.Any()).Return(
-					[]models.Card{},
-					[]models.Card{},
-					[]models.Card{{UUID: "uuid"}},
+				changeDetector.EXPECT().GetCardChanges(gomock.Any(), gomock.Any()).Return(
+					changes.CardChanges{
+						Created: []models.Card{},
+						Updated: []models.Card{},
+						Deleted: []models.Card{{UUID: "uuid"}},
+					},
 				).Times(1)
 				storeService.EXPECT().DeleteCard(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil).Times(1)
 			},

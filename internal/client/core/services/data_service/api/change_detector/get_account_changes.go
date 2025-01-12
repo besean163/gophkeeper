@@ -1,29 +1,28 @@
 package changedetector
 
 import (
+	"github.com/besean163/gophkeeper/internal/client/core/services/data_service/api/changes"
 	models "github.com/besean163/gophkeeper/internal/models/client"
 	servermodels "github.com/besean163/gophkeeper/internal/models/server"
 )
 
-func (d ChangeDetector) GetAccountChanges(user models.User, items []models.Account, externalItems []servermodels.Account) (created []models.Account, updated []models.Account, deleted []models.Account) {
-	created = make([]models.Account, 0)
-	updated = make([]models.Account, 0)
-	deleted = make([]models.Account, 0)
+func (d ChangeDetector) GetAccountChanges(user models.User, compare changes.AccountCompare) changes.AccountChanges {
+	changes := changes.NewAccountChanges()
 
 	mapItems := map[string]models.Account{}
-	for _, item := range items {
+	for _, item := range compare.Items {
 		mapItems[item.UUID] = item
 	}
 
 	mapExternalItems := map[string]servermodels.Account{}
-	for _, externalItem := range externalItems {
+	for _, externalItem := range compare.CompareItems {
 		mapExternalItems[externalItem.UUID] = externalItem
 	}
 
 	for _, item := range mapItems {
 		_, ok := mapExternalItems[item.UUID]
 		if !ok {
-			deleted = append(deleted, item)
+			changes.Deleted = append(changes.Deleted, item)
 		}
 	}
 
@@ -39,7 +38,7 @@ func (d ChangeDetector) GetAccountChanges(user models.User, items []models.Accou
 				CreatedAt: externalItem.CreatedAt,
 				UpdatedAt: externalItem.UpdatedAt,
 			}
-			created = append(created, item)
+			changes.Created = append(changes.Created, item)
 		}
 
 		if externalItem.UpdatedAt > item.UpdatedAt {
@@ -47,9 +46,9 @@ func (d ChangeDetector) GetAccountChanges(user models.User, items []models.Accou
 			item.Login = externalItem.Login
 			item.Password = externalItem.Password
 			item.UpdatedAt = externalItem.UpdatedAt
-			updated = append(updated, item)
+			changes.Updated = append(changes.Updated, item)
 		}
 	}
 
-	return created, updated, deleted
+	return changes
 }

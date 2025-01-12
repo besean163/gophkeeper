@@ -8,6 +8,7 @@ import (
 
 	"github.com/besean163/gophkeeper/internal/client/interfaces"
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
+	keybinding "github.com/besean163/gophkeeper/internal/client/tui/models/key_binding"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/styles"
 	"github.com/besean163/gophkeeper/internal/logger"
 	"github.com/charmbracelet/bubbles/list"
@@ -47,17 +48,17 @@ func (m *CardListModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "enter":
+		case keybinding.Enter:
 			if item, ok := m.list.SelectedItem().(CardItem); ok {
 				return m, func() tea.Msg { return messages.CardEditMsg{Card: item.item} }
 			}
 
 			return m, func() tea.Msg { return messages.CardEditMsg{} }
-		case "ctrl+b":
+		case keybinding.Ctrlb:
 			return m, func() tea.Msg { return messages.SectionBackMsg{} }
-		case "ctrl+a":
+		case keybinding.Ctrla:
 			return m, func() tea.Msg { return messages.CardEditMsg{Card: models.Card{}} }
-		case "ctrl+d":
+		case keybinding.Ctrld:
 			if item, ok := m.list.SelectedItem().(CardItem); ok {
 				return m, func() tea.Msg { return messages.CardDeleteMsg{Card: item.item} }
 			}

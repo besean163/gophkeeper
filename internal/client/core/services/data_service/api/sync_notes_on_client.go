@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/besean163/gophkeeper/internal/client/core/services/data_service/api/changes"
 	"github.com/besean163/gophkeeper/internal/logger"
 	models "github.com/besean163/gophkeeper/internal/models/client"
 	servermodels "github.com/besean163/gophkeeper/internal/models/server"
@@ -35,23 +36,27 @@ func (s Service) syncNotesOnClient(user models.User) error {
 		externalItems = append(externalItems, externalItem)
 	}
 
-	created, updated, deleted := s.changeDetector.GetNoteChanges(user, items, externalItems)
+	compare := changes.NoteCompare{
+		Items:        items,
+		CompareItems: externalItems,
+	}
+	changes := s.changeDetector.GetNoteChanges(user, compare)
 
-	for _, item := range created {
+	for _, item := range changes.Created {
 		err := s.storeService.CreateNote(user, item)
 		if err != nil {
 			return err
 		}
 	}
 
-	for _, item := range updated {
+	for _, item := range changes.Updated {
 		err := s.storeService.UpdateNote(user, item)
 		if err != nil {
 			return err
 		}
 	}
 
-	for _, item := range deleted {
+	for _, item := range changes.Deleted {
 		err := s.storeService.DeleteNote(user, item, false)
 		if err != nil {
 			return err

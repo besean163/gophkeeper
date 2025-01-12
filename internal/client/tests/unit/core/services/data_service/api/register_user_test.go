@@ -74,14 +74,14 @@ func TestRegisterUser(t *testing.T) {
 			password: "password",
 			mockSetup: func() {
 				apiClient.EXPECT().HasConnection().Return(false).Times(1)
-				storeService.EXPECT().RegisterUser(gomock.Any(), gomock.Any()).Return(nil, errors.New("test_error")).Times(1)
+				// storeService.EXPECT().RegisterUser(gomock.Any(), gomock.Any()).Return(nil, errors.New("can't register user offline")).Times(1)
 			},
 			result: struct {
 				user *models.User
 				err  error
 			}{
 				user: nil,
-				err:  errors.New("test_error"),
+				err:  errors.New("can't register user offline"),
 			},
 		},
 	}

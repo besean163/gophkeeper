@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/besean163/gophkeeper/internal/client/core/services/data_service/api/changes"
 	"github.com/besean163/gophkeeper/internal/logger"
 	models "github.com/besean163/gophkeeper/internal/models/client"
 	servermodels "github.com/besean163/gophkeeper/internal/models/server"
@@ -37,23 +38,27 @@ func (s Service) syncCardsOnClient(user models.User) error {
 		externalItems = append(externalItems, externalItem)
 	}
 
-	created, updated, deleted := s.changeDetector.GetCardChanges(user, items, externalItems)
+	compare := changes.CardCompare{
+		Items:        items,
+		CompareItems: externalItems,
+	}
+	changes := s.changeDetector.GetCardChanges(user, compare)
 
-	for _, item := range created {
+	for _, item := range changes.Created {
 		err := s.storeService.CreateCard(user, item)
 		if err != nil {
 			return err
 		}
 	}
 
-	for _, item := range updated {
+	for _, item := range changes.Updated {
 		err := s.storeService.UpdateCard(user, item)
 		if err != nil {
 			return err
 		}
 	}
 
-	for _, item := range deleted {
+	for _, item := range changes.Deleted {
 		err := s.storeService.DeleteCard(user, item, false)
 		if err != nil {
 			return err

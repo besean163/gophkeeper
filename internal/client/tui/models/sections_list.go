@@ -5,6 +5,7 @@ import (
 
 	"github.com/besean163/gophkeeper/internal/client/tui/messages"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/components"
+	keybinding "github.com/besean163/gophkeeper/internal/client/tui/models/key_binding"
 	"github.com/besean163/gophkeeper/internal/client/tui/models/styles"
 	"github.com/besean163/gophkeeper/internal/logger"
 	tea "github.com/charmbracelet/bubbletea"
@@ -90,7 +91,7 @@ func (m *SectionListModel) updateOptions(msg tea.Msg) tea.Cmd {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "down":
+		case keybinding.Down:
 			option.UnSelect()
 			m.OptionSelected++
 			if m.OptionSelected >= len(m.Options) {
@@ -98,14 +99,14 @@ func (m *SectionListModel) updateOptions(msg tea.Msg) tea.Cmd {
 			}
 			m.Options[m.OptionSelected].Select()
 
-		case "up":
+		case keybinding.Up:
 			option.UnSelect()
 			m.OptionSelected--
 			if m.OptionSelected < 0 {
 				m.OptionSelected = 0
 			}
 			m.Options[m.OptionSelected].Select()
-		case "enter":
+		case keybinding.Enter:
 			return m.Options[m.OptionSelected].Submit()
 		}
 	}

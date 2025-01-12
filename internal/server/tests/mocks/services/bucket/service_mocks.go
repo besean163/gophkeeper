@@ -7,8 +7,8 @@ package mock
 import (
 	reflect "reflect"
 
-	client "github.com/besean163/gophkeeper/internal/models/client"
 	server "github.com/besean163/gophkeeper/internal/models/server"
+	changes "github.com/besean163/gophkeeper/internal/server/services/bucket/changes"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -233,49 +233,43 @@ func (m *MockChangeDetector) EXPECT() *MockChangeDetectorMockRecorder {
 }
 
 // GetAccountChanges mocks base method.
-func (m *MockChangeDetector) GetAccountChanges(user server.User, items []*server.Account, externalItems []client.Account) ([]*server.Account, []*server.Account, []string) {
+func (m *MockChangeDetector) GetAccountChanges(user server.User, compare changes.AccountCompare) changes.AccountChanges {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAccountChanges", user, items, externalItems)
-	ret0, _ := ret[0].([]*server.Account)
-	ret1, _ := ret[1].([]*server.Account)
-	ret2, _ := ret[2].([]string)
-	return ret0, ret1, ret2
+	ret := m.ctrl.Call(m, "GetAccountChanges", user, compare)
+	ret0, _ := ret[0].(changes.AccountChanges)
+	return ret0
 }
 
 // GetAccountChanges indicates an expected call of GetAccountChanges.
-func (mr *MockChangeDetectorMockRecorder) GetAccountChanges(user, items, externalItems interface{}) *gomock.Call {
+func (mr *MockChangeDetectorMockRecorder) GetAccountChanges(user, compare interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountChanges", reflect.TypeOf((*MockChangeDetector)(nil).GetAccountChanges), user, items, externalItems)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountChanges", reflect.TypeOf((*MockChangeDetector)(nil).GetAccountChanges), user, compare)
 }
 
 // GetCardsChanges mocks base method.
-func (m *MockChangeDetector) GetCardsChanges(user server.User, items []*server.Card, externalItems []client.Card) ([]*server.Card, []*server.Card, []string) {
+func (m *MockChangeDetector) GetCardsChanges(user server.User, compare changes.CardCompare) changes.CardChanges {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetCardsChanges", user, items, externalItems)
-	ret0, _ := ret[0].([]*server.Card)
-	ret1, _ := ret[1].([]*server.Card)
-	ret2, _ := ret[2].([]string)
-	return ret0, ret1, ret2
+	ret := m.ctrl.Call(m, "GetCardsChanges", user, compare)
+	ret0, _ := ret[0].(changes.CardChanges)
+	return ret0
 }
 
 // GetCardsChanges indicates an expected call of GetCardsChanges.
-func (mr *MockChangeDetectorMockRecorder) GetCardsChanges(user, items, externalItems interface{}) *gomock.Call {
+func (mr *MockChangeDetectorMockRecorder) GetCardsChanges(user, compare interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCardsChanges", reflect.TypeOf((*MockChangeDetector)(nil).GetCardsChanges), user, items, externalItems)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCardsChanges", reflect.TypeOf((*MockChangeDetector)(nil).GetCardsChanges), user, compare)
 }
 
 // GetNotesChanges mocks base method.
-func (m *MockChangeDetector) GetNotesChanges(user server.User, items []*server.Note, externalItems []client.Note) ([]*server.Note, []*server.Note, []string) {
+func (m *MockChangeDetector) GetNotesChanges(user server.User, compare changes.NoteCompare) changes.NoteChanges {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetNotesChanges", user, items, externalItems)
-	ret0, _ := ret[0].([]*server.Note)
-	ret1, _ := ret[1].([]*server.Note)
-	ret2, _ := ret[2].([]string)
-	return ret0, ret1, ret2
+	ret := m.ctrl.Call(m, "GetNotesChanges", user, compare)
+	ret0, _ := ret[0].(changes.NoteChanges)
+	return ret0
 }
 
 // GetNotesChanges indicates an expected call of GetNotesChanges.
-func (mr *MockChangeDetectorMockRecorder) GetNotesChanges(user, items, externalItems interface{}) *gomock.Call {
+func (mr *MockChangeDetectorMockRecorder) GetNotesChanges(user, compare interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNotesChanges", reflect.TypeOf((*MockChangeDetector)(nil).GetNotesChanges), user, items, externalItems)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNotesChanges", reflect.TypeOf((*MockChangeDetector)(nil).GetNotesChanges), user, compare)
 }

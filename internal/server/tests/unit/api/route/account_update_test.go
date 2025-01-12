@@ -25,8 +25,8 @@ func TestAccountUpdateRoute(t *testing.T) {
 	user := models.User{Login: "user", Password: "password"}
 
 	bucketService := mock.NewMockBucketService(ctrl)
-	bucketService.EXPECT().UpdateAccount(user, &models.Account{UUID: "test_uuid", Name: "test_name", Login: "test_login", Password: "test_password"}).Return(nil).Times(1)
-	bucketService.EXPECT().UpdateAccount(user, &models.Account{UUID: "not_found_uuid", Name: "test_name", Login: "test_login", Password: "test_password"}).Return(apierrors.ErrorNotFoundByUUID).Times(1)
+	bucketService.EXPECT().UpdateAccount(user, &models.Account{UUID: "00000000-0000-0000-0000-000000000000", Name: "test_name", Login: "test_login", Password: "test_password"}).Return(nil).Times(1)
+	bucketService.EXPECT().UpdateAccount(user, &models.Account{UUID: "00000000-0000-0000-0000-000000000000", Name: "test_name", Login: "test_login", Password: "test_password"}).Return(apierrors.ErrorNotFoundByUUID).Times(1)
 	bucketService.EXPECT().UpdateAccount(gomock.Any(), gomock.Any()).Return(errors.New("test")).Times(1)
 
 	debs := dependencies.Dependencies{
@@ -49,7 +49,7 @@ func TestAccountUpdateRoute(t *testing.T) {
 			name:        "success_put",
 			method:      http.MethodPut,
 			exceptCode:  http.StatusOK,
-			requestBody: `{"uuid":"test_uuid","name":"test_name","login":"test_login","password":"test_password"}`,
+			requestBody: `{"uuid":"00000000-0000-0000-0000-000000000000","name":"test_name","login":"test_login","password":"test_password"}`,
 			user:        &user,
 		},
 		{
@@ -64,7 +64,7 @@ func TestAccountUpdateRoute(t *testing.T) {
 			name:         "not_found_uuid",
 			method:       http.MethodPut,
 			exceptCode:   http.StatusBadRequest,
-			requestBody:  `{"uuid":"not_found_uuid","name":"test_name","login":"test_login","password":"test_password"}`,
+			requestBody:  `{"uuid":"00000000-0000-0000-0000-000000000000","name":"test_name","login":"test_login","password":"test_password"}`,
 			responseBody: `{"error":{"code":400,"description":"not found by uuid"}}`,
 			user:         &user,
 		},
@@ -88,7 +88,7 @@ func TestAccountUpdateRoute(t *testing.T) {
 		{
 			name:        "unknown_error",
 			method:      http.MethodPut,
-			requestBody: `{"uuid":"uuid","name":"test_name","login":"test_login","password":"test_password"}`,
+			requestBody: `{"uuid":"00000000-0000-0000-0000-000000000000","name":"test_name","login":"test_login","password":"test_password"}`,
 			responseHeaders: map[string]string{
 				"Content-Type": "application/json",
 			},

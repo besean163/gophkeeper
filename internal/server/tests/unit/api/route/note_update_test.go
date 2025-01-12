@@ -47,10 +47,10 @@ func TestNoteUpdateRoute(t *testing.T) {
 			name:        "success",
 			method:      http.MethodPut,
 			exceptCode:  http.StatusOK,
-			requestBody: `{"uuid":"test_uuid","name":"test_name","content":"test_content"}`,
+			requestBody: `{"uuid":"00000000-0000-0000-0000-000000000000","name":"test_name","content":"test_content"}`,
 			user:        &user,
 			mockSetup: func() {
-				bucketService.EXPECT().UpdateNote(user, &models.Note{UUID: "test_uuid", Name: "test_name", Content: "test_content"}).Return(nil).Times(1)
+				bucketService.EXPECT().UpdateNote(user, &models.Note{UUID: "00000000-0000-0000-0000-000000000000", Name: "test_name", Content: "test_content"}).Return(nil).Times(1)
 			},
 		},
 		{
@@ -66,11 +66,11 @@ func TestNoteUpdateRoute(t *testing.T) {
 			name:         "not_found_uuid",
 			method:       http.MethodPut,
 			exceptCode:   http.StatusBadRequest,
-			requestBody:  `{"uuid":"not_found_uuid","name":"test_name","content":"test_content"}`,
+			requestBody:  `{"uuid":"00000000-0000-0000-0000-000000000000","name":"test_name","content":"test_content"}`,
 			responseBody: `{"error":{"code":400,"description":"not found by uuid"}}`,
 			user:         &user,
 			mockSetup: func() {
-				bucketService.EXPECT().UpdateNote(user, &models.Note{UUID: "not_found_uuid", Name: "test_name", Content: "test_content"}).Return(apierrors.ErrorNotFoundByUUID).Times(1)
+				bucketService.EXPECT().UpdateNote(user, &models.Note{UUID: "00000000-0000-0000-0000-000000000000", Name: "test_name", Content: "test_content"}).Return(apierrors.ErrorNotFoundByUUID).Times(1)
 			},
 		},
 		{
@@ -95,7 +95,7 @@ func TestNoteUpdateRoute(t *testing.T) {
 		{
 			name:        "unknown_error",
 			method:      http.MethodPut,
-			requestBody: `{"uuid":"uuid","name":"test_name","login":"test_login","password":"test_password"}`,
+			requestBody: `{"uuid":"00000000-0000-0000-0000-000000000000","name":"test_name","login":"test_login","password":"test_password"}`,
 			responseHeaders: map[string]string{
 				"Content-Type": "application/json",
 			},
